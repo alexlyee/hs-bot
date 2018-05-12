@@ -1,11 +1,11 @@
 ﻿using Discord.Commands;
 using Discord.WebSocket;
-using SchoolDiscordBot.Persistent;
-using SchoolDiscordBot.Helpers;
+using HSBot.Persistent;
+using HSBot.Helpers;
 using System.Reflection;
 using System.Threading.Tasks;
 
-namespace SchoolDiscordBot.Handlers
+namespace HSBot.Handlers
 {
     internal class CommandHandler
     {

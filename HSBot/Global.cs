@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Reflection;
 using System.Text;
 using Discord.WebSocket;
-using SchoolDiscordBot.Helpers;
+using HSBot.Helpers;
 
-namespace SchoolDiscordBot
+namespace HSBot
 {
     internal static class Global
     {

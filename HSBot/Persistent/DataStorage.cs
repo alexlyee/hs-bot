@@ -3,9 +3,9 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
-using SchoolDiscordBot.Helpers;
+using HSBot.Helpers;
 
-namespace SchoolDiscordBot.Persistent
+namespace HSBot.Persistent
 {
     internal class DataStorage
     {

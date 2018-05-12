@@ -7,12 +7,12 @@ using Discord.Commands;
 using Discord.Rest;
 using Discord.WebSocket;
 using System.Linq;
-using SchoolDiscordBot.Persistent;
+using HSBot.Persistent;
 using System.IO;
 using System.Web;
-using SchoolDiscordBot.Helpers;
+using HSBot.Helpers;
 
-namespace SchoolDiscordBot.Modules
+namespace HSBot.Modules
 {
     public sealed class UserCommands : ModuleBase<SocketCommandContext>
     {

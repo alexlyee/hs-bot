@@ -7,11 +7,11 @@ using Discord.Commands;
 using Discord.Rest;
 using Discord.WebSocket;
 using System.Linq;
-using SchoolDiscordBot.Persistent;
+using HSBot.Persistent;
 using System.IO;
 using System.Web;
 
-namespace SchoolDiscordBot.Modules
+namespace HSBot.Modules
 {
     public sealed class StatusRoleCommands : ModuleBase<SocketCommandContext>
     {

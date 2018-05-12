@@ -1,9 +1,9 @@
 ﻿using Discord.WebSocket;
-using SchoolDiscordBot.Entities;
+using HSBot.Entities;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace SchoolDiscordBot.Persistent
+namespace HSBot.Persistent
 {
     public static class UserAccounts
     {

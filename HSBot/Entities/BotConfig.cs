@@ -1,4 +1,4 @@
-﻿namespace SchoolDiscordBot.Entities
+﻿namespace HSBot.Entities
 {
     public struct BotConfig
     {

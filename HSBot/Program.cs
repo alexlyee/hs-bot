@@ -1,20 +1,22 @@
-﻿using Discord;
-using Discord.Commands; /* Namespace of discord command tools.
-https://www.nuget.org/packages/Discord.Net.Commands/ */
-using Discord.WebSocket; /* Namespace of discord web tools.
-https://www.nuget.org/packages/Discord.Net.WebSocket/ */
-using Microsoft.Extensions.DependencyInjection;
-using System;
+﻿using System;
 using System.Reflection;
-using System.Threading.Tasks; // Async Task.
-using System.Collections.Generic;
-using SchoolDiscordBot.Entities;
-using SchoolDiscordBot.Handlers;
-using SchoolDiscordBot.Helpers;
-using SchoolDiscordBot.Persistent;
-using SchoolDiscordBot.Core;
+using System.Threading.Tasks;
+using Discord;
+using Discord.Commands;
+using Discord.WebSocket;
+using Microsoft.Extensions.DependencyInjection;
+using HSBot;
+using HSBot.Core;
+using HSBot.Handlers;
+using HSBot.Helpers;
+using HSBot.Persistent;
+/* Namespace of discord command tools.
+https://www.nuget.org/packages/Discord.Net.Commands/ */
+/* Namespace of discord web tools.
+https://www.nuget.org/packages/Discord.Net.WebSocket/ */
+// Async Task.
 
-namespace SchoolDiscordBot
+namespace HSBot
 {
     internal class Program
     {

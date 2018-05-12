@@ -4,7 +4,7 @@ using System.Text;
 using Discord.Commands;
 using Discord.WebSocket;
 
-namespace SchoolDiscordBot.Modules.References
+namespace HSBot.Modules.References
 {
     public partial class CommandPermissions
     {

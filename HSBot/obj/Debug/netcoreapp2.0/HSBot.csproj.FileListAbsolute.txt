@@ -6,3 +6,6 @@ C:\Users\alexo\Documents\Projects\School Discord Bot\HSBot\HSBot\obj\Debug\netco
 C:\Users\alexo\Documents\Projects\School Discord Bot\HSBot\HSBot\obj\Debug\netcoreapp2.0\HSBot.csproj.CoreCompileInputs.cache
 C:\Users\alexo\Documents\Projects\School Discord Bot\HSBot\HSBot\obj\Debug\netcoreapp2.0\HSBot.AssemblyInfoInputs.cache
 C:\Users\alexo\Documents\Projects\School Discord Bot\HSBot\HSBot\obj\Debug\netcoreapp2.0\HSBot.AssemblyInfo.cs
+C:\Users\alexo\Documents\Projects\School Discord Bot\HSBot\HSBot\bin\Debug\netcoreapp2.0\HSBot.pdb
+C:\Users\alexo\Documents\Projects\School Discord Bot\HSBot\HSBot\obj\Debug\netcoreapp2.0\HSBot.dll
+C:\Users\alexo\Documents\Projects\School Discord Bot\HSBot\HSBot\obj\Debug\netcoreapp2.0\HSBot.pdb

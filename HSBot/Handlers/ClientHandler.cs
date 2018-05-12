@@ -4,9 +4,9 @@ using System.Text;
 using System.Threading.Tasks; // Async Task.
 using Discord;
 using Discord.WebSocket;
-using SchoolDiscordBot.Helpers;
+using HSBot.Helpers;
 
-namespace SchoolDiscordBot.Handlers
+namespace HSBot.Handlers
 {
     public class ClientHandler
     {

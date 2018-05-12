@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace SchoolDiscordBot.Helpers
+namespace HSBot.Helpers
 {
     public class ActionResult
     {

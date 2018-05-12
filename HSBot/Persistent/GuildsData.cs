@@ -1,10 +1,10 @@
 ﻿using Discord.WebSocket;
-using SchoolDiscordBot.Entities;
-using SchoolDiscordBot.Helpers;
+using HSBot.Entities;
+using HSBot.Helpers;
 using System;
 using System.Collections.Generic;
 
-namespace SchoolDiscordBot.Persistent
+namespace HSBot.Persistent
 {
     internal static class GuildsData
     {

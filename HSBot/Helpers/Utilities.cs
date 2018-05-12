@@ -6,7 +6,7 @@ using Discord;
 using System.Reflection;
 using System.Threading.Tasks;
 
-namespace SchoolDiscordBot.Helpers
+namespace HSBot.Helpers
 {
     internal class Utilities
     {

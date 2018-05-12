@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace SchoolDiscordBot.Modules.References
+namespace HSBot.Modules.References
 {
     internal sealed class EightBall
     {

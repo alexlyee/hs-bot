@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System;
 
-namespace SchoolDiscordBot.Entities
+namespace HSBot.Entities
 {
     public struct GuildConfig
     {

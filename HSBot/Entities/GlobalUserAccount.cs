@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace SchoolDiscordBot.Entities
+namespace HSBot.Entities
 {
     public class GlobalUserAccount
     {

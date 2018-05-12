@@ -1,7 +1,7 @@
 {
   "runtimeTarget": {
     "name": ".NETCoreApp,Version=v2.0",
-    "signature": "275cd02a03629fb8384762a0086e616ba59e1165"
+    "signature": "79ff5a80dc4817f119c8a4d6c898aa44131212f0"
   },
   "compilationOptions": {},
   "targets": {
@@ -9,8 +9,8 @@
       "HSBot/1.0.0": {
         "dependencies": {
           "Discord.Net": "1.0.2",
-          "NReco": "2.0.3",
-          "NReco.ImageGenerator": "1.1.1"
+          "HtmlToPdfOrImage": "1.0.2",
+          "NReco": "2.0.3"
         },
         "runtime": {
           "HSBot.dll": {}
@@ -83,6 +83,11 @@
           "lib/netstandard1.3/Discord.Net.WebSocket.dll": {}
         }
       },
+      "HtmlToPdfOrImage/1.0.2": {
+        "runtime": {
+          "lib/HtmlToPdfOrImage.dll": {}
+        }
+      },
       "Microsoft.CSharp/4.3.0": {
         "dependencies": {
           "System.Collections": "4.3.0",
@@ -141,11 +146,6 @@
       "NReco/2.0.3": {
         "runtime": {
           "lib/net40/NReco.dll": {}
-        }
-      },
-      "NReco.ImageGenerator/1.1.1": {
-        "runtime": {
-          "lib/net20/NReco.ImageGenerator.dll": {}
         }
       },
       "runtime.debian.8-x64.runtime.native.System.Security.Cryptography.OpenSsl/4.3.0": {
@@ -1139,6 +1139,13 @@
       "path": "discord.net.websocket/1.0.2",
       "hashPath": "discord.net.websocket.1.0.2.nupkg.sha512"
     },
+    "HtmlToPdfOrImage/1.0.2": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-bdyAyxTHiSAHfo5jFr6SXG+8sze3mozu8FzQeK53YIRB3faiNQhYVmP0b3EwkmzPLIxH6IsvReElNzVt3/omUQ==",
+      "path": "htmltopdforimage/1.0.2",
+      "hashPath": "htmltopdforimage.1.0.2.nupkg.sha512"
+    },
     "Microsoft.CSharp/4.3.0": {
       "type": "package",
       "serviceable": true,
@@ -1187,13 +1194,6 @@
       "sha512": "sha512-JNuKMEh/8LlbaZgknKKvhpY3Ws2zT3s25aqA1MpuT5kogGn0GYDEpYjA5rh7YY82SjWdOSL4yD16N6ljvRehMA==",
       "path": "nreco/2.0.3",
       "hashPath": "nreco.2.0.3.nupkg.sha512"
-    },
-    "NReco.ImageGenerator/1.1.1": {
-      "type": "package",
-      "serviceable": true,
-      "sha512": "sha512-U92hbY24AUa1SJEFLj3upJYVxKoCYpmAN8jEm1eWIMoKnyHwJDQyueerPRU5i2K7+JTZoSriLTbRzLLu6NM6MA==",
-      "path": "nreco.imagegenerator/1.1.1",
-      "hashPath": "nreco.imagegenerator.1.1.1.nupkg.sha512"
     },
     "runtime.debian.8-x64.runtime.native.System.Security.Cryptography.OpenSsl/4.3.0": {
       "type": "package",

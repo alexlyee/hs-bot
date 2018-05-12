@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace SchoolDiscordBot.Modules.Preconditions
+namespace HSBot.Modules.Preconditions
 {
     public class NoSelf : ParameterPreconditionAttribute
     {

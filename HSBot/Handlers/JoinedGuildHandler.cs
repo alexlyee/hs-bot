@@ -4,7 +4,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Discord.WebSocket;
 
-namespace SchoolDiscordBot.Handlers
+namespace HSBot.Handlers
 {
     internal class JoinedGuildHandler
     {

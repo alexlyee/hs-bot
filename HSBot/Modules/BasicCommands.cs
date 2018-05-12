@@ -7,19 +7,19 @@ using Discord.Commands;
 using Discord.Rest;
 using Discord.WebSocket;
 using System.Linq;
-using SchoolDiscordBot.Persistent;
+using HSBot.Persistent;
 using System.IO;
 using System.Web;
-using SchoolDiscordBot.Modules.Preconditions;
+using HSBot.Modules.Preconditions;
 using System.Collections.Concurrent;
-using SchoolDiscordBot.Helpers;
+using HSBot.Helpers;
 using System.Reflection;
-using SchoolDiscordBot.Modules.References;
+using HSBot.Modules.References;
 using System.Net;
 using Newtonsoft.Json;
 using NReco;
 
-namespace SchoolDiscordBot.Modules
+namespace HSBot.Modules
 {
     public sealed class BasicCommands : ModuleBase<SocketCommandContext>
     {

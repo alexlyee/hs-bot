@@ -4,11 +4,11 @@ using System.Text;
 using System.IO;
 using Newtonsoft.Json;
 using Discord.WebSocket;
-using SchoolDiscordBot.Helpers;
-using SchoolDiscordBot.Entities;
+using HSBot.Helpers;
+using HSBot.Entities;
 using System.Reflection;
 
-namespace SchoolDiscordBot.Persistent
+namespace HSBot.Persistent
 {
     internal static class Config
     {

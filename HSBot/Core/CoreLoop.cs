@@ -1,12 +1,12 @@
 ﻿using System;
 using System.Threading.Tasks;
-using SchoolDiscordBot.Helpers;
+using HSBot.Helpers;
 using System.Timers;
-using SchoolDiscordBot.Persistent;
+using HSBot.Persistent;
 using Discord.WebSocket;
-using SchoolDiscordBot.Entities;
+using HSBot.Entities;
 
-namespace SchoolDiscordBot.Core
+namespace HSBot.Core
 {
     internal static class CoreLoop
     {

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using Discord.Commands;
 
-namespace SchoolDiscordBot.Modules.References
+namespace HSBot.Modules.References
 {
     internal class ModuleUtilities
     {
