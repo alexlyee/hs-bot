@@ -33,7 +33,7 @@ namespace HSBot
         {
             Console.SetWindowSize(200, 50);
             await Utilities.Log(MethodBase.GetCurrentMethod(), $"Application started. V{_version}.");
-            Console.Title = Config.config.ConsoleTitle;
+            Console.Title = Config.Config.ConsoleTitle;
 
             _client = new DiscordSocketClient(new DiscordSocketConfig
             {
@@ -60,7 +60,7 @@ namespace HSBot
             _client.Ready += CoreLoop.StartTimer;
 
 
-            await _client.LoginAsync(TokenType.Bot, Config.config.Token);
+            await _client.LoginAsync(TokenType.Bot, Config.Config.Token);
             await _client.StartAsync();
             await Task.Delay(-1);
         }

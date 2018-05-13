@@ -7,38 +7,38 @@ using HSBot.Helpers;
 
 namespace HSBot.Persistent
 {
-    internal class DataStorage
+    public class DataStorage
     {
-        private static readonly string resourcesFolder = "Resources";
+        private const string ResourcesFolder = "Resources";
 
         static DataStorage()
         {
-            if (!Directory.Exists(resourcesFolder))
+            if (!Directory.Exists(ResourcesFolder))
             {
-                Directory.CreateDirectory(resourcesFolder);
+                Directory.CreateDirectory(ResourcesFolder);
             }
         }
 
-        internal static void SaveEnumeratedObject<T>(IEnumerable<T> Objects, string file, Formatting formatting)
+        public static void SaveEnumeratedObject<T>(IEnumerable<T> objects, string file, Formatting formatting)
         {
-            string json = JsonConvert.SerializeObject(Objects, formatting);
+            string json = JsonConvert.SerializeObject(objects, formatting);
             File.WriteAllText(file, json);
         }
 
-        internal static void SaveEnumeratedObject<T>(IEnumerable<T> Objects, string file, bool useIndentations)
+        public static void SaveEnumeratedObject<T>(IEnumerable<T> objects, string file, bool useIndentations)
         {
             var formatting = (useIndentations) ? Formatting.Indented : Formatting.None;
-            SaveEnumeratedObject<T>(Objects, file, formatting);
+            SaveEnumeratedObject<T>(objects, file, formatting);
         }
 
-        internal static void StoreObject(object obj, string file, Formatting formatting)
+        public static void StoreObject(object obj, string file, Formatting formatting = Formatting.None)
         {
             string json = JsonConvert.SerializeObject(obj, formatting);
-            string filePath = String.Concat(resourcesFolder, "/", file);
+            string filePath = String.Concat(ResourcesFolder, "/", file);
             File.WriteAllText(filePath, json);
         }
 
-        internal static void StoreObject(object obj, string file, bool useIndentations)
+        public static void StoreObject(object obj, string file, bool useIndentations)
         {
             var formatting = (useIndentations) ? Formatting.Indented : Formatting.None;
             StoreObject(obj, file, formatting);
@@ -55,16 +55,16 @@ namespace HSBot.Persistent
             return JsonConvert.DeserializeObject<List<T>>(json);
         }
 
-        internal static T RestoreObject<T>(string file)
+        public static T RestoreObject<T>(string file)
         {
             string json = GetOrCreateFileContents(file);
             return JsonConvert.DeserializeObject<T>(json);
         }
 
-        internal static bool LocalFileExists(string file, bool BuildFileIfNonExistant = false)
+        public static bool LocalFileExists(string file, bool buildFileIfNonExistant = false)
         {
-            string filePath = String.Concat(resourcesFolder, "/", file);
-            if (BuildFileIfNonExistant & !(File.Exists(filePath)))
+            string filePath = String.Concat(ResourcesFolder, "/", file);
+            if (buildFileIfNonExistant & !(File.Exists(filePath)))
             {
                 File.WriteAllText(filePath, "");
                 return false;
@@ -72,42 +72,42 @@ namespace HSBot.Persistent
             return File.Exists(filePath);
         }
 
-        internal static string[] GetFilesInFolder(string folder)
+        public static string[] GetFilesInFolder(string folder)
         {
-            string folderPath = String.Concat(resourcesFolder, "/", folder);
-            string[] Files = Directory.GetFiles(folderPath);
+            string folderPath = String.Concat(ResourcesFolder, "/", folder);
+            string[] files = Directory.GetFiles(folderPath);
             int i;
-            for (i = 0; i < Files.Length; i++)
+            for (i = 0; i < files.Length; i++)
             {
-                Files[i] = Path.GetFileName(Files[i]);
+                files[i] = Path.GetFileName(files[i]);
             }
-            return Files;
+            return files;
         }
 
-        internal static bool LocalFolderExists(string folder, bool BuildFolderIfNonExistant = false)
+        public static bool LocalFolderExists(string folder, bool buildFolderIfNonExistant = false)
         {
-            string Path = String.Concat(resourcesFolder, "/", folder);
-            if (BuildFolderIfNonExistant & !(Directory.Exists(Path)))
+            string path = String.Concat(ResourcesFolder, "/", folder);
+            if (buildFolderIfNonExistant & !(Directory.Exists(path)))
             {
-                Directory.CreateDirectory(Path);
+                Directory.CreateDirectory(path);
                 return false;
             }
-            return Directory.Exists(Path);
+            return Directory.Exists(path);
         }
 
-        internal static string GetText(string file)
+        public static string GetText(string file)
         {
-            return File.ReadAllText(resourcesFolder + "/" + file);
+            return File.ReadAllText(ResourcesFolder + "/" + file);
         }
 
-        internal static void DeleteFile(string file)
+        public static void DeleteFile(string file)
         {
-            File.Delete(resourcesFolder + "/" + file);
+            File.Delete(ResourcesFolder + "/" + file);
         }
 
         private static string GetOrCreateFileContents(string file)
         {
-            string filePath = String.Concat(resourcesFolder, "/", file);
+            string filePath = String.Concat(ResourcesFolder, "/", file);
             if (!File.Exists(filePath))
             {
                 Directory.CreateDirectory(filePath);

@@ -91,7 +91,7 @@ namespace HSBot.Modules
 
         [Command("purge")]
         [Cooldown(3600)]
-        public async Task Purge([Remainder]string Message)
+        public async Task Purge([Remainder]string message)
         {
 
         }
@@ -99,8 +99,8 @@ namespace HSBot.Modules
         [Command("8ball"), Remarks("answers any question with a stunning level of wiseness")]
         public async Task EightBall([Remainder]string message)
         {
-            EightBall Ball = new EightBall();
-            await Context.Channel.SendMessageAsync(Ball.GrabRandomAnswer());
+            EightBall ball = new EightBall();
+            await Context.Channel.SendMessageAsync(ball.GrabRandomAnswer());
         }
 
         [Command("ping")]

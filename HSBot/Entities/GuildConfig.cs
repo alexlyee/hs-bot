@@ -5,11 +5,11 @@ namespace HSBot.Entities
 {
     public struct GuildConfig
     {
-        public ulong LogChannelID { get; set; }
+        public ulong LogChannelId { get; set; }
         public string Prefix { get; set; }
         public ulong Id { get; set; }
         public ulong Popularity { get; set; }
-        public ulong ActivityChannelID { get; set; }
+        public ulong ActivityChannelId { get; set; }
 
         public enum ManagmentIDs : ulong
         {
@@ -30,23 +30,23 @@ namespace HSBot.Entities
             Students,
             Visitors
         };
-        public enum LabelIDS : ulong
+        public enum LabelIds : ulong
         {
-            Role_Manager,
-            Hosting_Manager,
-            Channel_Manager,
-            Code_Manager,
-            Webhook_Manager,
-            Emoji_Manager,
-            Nickname_Manager,
-            Group_Manager,
-            Emissary_Manager,
-            Bot_Manager,
-            Voice_Manager,
-            Event_Manager,
-            Showcase_Manager,
-            Scheme_Coordinator,
-            Agent_Employer
+            RoleManager,
+            HostingManager,
+            ChannelManager,
+            CodeManager,
+            WebhookManager,
+            EmojiManager,
+            NicknameManager,
+            GroupManager,
+            EmissaryManager,
+            BotManager,
+            VoiceManager,
+            EventManager,
+            ShowcaseManager,
+            SchemeCoordinator,
+            AgentEmployer
         };
         public double TimeCreated { get; set; }
         /// <summary>

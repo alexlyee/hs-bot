@@ -10,16 +10,16 @@ namespace HSBot.Core
 {
     internal static class CoreLoop
     {
-        private static Timer loopingTimer;
+        private static Timer _loopingTimer;
 
         private static async void OnTimerTicked(object args, ElapsedEventArgs e)
         {
             await Utilities.Log("Timer Event", "Tick! " + Global.Client.ConnectionState);
-            await Global.Client.SetGameAsync(Config.config.Playing);
-            await Global.Client.SetStatusAsync(Config.config.Status);
+            await Global.Client.SetGameAsync(Config.Config.Playing);
+            await Global.Client.SetStatusAsync(Config.Config.Status);
             foreach (GuildConfig c in GuildsData.GetConfigs())
             {
-                SocketTextChannel channel = Global.Client.GetGuild(c.Id).GetTextChannel(c.LogChannelID);
+                SocketTextChannel channel = Global.Client.GetGuild(c.Id).GetTextChannel(c.LogChannelId);
             }
 
         }
@@ -28,13 +28,13 @@ namespace HSBot.Core
         {
             try
             {
-                loopingTimer = new Timer()
+                _loopingTimer = new Timer()
                 {
-                    Interval = Config.config.UpdateRate,
+                    Interval = Config.Config.UpdateRate,
                     AutoReset = true,
                     Enabled = true
                 };
-                loopingTimer.Elapsed += OnTimerTicked;
+                _loopingTimer.Elapsed += OnTimerTicked;
             }
             catch (Exception ex)
             {

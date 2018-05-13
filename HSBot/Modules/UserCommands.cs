@@ -27,17 +27,17 @@ namespace HSBot.Modules
 
             var account = UserAccounts.GetAccount(target);
             EmbedBuilder builder = new EmbedBuilder();
-            builder.WithTitle($"{target.Username} / {account.XP} xp / {account.Points} points.")
+            builder.WithTitle($"{target.Username} / {account.Xp} xp / {account.Points} points.")
                 .WithColor(Color.Blue);
             await Context.Channel.SendMessageAsync("", false, builder.Build());
         }
 
         [Command("addXP")]
         [RequireUserPermission(GuildPermission.Administrator)]
-        public void AddXP(uint xp)
+        public void AddXp(uint xp)
         {
             var account = UserAccounts.GetAccount(Context.User);
-            account.XP += xp;
+            account.Xp += xp;
             UserAccounts.SaveAccounts();
         }
 
@@ -123,11 +123,11 @@ namespace HSBot.Modules
 
     */
 
-        private bool UserHasRole(SocketGuildUser user, ulong roleID)
+        private bool UserHasRole(SocketGuildUser user, ulong roleId)
         {
-            return user.Roles.Contains(user.Guild.GetRole(roleID));
+            return user.Roles.Contains(user.Guild.GetRole(roleId));
         }
-        private ulong RoleIDFromName(SocketGuildUser user, string targetRoleName)
+        private ulong RoleIdFromName(SocketGuildUser user, string targetRoleName)
         {
             var result = from r in user.Guild.Roles
                          where r.Name == targetRoleName

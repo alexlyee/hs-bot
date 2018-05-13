@@ -18,11 +18,11 @@ namespace HSBot.Modules
 
 
 
-        private bool UserHasRole(SocketGuildUser user, ulong roleID)
+        private bool UserHasRole(SocketGuildUser user, ulong roleId)
         {
-            return user.Roles.Contains(user.Guild.GetRole(roleID));
+            return user.Roles.Contains(user.Guild.GetRole(roleId));
         }
-        private ulong RoleIDFromName(SocketGuildUser user, string targetRoleName)
+        private ulong RoleIdFromName(SocketGuildUser user, string targetRoleName)
         {
             var result = from r in user.Guild.Roles
                          where r.Name == targetRoleName

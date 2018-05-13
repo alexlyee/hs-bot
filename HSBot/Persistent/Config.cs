@@ -12,21 +12,21 @@ namespace HSBot.Persistent
 {
     internal static class Config
     {
-        internal static BotConfig config;
+        internal static BotConfig BotConfig;
 
-        private static readonly string configFile = "config.json";
+        private static readonly string ConfigFile = "config.json";
 
         static Config()
         {
-            if (DataStorage.LocalFileExists(configFile))
+            if (DataStorage.LocalFileExists(ConfigFile))
             {
-                config = DataStorage.RestoreObject<BotConfig>(configFile);
+                BotConfig = DataStorage.RestoreObject<BotConfig>(ConfigFile);
                 SaveSettings();
                 Utilities.Log("Config", "Configuration file restored and saved.");
             }
             else
             {
-                config = new BotConfig();
+                BotConfig = new BotConfig();
                 SaveSettings();
                 Utilities.Log("Config", "Configuration file created. Please fill out the data.", Discord.LogSeverity.Critical);
                 Console.ReadKey();
@@ -38,7 +38,7 @@ namespace HSBot.Persistent
             var result = new ActionResult();
             try
             {
-                DataStorage.StoreObject(config, configFile, useIndentations: true);
+                DataStorage.StoreObject(BotConfig, ConfigFile, useIndentations: true);
             }
             catch
             {

@@ -10,8 +10,8 @@ namespace HSBot.Helpers
 {
     internal class Utilities
     {
-        private static readonly DateTime unixepoch = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc);
-        private static Dictionary<string, string> alerts;
+        private static readonly DateTime Unixepoch = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc);
+        private static Dictionary<string, string> _alerts;
 
         /// <summary>
         /// Verbose is all, 
@@ -26,7 +26,7 @@ namespace HSBot.Helpers
             Verbose,
             Normal,
         };
-        public static LogMode globalLogMode = LogMode.Normal;
+        public static LogMode GlobalLogMode = LogMode.Normal;
 
         static Utilities()
         {
@@ -42,7 +42,7 @@ namespace HSBot.Helpers
                 {
                     string json = File.ReadAllText("SystemLang/alerts.json");
                     var data = JsonConvert.DeserializeObject<dynamic>(json);
-                    alerts = data.ToObject<Dictionary<string, string>>();
+                    _alerts = data.ToObject<Dictionary<string, string>>();
                     Log("Utilities", "alerts.json read.", LogSeverity.Verbose);
                 }
                 catch
@@ -59,20 +59,20 @@ namespace HSBot.Helpers
 
         public static DateTime GetDateTime(double unixEpochTimeStamp)
         {
-            return unixepoch.AddSeconds(unixEpochTimeStamp).ToLocalTime();
+            return Unixepoch.AddSeconds(unixEpochTimeStamp).ToLocalTime();
         }
 
         public static string GetAlert(string key)
         {
-            if (alerts.ContainsKey(key)) return alerts[key];
+            if (_alerts.ContainsKey(key)) return _alerts[key];
             return "";
         }
 
         public static string GetFormattedAlert(string key, object parameter)
         {
-            if (alerts.ContainsKey(key))
+            if (_alerts.ContainsKey(key))
             {
-                return String.Format(alerts[key], parameter);
+                return String.Format(_alerts[key], parameter);
             }
             return "";
         }
@@ -127,7 +127,7 @@ namespace HSBot.Helpers
                     Console.ForegroundColor = ConsoleColor.Gray;
                     break;
             }
-            if (globalLogMode == LogMode.Debug || globalLogMode == LogMode.Verbose)
+            if (GlobalLogMode == LogMode.Debug || GlobalLogMode == LogMode.Verbose)
             {
                 log = $"{DateTime.Now.TimeOfDay,-15} [ {severity,-7} | {source,-75}: {message}";
             }
@@ -136,7 +136,7 @@ namespace HSBot.Helpers
                 log = $"{DateTime.Now.ToLongTimeString(),-15} [{severity}] {source,-30}: {message}";
             }
             Console.WriteLine(log);
-            if (exception != null && globalLogMode == LogMode.Debug) Console.WriteLine(exception);
+            if (exception != null && GlobalLogMode == LogMode.Debug) Console.WriteLine(exception);
             Console.ForegroundColor = cc;
             return Task.CompletedTask;
         }
@@ -145,7 +145,7 @@ namespace HSBot.Helpers
             Exception exception = null)
         {
             string sourceToString = "???";
-            switch (globalLogMode)
+            switch (GlobalLogMode)
             {
                 case LogMode.Normal:
                     sourceToString = String.Format("{0}",
@@ -178,16 +178,16 @@ namespace HSBot.Helpers
         /// <returns>The text in between the selection criterion.</returns>
         public static string GetBetween(string strSource, string strStart, string strEnd)
         {
-            int Start, End;
+            int start, end;
             if (strSource.Contains(strStart) || strSource.Contains(strEnd))
             {
-                Start = strSource.IndexOf(strStart, 0) + strStart.Length;
-                End = strSource.IndexOf(strEnd, Start);
-                int Length = End - Start;
-                if (Length == 0) Length = 1;
-                if (strEnd == "") Length = strSource.Length - Start;
-                if (strStart == "") Length = End;
-                return strSource.Substring(Start, Length);
+                start = strSource.IndexOf(strStart, 0) + strStart.Length;
+                end = strSource.IndexOf(strEnd, start);
+                int length = end - start;
+                if (length == 0) length = 1;
+                if (strEnd == "") length = strSource.Length - start;
+                if (strStart == "") length = end;
+                return strSource.Substring(start, length);
             }
             else
             {

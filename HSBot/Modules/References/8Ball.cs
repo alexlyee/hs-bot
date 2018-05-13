@@ -6,7 +6,7 @@ namespace HSBot.Modules.References
 {
     internal sealed class EightBall
     {
-        internal List<string> answers = new List<string>
+        internal List<string> Answers = new List<string>
         {
             "It is certain",
             "It is decidedly so",
@@ -31,7 +31,7 @@ namespace HSBot.Modules.References
         
         internal string GrabRandomAnswer()
         {
-            return answers[Global.R.Next(0, answers.Count)];
+            return Answers[Global.R.Next(0, Answers.Count)];
         }
     }
 }

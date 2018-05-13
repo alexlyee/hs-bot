@@ -12,7 +12,7 @@ namespace HSBot.Modules.References
     }
     public partial class CommandPermissions
     {
-        private CommandPermissions(dynamic[] Permissions)
+        private CommandPermissions(dynamic[] permissions)
         {
             
         }

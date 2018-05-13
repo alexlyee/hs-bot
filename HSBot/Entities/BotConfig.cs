@@ -6,9 +6,9 @@
         public int UpdateRate { get; set; }
         public string Playing { get; set; }
         public Discord.UserStatus Status { get; set; }
-            public byte BotThemeColor_R { get; set; }
-            public byte BotThemeColor_G { get; set; }
-            public byte BotThemeColor_B { get; set; }
+            public byte BotThemeColorR { get; set; }
+            public byte BotThemeColorG { get; set; }
+            public byte BotThemeColorB { get; set; }
         public string ConsoleTitle { get; set; }
     }
 }

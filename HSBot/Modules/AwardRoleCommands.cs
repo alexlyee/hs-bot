@@ -1,4 +1,5 @@
-﻿using System;
+﻿
+using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
@@ -17,9 +18,9 @@ namespace HSBot.Modules
     {
         private enum RoleIDs : ulong
         {
-            Bot_Developers = 416439081086484480,
-            Alpha_Testers = 416439091333169154,
-            Beta_Testers = 416439102683086850
+            BotDevelopers = 416439081086484480,
+            AlphaTesters = 416439091333169154,
+            BetaTesters = 416439102683086850
         };
 
 

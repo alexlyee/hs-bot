@@ -7,27 +7,27 @@ namespace HSBot.Persistent
 {
     public static class UserAccounts
     {
-        private static List<UserAccount> accounts;
+        private static List<UserAccount> _accounts;
 
-        private static string accountsFile = "accounts.json";
+        private static string _accountsFile = "accounts.json";
 
 
         static UserAccounts()
         {
-            if (DataStorage.LocalFileExists(accountsFile))
+            if (DataStorage.LocalFileExists(_accountsFile))
             {
-                accounts = DataStorage.LoadEnumeratedObject<UserAccount>(accountsFile).ToList();
+                _accounts = DataStorage.LoadEnumeratedObject<UserAccount>(_accountsFile).ToList();
             }
             else
             {
-                accounts = new List<UserAccount>();
+                _accounts = new List<UserAccount>();
                 SaveAccounts();
             }
         }
 
         public static void SaveAccounts()
         {
-            DataStorage.SaveEnumeratedObject<UserAccount>(accounts, accountsFile, true);
+            DataStorage.SaveEnumeratedObject<UserAccount>(_accounts, _accountsFile, true);
         }
 
         public static UserAccount GetAccount(SocketUser user)
@@ -37,8 +37,8 @@ namespace HSBot.Persistent
         
         private static UserAccount GetOrCreateAccount(ulong id)
         {
-            var result = from a in accounts
-                         where a.ID == id
+            var result = from a in _accounts
+                         where a.Id == id
                          select a;
 
             var account = result.FirstOrDefault();
@@ -50,12 +50,12 @@ namespace HSBot.Persistent
         {
             var newAccount = new UserAccount()
             {
-                ID = id,
+                Id = id,
                 Points = 0,
-                XP = 0
+                Xp = 0
             };
 
-            accounts.Add(newAccount);
+            _accounts.Add(newAccount);
             SaveAccounts();
             return newAccount;
         }

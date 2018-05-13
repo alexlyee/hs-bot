@@ -7,9 +7,9 @@ namespace HSBot.Modules.References
 {
     internal class ModuleUtilities
     {
-        public T GetCommandPeramaters<T>(string ToParse, T CommandPerametersStructure, SocketCommandContext Context)
+        public T GetCommandPeramaters<T>(string toParse, T commandPerametersStructure, SocketCommandContext context)
         {
-            return CommandPerametersStructure;
+            return commandPerametersStructure;
         }
 
     }
