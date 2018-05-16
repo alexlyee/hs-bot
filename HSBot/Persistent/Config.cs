@@ -7,6 +7,8 @@ using Discord.WebSocket;
 using HSBot.Helpers;
 using HSBot.Entities;
 using System.Reflection;
+using Discord;
+using System.Diagnostics;
 
 namespace HSBot.Persistent
 {
@@ -21,33 +23,46 @@ namespace HSBot.Persistent
             if (DataStorage.LocalFileExists(ConfigFile))
             {
                 BotConfig = DataStorage.RestoreObject<BotConfig>(ConfigFile);
+                if (BotConfig.Equals(null))
+                {
+                    Process.Start(@"cmd.exe ", @"/c """ + (DataStorage.GetFileStream(ConfigFile).Name) + @"""");
+                    Utilities.Log("Settings error", "Could not read the Settings, is your file incomplete? ", LogSeverity.Critical);
+                }
+                BotConfig = DataStorage.RestoreObject<BotConfig>(ConfigFile);
                 SaveSettings();
                 Utilities.Log("Config", "Configuration file restored and saved.");
             }
             else
             {
                 BotConfig = new BotConfig();
-                SaveSettings();
+                var file = SaveSettings();
+                Process.Start(file.Name);
                 Utilities.Log("Config", "Configuration file created. Please fill out the data.", Discord.LogSeverity.Critical);
-                Console.ReadKey();
+            }
+
+            foreach (var field in typeof(BotConfig).GetFields(BindingFlags.Instance |
+                                                              BindingFlags.NonPublic |
+                                                              BindingFlags.Public))
+            {
+                string fieldName = Utilities.GetBetween(field.Name, "<", ">");
+                var fieldValue = field.GetValue(BotConfig);
+                if (fieldValue == null)
+                    Utilities.Log("Config", fieldName + " is empty, review your config if this is not the intention", LogSeverity.Warning);
+                else if (fieldValue as string == "")
+                    Utilities.Log("Config", fieldName + " is empty, review your config if this is not the intention", LogSeverity.Verbose);
+                else Utilities.Log("Config", fieldName + " is currently " + fieldValue, LogSeverity.Verbose);
             }
         }
 
-        private static ActionResult SaveSettings()
+        private static FileStream SaveSettings()
         {
-            var result = new ActionResult();
-            try
-            {
-                DataStorage.StoreObject(BotConfig, ConfigFile, useIndentations: true);
-            }
-            catch
-            {
-                result.AddAlert(new Alert("Settings error", "Could not save the Settings", LevelEnum.Exception));
-            }
-            return result;
+            var file = DataStorage.StoreObject(BotConfig, ConfigFile, useIndentations: true);
+            if (file != null) return file;
+            Process.Start(@"cmd.exe ", @"/c """ + (DataStorage.GetFileStream(ConfigFile).Name) + @"""");
+            Utilities.Log("Settings error", "Could not save the Settings, is your file incomplete?",
+                LogSeverity.Critical);
+            return null;
         }
         
     }
-    
-
 }

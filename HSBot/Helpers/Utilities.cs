@@ -5,6 +5,7 @@ using System.IO;
 using Discord;
 using System.Reflection;
 using System.Threading.Tasks;
+using NReco.Converting;
 
 namespace HSBot.Helpers
 {
@@ -24,7 +25,7 @@ namespace HSBot.Helpers
         {
             Debug,
             Verbose,
-            Normal,
+            Normal
         };
         public static LogMode GlobalLogMode = LogMode.Normal;
 
@@ -90,7 +91,7 @@ namespace HSBot.Helpers
             }
             catch (Exception ex)
             {
-                Log(MethodBase.GetCurrentMethod(), $"File failed to write to {fileName}: \"{ex.ToString()}\"", LogSeverity.Error);
+                Log(MethodBase.GetCurrentMethod(), $"File failed to write to {fileName}: \"{ex.ToString()}\"", LogSeverity.Error, ex);
                 return false;
             }
         }
@@ -137,6 +138,11 @@ namespace HSBot.Helpers
             }
             Console.WriteLine(log);
             if (exception != null && GlobalLogMode == LogMode.Debug) Console.WriteLine(exception);
+            if (severity == LogSeverity.Critical)
+            {
+                Console.WriteLine("This log is a critical error, the system is haulted.");
+                Task.Delay(-1);
+            }
             Console.ForegroundColor = cc;
             return Task.CompletedTask;
         }
@@ -168,6 +174,26 @@ namespace HSBot.Helpers
         public static Task Log(MethodBase source, string message, Exception exception,
             LogSeverity severity = LogSeverity.Error) => Log(source, message, severity, exception);
 
+        public static bool IsNumericType(object o)
+        {   
+            switch (Type.GetTypeCode(o.GetType()))
+            {
+                case TypeCode.Byte:
+                case TypeCode.SByte:
+                case TypeCode.UInt16:
+                case TypeCode.UInt32:
+                case TypeCode.UInt64:
+                case TypeCode.Int16:
+                case TypeCode.Int32:
+                case TypeCode.Int64:
+                case TypeCode.Decimal:
+                case TypeCode.Double:
+                case TypeCode.Single:
+                    return true;
+                default:
+                    return false;
+            }
+        }
 
         /// <summary>
         /// Finds text in between two strings.

@@ -132,14 +132,14 @@ namespace HSBot.Persistent
 
         internal static GuildConfig FindOrCreateGuildConfig(Discord.WebSocket.SocketGuild guild)
         {
-            GuildConfig guild = _guilds.Find(g => g.Id == Guild.Id);
-            if (guild.Equals(null))
+            GuildConfig GuildConfig = _guilds.Find(g => g.Id == guild.Id);
+            if (GuildConfig.Equals(null))
             {
-                InitializeGuild(Guild);
+                InitializeGuild(guild);
             }
-            guild = _guilds.Find(g => g.Id == Guild.Id);
-            Utilities.Log("FindOrCreateGuildConfig", $"Guild found with id {Guild.Id}", Discord.LogSeverity.Debug);
-            return guild;
+            GuildConfig = _guilds.Find(g => g.Id == guild.Id);
+            Utilities.Log("FindOrCreateGuildConfig", $"Guild found with id {guild.Id}", Discord.LogSeverity.Debug);
+            return GuildConfig;
         }
 
         internal static GuildConfig FindGuildConfig(ulong id)

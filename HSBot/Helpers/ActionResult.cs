@@ -6,6 +6,10 @@ using System.Threading.Tasks;
 
 namespace HSBot.Helpers
 {
+    /// <summary>
+    /// Used when logging doesn't suffice to the implementation needed to deal with things.
+    /// Alerts enable actions to be reviewed at a later point in the race.
+    /// </summary>
     public class ActionResult
     {
         public bool Success { get; private set; }

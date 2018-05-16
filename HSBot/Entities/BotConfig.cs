@@ -1,4 +1,7 @@
-﻿namespace HSBot.Entities
+﻿using HSBot.Helpers;
+using static HSBot.Helpers.Utilities;
+
+namespace HSBot.Entities
 {
     public struct BotConfig
     {
@@ -10,5 +13,7 @@
             public byte BotThemeColorG { get; set; }
             public byte BotThemeColorB { get; set; }
         public string ConsoleTitle { get; set; }
+        public int MessageCacheSize { get; set; }
+        
     }
 }

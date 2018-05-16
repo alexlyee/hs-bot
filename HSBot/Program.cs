@@ -10,6 +10,8 @@ using HSBot.Core;
 using HSBot.Handlers;
 using HSBot.Helpers;
 using HSBot.Persistent;
+using System.Diagnostics;
+using System.IO;
 /* Namespace of discord command tools.
 https://www.nuget.org/packages/Discord.Net.Commands/ */
 /* Namespace of discord web tools.
@@ -21,8 +23,8 @@ namespace HSBot
     internal class Program
     {
         private DiscordSocketClient _client;
-        private IServiceProvider _services; 
-        protected internal bool Online = true;
+        private IServiceProvider _services;
+        protected internal static bool Online = true;
         private CommandService _commands;
         private readonly string _version = Assembly.GetExecutingAssembly().GetName().Version.ToString();
 
@@ -33,12 +35,12 @@ namespace HSBot
         {
             Console.SetWindowSize(200, 50);
             await Utilities.Log(MethodBase.GetCurrentMethod(), $"Application started. V{_version}.");
-            Console.Title = Config.Config.ConsoleTitle;
+            Console.Title = Config.BotConfig.ConsoleTitle;
 
             _client = new DiscordSocketClient(new DiscordSocketConfig
             {
                 LogLevel = LogSeverity.Info,
-                MessageCacheSize = 10000
+                MessageCacheSize = Config.BotConfig.MessageCacheSize
             });
             _commands = new CommandService(new CommandServiceConfig
             {
@@ -60,10 +62,15 @@ namespace HSBot
             _client.Ready += CoreLoop.StartTimer;
 
 
-            await _client.LoginAsync(TokenType.Bot, Config.Config.Token);
+            await _client.LoginAsync(TokenType.Bot, Config.BotConfig.Token);
             await _client.StartAsync();
             await Task.Delay(-1);
         }
 
+        protected static void Shutdown(string Caller, string Reason, Exception ex = null)
+        {
+            
+            System.Environment.Exit(0);
+        }
     }
 }

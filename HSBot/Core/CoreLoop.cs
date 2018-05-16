@@ -15,8 +15,8 @@ namespace HSBot.Core
         private static async void OnTimerTicked(object args, ElapsedEventArgs e)
         {
             await Utilities.Log("Timer Event", "Tick! " + Global.Client.ConnectionState);
-            await Global.Client.SetGameAsync(Config.Config.Playing);
-            await Global.Client.SetStatusAsync(Config.Config.Status);
+            await Global.Client.SetGameAsync(Config.BotConfig.Playing);
+            await Global.Client.SetStatusAsync(Config.BotConfig.Status);
             foreach (GuildConfig c in GuildsData.GetConfigs())
             {
                 SocketTextChannel channel = Global.Client.GetGuild(c.Id).GetTextChannel(c.LogChannelId);
@@ -30,7 +30,7 @@ namespace HSBot.Core
             {
                 _loopingTimer = new Timer()
                 {
-                    Interval = Config.Config.UpdateRate,
+                    Interval = Config.BotConfig.UpdateRate,
                     AutoReset = true,
                     Enabled = true
                 };

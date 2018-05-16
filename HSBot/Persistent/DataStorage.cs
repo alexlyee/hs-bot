@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
+using Discord;
 using HSBot.Helpers;
 
 namespace HSBot.Persistent
@@ -31,17 +32,27 @@ namespace HSBot.Persistent
             SaveEnumeratedObject<T>(objects, file, formatting);
         }
 
-        public static void StoreObject(object obj, string file, Formatting formatting = Formatting.None)
+        public static FileStream StoreObject(object obj, string file, Formatting formatting = Formatting.None)
         {
-            string json = JsonConvert.SerializeObject(obj, formatting);
-            string filePath = String.Concat(ResourcesFolder, "/", file);
-            File.WriteAllText(filePath, json);
+            try
+            {
+                string json = JsonConvert.SerializeObject(obj, formatting);
+                string filePath = String.Concat(ResourcesFolder, "/", file);
+                File.WriteAllText(filePath, json);
+                var fileStream = File.OpenRead(filePath);
+                return fileStream;
+            }
+            catch (Exception ex)
+            {
+                Utilities.Log("DataStorage.StoreObject", "Failed to store object", LogSeverity.Error, ex);
+                return null;
+            }
         }
 
-        public static void StoreObject(object obj, string file, bool useIndentations)
+        public static FileStream StoreObject(object obj, string file, bool useIndentations)
         {
             var formatting = (useIndentations) ? Formatting.Indented : Formatting.None;
-            StoreObject(obj, file, formatting);
+            return StoreObject(obj, file, formatting);
         }
 
         public static IEnumerable<T> LoadEnumeratedObject<T>(string filePath)
@@ -105,16 +116,25 @@ namespace HSBot.Persistent
             File.Delete(ResourcesFolder + "/" + file);
         }
 
+        public static FileStream GetFileStream(string file)
+        {
+            return File.OpenRead(ResourcesFolder + "/" + file);
+        }
+
         private static string GetOrCreateFileContents(string file)
         {
             string filePath = String.Concat(ResourcesFolder, "/", file);
             if (!File.Exists(filePath))
             {
+                Utilities.Log(MethodBase.GetCurrentMethod(), "File not found, creating " + filePath,
+                    LogSeverity.Verbose);
                 Directory.CreateDirectory(filePath);
                 File.Create(filePath);
                 return "";
             }
             return File.ReadAllText(filePath);
         }
+
+        
     }
 }
