@@ -4,6 +4,8 @@ using HSBot.Persistent;
 using HSBot.Helpers;
 using System.Reflection;
 using System.Threading.Tasks;
+using Discord;
+using System.IO;
 
 namespace HSBot.Handlers
 {
@@ -11,7 +13,6 @@ namespace HSBot.Handlers
     {
         private DiscordSocketClient _client;
         private CommandService _service;
-        
 
         public async Task InitializeAsync(DiscordSocketClient client)
         {
@@ -49,8 +50,9 @@ namespace HSBot.Handlers
         {
             if (user.Guild.Name == "Discord-BOT-Tutorial")
             {
-                var discordBotTutorialGeneral = _client.GetChannel(GuildsData.FindGuildConfig(user.Guild.Id).LogChannelID) as SocketTextChannel;
-                await discordBotTutorialGeneral.SendMessageAsync($"{user.Username} ({user.Id}) left **{user.Guild.Name}**!");
+                if (_client.GetChannel(GuildsData.FindGuildConfig(user.Guild.Id).LogChannelID) is SocketTextChannel discordBotTutorialGeneral)
+                    await discordBotTutorialGeneral.SendMessageAsync(
+                        $"{user.Username} ({user.Id}) left **{user.Guild.Name}**!");
             }
         }
 
@@ -63,6 +65,19 @@ namespace HSBot.Handlers
                 || msg.HasMentionPrefix(_client.CurrentUser, ref argPos))
             {
                 await Utilities.Log(MethodBase.GetCurrentMethod(), "Command detected.", Discord.LogSeverity.Verbose);
+                /*
+                await Utilities.Log(MethodBase.GetCurrentMethod(), UserAccounts.GetAccount(_client.CurrentUser.Id, true).ToString());
+                if (UserAccounts.GetAccount(_client.CurrentUser.Id, true).Equals(null))
+                {
+                    await Utilities.Log("HandleCommandAsync",
+                        $"Welcome the new user by the name of {_client.CurrentUser.Username}!");
+                    var embed = new EmbedBuilder();
+                    embed.WithTitle($"This is your first time using our bot {_client.CurrentUser.Username}!")
+                        .WithDescription("Welcome!!")
+                        .WithColor(new Color(Config.BotConfig.BotThemeColorR, Config.BotConfig.BotThemeColorG, Config.BotConfig.BotThemeColorB)); // Should reduce it to a color class.
+                    await context.Channel.SendMessageAsync("", false, embed);
+                }
+                */
                 var result = await _service.ExecuteAsync(context, argPos);
                 if(!result.IsSuccess && result.Error != CommandError.UnknownCommand)
                 {

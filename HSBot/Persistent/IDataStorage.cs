@@ -2,7 +2,7 @@
 {
     public interface IDataStorage
     {
-        void StoreObject(object obj, string file);
+        void StoreObject(object obj, string file, string folder = "");
 
         T RestoreObject<T>(string file);
     }

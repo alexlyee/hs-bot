@@ -25,7 +25,7 @@ namespace HSBot.Modules
 
             target = mentionedUser ?? Context.User;
 
-            var account = UserAccounts.GetAccount(target);
+            var account = UserAccounts.GetAccount(target.Id);
             EmbedBuilder builder = new EmbedBuilder();
             builder.WithTitle($"{target.Username} / {account.Xp} xp / {account.Points} points.")
                 .WithColor(Color.Blue);
@@ -36,9 +36,9 @@ namespace HSBot.Modules
         [RequireUserPermission(GuildPermission.Administrator)]
         public void AddXp(uint xp)
         {
-            var account = UserAccounts.GetAccount(Context.User);
+            var account = UserAccounts.GetAccount(Context.User.Id);
             account.Xp += xp;
-            UserAccounts.SaveAccounts();
+            account.Save();
         }
 
 

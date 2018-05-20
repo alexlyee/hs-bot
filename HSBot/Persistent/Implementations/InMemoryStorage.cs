@@ -5,19 +5,34 @@ namespace HSBot.Persistent.Implementations
 {
     public class InMemoryStorage : IDataStorage
     {
-        private readonly Dictionary<string, object> _dictionary = new Dictionary<string, object>();
+        private object _object;
+        private string _key;
+        private string _folder;
+        private string _file;
 
-        public void StoreObject(object obj, string key)
+        public void Initialize(object obj, string key, string folder = "")
         {
-            if (!_dictionary.ContainsKey(key)) return;
-            _dictionary.Add(key, obj);
+            _object = obj;
+            _key = key;
+            _folder = folder;
+            _file = $"{folder}/{key}.json";
         }
+
+        public void StoreObject(object obj, string key, string folder = "")
+        {
+            _object = obj;
+            _key = key;
+            _folder = folder;
+            _file = $"{folder}/{key}.json";
+            DataStorage.StoreObject(_object, _file);
+        }
+
+        public void StoreObject() => DataStorage.StoreObject(_object, _file);
 
         public T RestoreObject<T>(string key)
         {
-            if (!_dictionary.ContainsKey(key)) throw new ArgumentException($"Provided key '{key}' was not found.");
-
-            return (T) _dictionary[key];
+            return DataStorage.RestoreObject<T>(_file);
         }
+
     }
 }
