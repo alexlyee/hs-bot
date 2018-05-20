@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
-using HSBot.Helpers;+
-
+using HSBot.Helpers;
 using System.Timers;
 using Discord;
 using HSBot.Persistent;
