@@ -6,13 +6,16 @@ using System.Collections.Generic;
 
 namespace HSBot.Persistent
 {
+    /// <summary>
+    /// Referencepoint for Guild accounts.
+    /// </summary>
     internal static class GuildsData
     {
         private static List<GuildConfig> _guilds;
         private static GuildsDataStruct _guildGlobalSettings;
 
-        private static readonly string ConfigFile = "guilds.json";
-        private static readonly string GuildsFolder = "guilds";
+        public const string ConfigFile = "guilds.json";
+        public const string GuildsFolder = "guilds";
 
         static GuildsData()
         {

@@ -1,6 +1,6 @@
 ﻿namespace HSBot.Persistent
 {
-    public interface InMemoryStorage
+    public interface IDataStorage
     {
         void StoreObject(object obj, string file);
 

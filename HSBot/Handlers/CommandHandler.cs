@@ -49,7 +49,7 @@ namespace HSBot.Handlers
         {
             if (user.Guild.Name == "Discord-BOT-Tutorial")
             {
-                var discordBotTutorialGeneral = _client.GetChannel(GuildsData.FindGuildConfig(user.Guild.Id).LogChannelId) as SocketTextChannel;
+                var discordBotTutorialGeneral = _client.GetChannel(GuildsData.FindGuildConfig(user.Guild.Id).LogChannelID) as SocketTextChannel;
                 await discordBotTutorialGeneral.SendMessageAsync($"{user.Username} ({user.Id}) left **{user.Guild.Name}**!");
             }
         }
@@ -72,7 +72,7 @@ namespace HSBot.Handlers
                 {
                     // ------------------ create statistics machine. Class DatabaseHandler
                     // ------------------ create 
-                    context.Guild.GetTextChannel(GuildsData.FindGuildConfig(context.Guild.Id).LogChannelId);
+                    context.Guild.GetTextChannel(GuildsData.FindGuildConfig(context.Guild.Id).LogChannelID);
                 }
             }
         }

@@ -5,11 +5,11 @@ namespace HSBot.Entities
 {
     public struct GuildConfig
     {
-        public ulong LogChannelId { get; set; }
+        public ulong LogChannelID { get; set; }
         public string Prefix { get; set; }
         public ulong Id { get; set; }
         public ulong Popularity { get; set; }
-        public ulong ActivityChannelId { get; set; }
+        public ulong ActivityChannelID { get; set; }
 
         public enum ManagmentIDs : ulong
         {

@@ -2,6 +2,7 @@
 using HSBot.Entities;
 using System.Collections.Generic;
 using System.Linq;
+using HSBot.Persistent.Implementations;
 
 namespace HSBot.Persistent
 {
@@ -41,7 +42,7 @@ namespace HSBot.Persistent
         private static UserAccount GetOrCreateAccount(ulong id)
         {
             var result = from a in _accounts
-                         where a.Id == id
+                         where a.ID == id
                          select a;
 
             var account = result.FirstOrDefault();
@@ -51,13 +52,13 @@ namespace HSBot.Persistent
 
         private static UserAccount CreateUserAccount(ulong id)
         {
-            var newAccount = new UserAccount()
+            var newAccount = new UserAccount(new InMemoryStorage())
             {
-                Id = id,
+                ID = id,
                 Points = 0,
                 Xp = 0
             };
-
+            
             _accounts.Add(newAccount);
             SaveAccounts();
             return newAccount;

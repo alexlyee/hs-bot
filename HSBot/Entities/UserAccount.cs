@@ -1,4 +1,6 @@
-﻿namespace HSBot.Entities
+﻿using HSBot.Persistent;
+
+namespace HSBot.Entities
 {
     /// <summary>
     /// Represents a discord user in the bot.
@@ -6,9 +8,22 @@
     /// </summary>
     public class UserAccount
     {
-        public ulong Id { get; set; }
+        public ulong ID { get; set; } // Implement discord user as ID?
         public uint Points { get; set; }
         public uint Xp { get; set; }
         public uint Reputation { get; set; }
+
+        private readonly IDataStorage _storage;
+
+        public UserAccount(IDataStorage storage)
+        {
+            _storage = storage;
+
+        }
+
+        public void Save()
+        {
+            _storage.StoreObject(this, ID.ToString());
+        }
     }
 }

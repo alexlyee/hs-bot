@@ -20,7 +20,7 @@ namespace HSBot.Core
             await Global.Client.SetStatusAsync(Config.BotConfig.Status);
             foreach (GuildConfig c in GuildsData.GetConfigs())
             {
-                SocketTextChannel channel = Global.Client.GetGuild(c.Id).GetTextChannel(c.LogChannelId);
+                SocketTextChannel channel = Global.Client.GetGuild(c.Id).GetTextChannel(c.LogChannelID);
             }
 
         }
