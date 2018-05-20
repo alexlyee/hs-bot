@@ -12,6 +12,9 @@ using System.Diagnostics;
 
 namespace HSBot.Persistent
 {
+    /// <summary>
+    /// Bot configuration referencepoint.
+    /// </summary>
     internal static class Config
     {
         internal static BotConfig BotConfig;

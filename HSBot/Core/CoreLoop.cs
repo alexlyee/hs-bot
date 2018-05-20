@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Threading.Tasks;
-using HSBot.Helpers;
+using HSBot.Helpers;+
+
 using System.Timers;
+using Discord;
 using HSBot.Persistent;
 using Discord.WebSocket;
 using HSBot.Entities;
@@ -14,7 +16,7 @@ namespace HSBot.Core
 
         private static async void OnTimerTicked(object args, ElapsedEventArgs e)
         {
-            await Utilities.Log("Timer Event", "Tick! " + Global.Client.ConnectionState);
+            await Utilities.Log("Timer Event", "Tick! " + Global.Client.ConnectionState, LogSeverity.Debug);
             await Global.Client.SetGameAsync(Config.BotConfig.Playing);
             await Global.Client.SetStatusAsync(Config.BotConfig.Status);
             foreach (GuildConfig c in GuildsData.GetConfigs())

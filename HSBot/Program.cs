@@ -52,7 +52,7 @@ namespace HSBot
                 .BuildServiceProvider();
             Global.Client = _client;
             var commandhandler = new CommandHandler();
-            await Utilities.Log(MethodBase.GetCurrentMethod(), "Objects created.", LogSeverity.Verbose);
+            await Utilities.Log(MethodBase.GetCurrentMethod(), "Static or singleton objects initialized.", LogSeverity.Verbose);
 
             await commandhandler.InitializeAsync(_client);
 
@@ -61,9 +61,11 @@ namespace HSBot
             _commands.Log += ClientHandler.Log;
             _client.Ready += CoreLoop.StartTimer;
 
+            await Utilities.Log(MethodBase.GetCurrentMethod(), "Event handlers formed. Now logging in...", LogSeverity.Verbose);
 
             await _client.LoginAsync(TokenType.Bot, Config.BotConfig.Token);
             await _client.StartAsync();
+            await Utilities.Log(MethodBase.GetCurrentMethod(), "Program running!");
             await Task.Delay(-1);
         }
 

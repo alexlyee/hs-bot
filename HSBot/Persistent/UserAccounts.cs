@@ -5,6 +5,9 @@ using System.Linq;
 
 namespace HSBot.Persistent
 {
+    /// <summary>
+    /// Methods for each UserAccount.
+    /// </summary>
     public static class UserAccounts
     {
         private static List<UserAccount> _accounts;

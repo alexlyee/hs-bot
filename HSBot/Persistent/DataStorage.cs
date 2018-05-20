@@ -8,7 +8,10 @@ using HSBot.Helpers;
 
 namespace HSBot.Persistent
 {
-    public class DataStorage
+    /// <summary>
+    /// Hard Disk Persistence.
+    /// </summary>
+    public static class DataStorage
     {
         private const string ResourcesFolder = "Resources";
 
