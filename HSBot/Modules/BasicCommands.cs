@@ -49,7 +49,7 @@ namespace HSBot.Modules
             embed.WithTitle("Got it!")
                 .WithDescription(id)
                 .WithColor(new Color(60, 176, 222))
-                .WithFooter(" -Alex", "https://i.imgur.com/HAI5vMj.png");
+                .WithFooter(" -Alex https://discord.gg/emFQ6s4", "https://i.imgur.com/HAI5vMj.png");
             await Context.Channel.SendMessageAsync("", embed: embed);
         }
 
@@ -117,10 +117,6 @@ namespace HSBot.Modules
             string phone = dataObject.results[0].phone.ToString();
             string cell = dataObject.results[0].cell.ToString();
 
-            EmbedFooterBuilder embedfoot = new EmbedFooterBuilder();
-
-            embedfoot.WithText(dataObject.results[0].email.ToString());
-
             embed.WithThumbnailUrl(portrait)
                 .WithTitle("Random person: ")
                 .AddInlineField("Name", name)
@@ -128,9 +124,8 @@ namespace HSBot.Modules
                 .AddInlineField("Location", location)
                 .WithAuthor(Context.User)
                 .AddInlineField("Login", $"Username : {dataObject.results[0].login.username.ToString()} \nPassword : {dataObject.results[0].login.password.ToString()}")
-                .WithFooter(embedfoot)
-                .AddInlineField("Phone", $"Home {phone}\nCell {cell}");
-
+                .AddInlineField("Phone", $"Home {phone}\nCell {cell}")
+                .WithFooter(dataObject.results[0].email.ToString() + " -Alex https://discord.gg/emFQ6s4", "https://i.imgur.com/HAI5vMj.png");
 
             await Context.Channel.SendMessageAsync("", embed: embed);
         }
@@ -153,7 +148,8 @@ namespace HSBot.Modules
         public async Task Ping()
         {
             EmbedBuilder builder = new EmbedBuilder();
-            builder.WithTitle($":ping_pong:  Pong!");
+            builder.WithTitle($":ping_pong:  Pong!")
+                .WithFooter(" -Alex https://discord.gg/emFQ6s4", "https://i.imgur.com/HAI5vMj.png");
             await ReplyAsync("", false, builder.Build());
         }
 
@@ -164,7 +160,8 @@ namespace HSBot.Modules
             string r = Utilities.GetFormattedAlert("WELCOME_&NAME", Context.User.Username);
             embed.WithTitle("Echoed message")
                 .WithDescription(r)
-                .WithColor(new Color(60, 176, 222));
+                .WithColor(new Color(60, 176, 222))
+                .WithFooter(" -Alex https://discord.gg/emFQ6s4", "https://i.imgur.com/HAI5vMj.png");
 
 
             await Context.Channel.SendMessageAsync("", false, embed);

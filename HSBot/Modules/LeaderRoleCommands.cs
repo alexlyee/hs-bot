@@ -36,7 +36,7 @@ namespace HSBot.Modules
                         + $" {RoleFromID(user, guildconfig.GroupManagerRoleID).Name} "
                         + $" {RoleFromID(user, guildconfig.VoiceManagerRoleID).Name} ")
                         .WithColor(new Color(60, 176, 222))
-                        .WithFooter(" -Alex", "https://i.imgur.com/HAI5vMj.png");
+                        .WithFooter(" -Alex https://discord.gg/emFQ6s4", "https://i.imgur.com/HAI5vMj.png");
                     await Context.Channel.SendMessageAsync("", false, embed);
                     return;
                 }
@@ -46,7 +46,7 @@ namespace HSBot.Modules
                     embed.WithTitle("You don't have permissions to use this!")
                         .WithDescription("Contact server owner, RoleIDs are not properly setup.")
                         .WithColor(new Color(60, 176, 222))
-                        .WithFooter(" -Alex", "https://i.imgur.com/HAI5vMj.png");
+                        .WithFooter(" -Alex https://discord.gg/emFQ6s4", "https://i.imgur.com/HAI5vMj.png");
                     await Context.Channel.SendMessageAsync("", false, embed);
                     return;
                 }
