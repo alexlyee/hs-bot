@@ -30,10 +30,6 @@ namespace HSBot.Entities
         public ulong GroupManagerRoleID { get; set; }
         public ulong VoiceManagerRoleID { get; set; }
 
-        public double TimeCreated { get; set; }
-        /// <summary>
-        /// The times this configuration has been written.
-        /// </summary>
-        public List<double> TimesWritten { get; set; }
+        public string TimeCreated { get; set; }
     }
 }

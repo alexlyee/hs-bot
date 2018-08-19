@@ -30,6 +30,52 @@ namespace HSBot.Modules
 
         }
 
+        [Command("getroleid")]
+        public async Task getroleid([Remainder]string message)
+        {
+            string id = "";
+            var embed = new EmbedBuilder();
+            try
+            {
+                id = RoleFromName((SocketGuildUser)Context.User, message).Id.ToString();
+            }
+            catch
+            {
+                embed.WithTitle("Couldn't find " + message + ", try to be exact!")
+                    .WithColor(new Color(255, 0, 0));
+                await Context.Channel.SendMessageAsync("", embed: embed);
+                return;
+            }
+            embed.WithTitle("Got it!")
+                .WithDescription(id)
+                .WithColor(new Color(60, 176, 222))
+                .WithFooter(" -Alex", "https://i.imgur.com/HAI5vMj.png");
+            await Context.Channel.SendMessageAsync("", embed: embed);
+        }
+
+        [Command("getroleids")]
+        public async Task getroleids()
+        {
+            var embed = new EmbedBuilder();
+            int count = 0;
+            embed.WithTitle("Captured Roles in " + Context.Guild.Name)
+                .WithColor(new Color(60, 176, 222));
+            foreach (SocketRole role in Context.Guild.Roles)
+            {
+                embed.AddField(role.Name, role.Id.ToString());
+                if (IsDivisible(count, 24))
+                {
+                    await Context.Channel.SendMessageAsync("", embed: embed);
+                    embed = new EmbedBuilder();
+                    embed.WithTitle("Captured Roles in " + Context.Guild.Name)
+                        .WithColor(new Color(60, 176, 222));
+                }
+                count++;
+            }
+            embed.WithFooter(count + " roles in this server.", "https://i.imgur.com/HAI5vMj.png");
+            await Context.Channel.SendMessageAsync("", embed: embed);
+        }
+
         [Command("hello")]
         public async Task Hello()
         {
@@ -118,11 +164,24 @@ namespace HSBot.Modules
             string r = Utilities.GetFormattedAlert("WELCOME_&NAME", Context.User.Username);
             embed.WithTitle("Echoed message")
                 .WithDescription(r)
-                .WithColor(new Color(0, 255, 0));
+                .WithColor(new Color(60, 176, 222));
 
 
             await Context.Channel.SendMessageAsync("", false, embed);
         }
 
+        private bool IsDivisible(int x, int n)
+        {
+            return (x % n) == 0;
+        }
+
+        private SocketRole RoleFromName(SocketGuildUser user, string targetRoleName)
+        {
+            var result = from r in user.Guild.Roles
+                         where r.Name == targetRoleName
+                         select r;
+
+            return result.FirstOrDefault();
+        }
     }
 }

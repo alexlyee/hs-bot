@@ -32,7 +32,7 @@ namespace HSBot.Persistent
             {
                 Directory.CreateDirectory(ResourcesFolder);
             }
-            Utilities.Log(MethodBase.GetCurrentMethod(), $"Resources folder found in {Directory.GetCurrentDirectory()}\\{ResourcesFolder}");
+            Utilities.Log("DataStorage()", $"Resources folder found in {Directory.GetCurrentDirectory()}\\{ResourcesFolder}");
         }
 
         public static void SaveEnumeratedObject<T>(IEnumerable<T> objects, string file, Formatting formatting)

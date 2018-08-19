@@ -10,7 +10,7 @@ namespace HSBot.Persistent
     /// <summary>
     /// Referencepoint for Guild accounts.
     /// </summary>
-    internal static class GuildsData
+    public static class GuildsData
     {
         private static List<GuildConfig> _guilds;
         private static GuildsDataStruct _guildGlobalSettings;
@@ -105,7 +105,8 @@ namespace HSBot.Persistent
             var guildconfig = new GuildConfig()
             {
                 Prefix = "!",
-                Id = guild.Id
+                Id = guild.Id,
+                TimeCreated = DateTime.Now.ToString()
             };
             _guilds.Add(guildconfig);
             DataStorage.StoreObject(guildconfig, $"{GuildsFolder}/{guildconfig.Id}.json", _guildGlobalSettings.UseNiceFormatting);
@@ -138,7 +139,7 @@ namespace HSBot.Persistent
             return result;
         }
 
-        internal static GuildConfig FindOrCreateGuildConfig(Discord.WebSocket.SocketGuild guild)
+        public static GuildConfig FindOrCreateGuildConfig(Discord.WebSocket.SocketGuild guild)
         {
             GuildConfig GuildConfig = _guilds.Find(g => g.Id == guild.Id);
             if (GuildConfig.Equals(null))
@@ -149,7 +150,11 @@ namespace HSBot.Persistent
             Utilities.Log("FindOrCreateGuildConfig", $"Guild found with id {guild.Id}", Discord.LogSeverity.Debug);
             return GuildConfig;
         }
-
+        
+        /// <summary>
+        /// Not failsafe. Perferably use FindOrCreateGuildConfig
+        /// </summary>
+        /// <returns>Guild Config</returns>
         internal static GuildConfig FindGuildConfig(ulong id)
         {
             GuildConfig guild = GuildsData._guilds.Find(g => g.Id == id);

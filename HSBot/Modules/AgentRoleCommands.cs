@@ -15,11 +15,6 @@ namespace HSBot.Modules
 {
     public sealed class AgentRoleCommands : ModuleBase<SocketCommandContext>
     {
-        private enum RoleIDs : ulong
-        {
-            Administrators = 416439617466793994,
-            Moderators = 416439633442897921
-        };
 
 
 

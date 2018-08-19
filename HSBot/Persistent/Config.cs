@@ -15,7 +15,7 @@ namespace HSBot.Persistent
     /// <summary>
     /// Bot configuration referencepoint.
     /// </summary>
-    internal static class Config
+    public static class Config
     {
         internal static BotConfig BotConfig;
 
