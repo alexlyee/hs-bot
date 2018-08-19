@@ -71,7 +71,6 @@ namespace HSBot
 
         protected static void Shutdown(string Caller, string Reason, Exception ex = null)
         {
-            
             System.Environment.Exit(0);
         }
     }

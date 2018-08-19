@@ -11,43 +11,25 @@ namespace HSBot.Entities
         public ulong Popularity { get; set; }
         public ulong ActivityChannelID { get; set; }
 
-        public enum ManagmentIDs : ulong
-        {
-            Directors,
-            Managers,
-            Contrivers
-        };
         public List<ulong> TokenIDs { get; set; }
-        public enum AgentIDs : ulong
-        {
-            Judges,
-            Administrators,
-            Moderators
-        };
-        public enum StatusIDs : ulong
-        {
-            Graduated,
-            Students,
-            Visitors
-        };
-        public enum LabelIds : ulong
-        {
-            RoleManager,
-            HostingManager,
-            ChannelManager,
-            CodeManager,
-            WebhookManager,
-            EmojiManager,
-            NicknameManager,
-            GroupManager,
-            EmissaryManager,
-            BotManager,
-            VoiceManager,
-            EventManager,
-            ShowcaseManager,
-            SchemeCoordinator,
-            AgentEmployer
-        };
+
+        public ulong DirectorRoleID { get; set; }
+        public ulong ManagerRoleID { get; set; }
+        public ulong ContriverRoleID { get; set; }
+
+        public ulong JudgeRoleID { get; set; }
+        public ulong AdministratorRoleID { get; set; }
+        public ulong ModeratorRoleID { get; set; }
+
+        public ulong GraduatedRoleID { get; set; }
+        public ulong StudentRoleID { get; set; }
+        public ulong VisitorRoleID { get; set; }
+
+        public ulong ChannelManagerRoleID { get; set; }
+        public ulong WebhookManagerRoleID { get; set; }
+        public ulong GroupManagerRoleID { get; set; }
+        public ulong VoiceManagerRoleID { get; set; }
+
         public double TimeCreated { get; set; }
         /// <summary>
         /// The times this configuration has been written.

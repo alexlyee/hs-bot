@@ -3,6 +3,7 @@ using HSBot.Entities;
 using HSBot.Helpers;
 using System;
 using System.Collections.Generic;
+using System.Reflection;
 
 namespace HSBot.Persistent
 {
@@ -36,9 +37,7 @@ namespace HSBot.Persistent
             }
             if (!(DataStorage.LocalFolderExists(GuildsFolder, true))) Utilities.Log("GuildData", GuildsFolder + " folder created.");
             Utilities.Log("GuildsData", "Writing Guilds...", Discord.LogSeverity.Verbose);
-            WriteGuilds();
-            Utilities.Log("GuildsData", "Reastoring Guilds...", Discord.LogSeverity.Verbose);
-            RestoreGuilds();
+            SyncGuilds();
         }
 
         internal static GuildConfig[] GetConfigs()
@@ -47,41 +46,47 @@ namespace HSBot.Persistent
             return _guilds.ToArray();
         }
 
-        private static void WriteGuilds()
+        private static void SyncGuilds()
         {
             try
             {
+                int guildcount = 0;
                 foreach (Discord.WebSocket.SocketGuild guild in Global.Client.Guilds)
                 {
                     if (!(DataStorage.LocalFileExists(GuildsFolder + "/" + guild.Id + ".json")))
                     {
                         InitializeGuild(guild);
-                        Utilities.Log("GuildData.WriteGuilds", "Guild" + guild.Name + " saved.", Discord.LogSeverity.Verbose);
+                        Utilities.Log("GuildData.SyncGuilds", "Guild" + guild.Name + " saved.", Discord.LogSeverity.Verbose);
+                        guildcount++;
                     }
                 }
-                Utilities.Log("GuildData.WriteGuilds", Global.Client.Guilds.Count + " Guild(s) saved.");
+                Utilities.Log("GuildData.SyncGuilds", guildcount + "/" + Global.Client.Guilds.Count + " Guild(s) Initialized.");
             }
             catch (Exception ex)
             {
-                Utilities.Log("GuildData.WriteGuilds", "Error in initializing guilds.", ex);
+                Utilities.Log("GuildData.SyncGuilds", "Error in initializing guilds.", ex);
             }
+            Utilities.Log("GuildsData.SyncGuils", "Reastoring Guilds...", Discord.LogSeverity.Verbose);
+            ReinitializeGuilds();
         }
 
-        private static void RestoreGuilds()
+        private static void ReinitializeGuilds()
         {
             string[] files = DataStorage.GetFilesInFolder(GuildsFolder);
             try
             {
+                int guildcount = 0;
                 foreach (string file in files)
                 {
                     LoadGuild(file);
-                    Utilities.Log("GuildData.RestoreGuilds", file + " Loaded.", Discord.LogSeverity.Verbose);
+                    Utilities.Log("GuildData.ReinitializeGuilds", file + " Loaded.", Discord.LogSeverity.Verbose);
+                    guildcount++;
                 }
-                Utilities.Log("GuildData.RestoreGuilds", Global.Client.Guilds.Count + " Guild(s) restored.");
+                Utilities.Log("GuildData.ReinitializeGuilds", guildcount + "/" + Global.Client.Guilds.Count + " Guild(s) reinitialized.");
             }
             catch (Exception ex)
             {
-                Utilities.Log("GuildData.RestoreGuilds", "Error loading guilds.", ex);
+                Utilities.Log("GuildData.ReinitializeGuilds", "Error loading guilds.", ex);
             }
         }
 

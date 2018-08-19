@@ -5968,23 +5968,23 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\alexo\\.nuget\\packages\\": {},
+    "C:\\Users\\Alex\\.nuget\\packages\\": {},
     "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\alexo\\Documents\\Projects\\School Discord Bot\\HSBot\\HSBot\\HSBot.csproj",
+      "projectUniqueName": "C:\\Users\\Alex\\Source\\Repos\\hs-bot\\HSBot\\HSBot.csproj",
       "projectName": "HSBot",
-      "projectPath": "C:\\Users\\alexo\\Documents\\Projects\\School Discord Bot\\HSBot\\HSBot\\HSBot.csproj",
-      "packagesPath": "C:\\Users\\alexo\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\alexo\\Documents\\Projects\\School Discord Bot\\HSBot\\HSBot\\obj\\",
+      "projectPath": "C:\\Users\\Alex\\Source\\Repos\\hs-bot\\HSBot\\HSBot.csproj",
+      "packagesPath": "C:\\Users\\Alex\\.nuget\\packages\\",
+      "outputPath": "C:\\Users\\Alex\\Source\\Repos\\hs-bot\\HSBot\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
       ],
       "configFilePaths": [
-        "C:\\Users\\alexo\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Users\\Alex\\AppData\\Roaming\\NuGet\\NuGet.Config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],
       "originalTargetFrameworks": [

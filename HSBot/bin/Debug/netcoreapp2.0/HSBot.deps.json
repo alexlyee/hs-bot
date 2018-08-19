@@ -32,7 +32,10 @@
           "Microsoft.Extensions.DependencyInjection": "1.1.1"
         },
         "runtime": {
-          "lib/netstandard1.1/Discord.Net.Commands.dll": {}
+          "lib/netstandard1.1/Discord.Net.Commands.dll": {
+            "assemblyVersion": "1.0.2.0",
+            "fileVersion": "1.0.2.0"
+          }
         }
       },
       "Discord.Net.Core/1.0.2": {
@@ -42,7 +45,10 @@
           "System.Interactive.Async": "3.1.1"
         },
         "runtime": {
-          "lib/netstandard1.3/Discord.Net.Core.dll": {}
+          "lib/netstandard1.3/Discord.Net.Core.dll": {
+            "assemblyVersion": "1.0.2.0",
+            "fileVersion": "1.0.2.0"
+          }
         }
       },
       "Discord.Net.Rest/1.0.2": {
@@ -51,7 +57,10 @@
           "System.Net.Http": "4.3.2"
         },
         "runtime": {
-          "lib/netstandard1.3/Discord.Net.Rest.dll": {}
+          "lib/netstandard1.3/Discord.Net.Rest.dll": {
+            "assemblyVersion": "1.0.2.0",
+            "fileVersion": "1.0.2.0"
+          }
         }
       },
       "Discord.Net.Rpc/1.0.2": {
@@ -61,7 +70,10 @@
           "System.Net.WebSockets.Client": "4.3.1"
         },
         "runtime": {
-          "lib/netstandard1.3/Discord.Net.Rpc.dll": {}
+          "lib/netstandard1.3/Discord.Net.Rpc.dll": {
+            "assemblyVersion": "1.0.2.0",
+            "fileVersion": "1.0.2.0"
+          }
         }
       },
       "Discord.Net.Webhook/1.0.2": {
@@ -70,7 +82,10 @@
           "Discord.Net.Rest": "1.0.2"
         },
         "runtime": {
-          "lib/netstandard1.1/Discord.Net.Webhook.dll": {}
+          "lib/netstandard1.1/Discord.Net.Webhook.dll": {
+            "assemblyVersion": "1.0.2.0",
+            "fileVersion": "1.0.2.0"
+          }
         }
       },
       "Discord.Net.WebSocket/1.0.2": {
@@ -80,12 +95,18 @@
           "System.Net.WebSockets.Client": "4.3.1"
         },
         "runtime": {
-          "lib/netstandard1.3/Discord.Net.WebSocket.dll": {}
+          "lib/netstandard1.3/Discord.Net.WebSocket.dll": {
+            "assemblyVersion": "1.0.2.0",
+            "fileVersion": "1.0.2.0"
+          }
         }
       },
       "HtmlToPdfOrImage/1.0.2": {
         "runtime": {
-          "lib/HtmlToPdfOrImage.dll": {}
+          "lib/HtmlToPdfOrImage.dll": {
+            "assemblyVersion": "1.0.0.0",
+            "fileVersion": "1.0.0.0"
+          }
         }
       },
       "Microsoft.CSharp/4.3.0": {
@@ -113,7 +134,10 @@
           "Microsoft.Extensions.DependencyInjection.Abstractions": "1.1.1"
         },
         "runtime": {
-          "lib/netstandard1.1/Microsoft.Extensions.DependencyInjection.dll": {}
+          "lib/netstandard1.1/Microsoft.Extensions.DependencyInjection.dll": {
+            "assemblyVersion": "1.1.1.0",
+            "fileVersion": "1.1.1.30427"
+          }
         }
       },
       "Microsoft.Extensions.DependencyInjection.Abstractions/1.1.1": {
@@ -121,7 +145,10 @@
           "System.ComponentModel": "4.3.0"
         },
         "runtime": {
-          "lib/netstandard1.0/Microsoft.Extensions.DependencyInjection.Abstractions.dll": {}
+          "lib/netstandard1.0/Microsoft.Extensions.DependencyInjection.Abstractions.dll": {
+            "assemblyVersion": "1.1.1.0",
+            "fileVersion": "1.1.1.30427"
+          }
         }
       },
       "Microsoft.NETCore.Targets/1.1.0": {},
@@ -140,12 +167,18 @@
           "System.Xml.XmlDocument": "4.3.0"
         },
         "runtime": {
-          "lib/netstandard1.3/Newtonsoft.Json.dll": {}
+          "lib/netstandard1.3/Newtonsoft.Json.dll": {
+            "assemblyVersion": "10.0.0.0",
+            "fileVersion": "10.0.2.20802"
+          }
         }
       },
       "NReco/2.0.3": {
         "runtime": {
-          "lib/net40/NReco.dll": {}
+          "lib/net40/NReco.dll": {
+            "assemblyVersion": "2.0.3.0",
+            "fileVersion": "2.0.3.0"
+          }
         }
       },
       "runtime.debian.8-x64.runtime.native.System.Security.Cryptography.OpenSsl/4.3.0": {
@@ -427,7 +460,10 @@
       },
       "System.Interactive.Async/3.1.1": {
         "runtime": {
-          "lib/netstandard1.3/System.Interactive.Async.dll": {}
+          "lib/netstandard1.3/System.Interactive.Async.dll": {
+            "assemblyVersion": "3.0.3000.0",
+            "fileVersion": "3.1.1.0"
+          }
         }
       },
       "System.IO/4.3.0": {

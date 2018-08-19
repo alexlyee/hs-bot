@@ -13,6 +13,7 @@ namespace HSBot.Handlers
     {
         private DiscordSocketClient _client;
         private CommandService _service;
+        private SocketCommandContext context;
 
         public async Task InitializeAsync(DiscordSocketClient client)
         {
@@ -59,7 +60,7 @@ namespace HSBot.Handlers
         public async Task HandleCommandAsync(SocketMessage s)
         {
             if (!(s is SocketUserMessage msg)) return;
-            var context = new SocketCommandContext(_client, msg);
+            context = new SocketCommandContext(_client, msg);
             int argPos = 0;
             if (msg.HasStringPrefix(GuildsData.FindOrCreateGuildConfig(context.Guild).Prefix, ref argPos)
                 || msg.HasMentionPrefix(_client.CurrentUser, ref argPos))
@@ -78,6 +79,7 @@ namespace HSBot.Handlers
                     await context.Channel.SendMessageAsync("", false, embed);
                 }
                 */
+
                 var result = await _service.ExecuteAsync(context, argPos);
                 if(!result.IsSuccess && result.Error != CommandError.UnknownCommand)
                 {

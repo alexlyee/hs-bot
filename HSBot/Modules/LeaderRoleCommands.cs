@@ -4,6 +4,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Discord;
 using Discord.Commands;
+using Discord.Commands.Builders;
 using Discord.Rest;
 using Discord.WebSocket;
 using System.Linq;
@@ -23,6 +24,13 @@ namespace HSBot.Modules
         };
 
 
+        [Command("group")]
+        public async Task Group([Remainder]string message)
+        {
+            var Group = await Context.Guild.CreateTextChannelAsync("a");
+            await Group.TriggerTypingAsync();
+            //RestGuildChannel.PermissionOverwrites
+        }
 
         private bool UserHasRole(SocketGuildUser user, ulong roleId)
         {

@@ -9,3 +9,14 @@ C:\Users\alexo\Documents\Projects\School Discord Bot\HSBot\HSBot\bin\Debug\netco
 C:\Users\alexo\Documents\Projects\School Discord Bot\HSBot\HSBot\obj\Debug\netcoreapp2.0\HSBot.dll
 C:\Users\alexo\Documents\Projects\School Discord Bot\HSBot\HSBot\obj\Debug\netcoreapp2.0\HSBot.pdb
 C:\Users\alexo\Documents\Projects\School Discord Bot\HSBot\HSBot\obj\Debug\netcoreapp2.0\HSBot.csprojAssemblyReference.cache
+C:\Users\Alex\Source\Repos\hs-bot\HSBot\bin\Debug\netcoreapp2.0\HSBot.deps.json
+C:\Users\Alex\Source\Repos\hs-bot\HSBot\bin\Debug\netcoreapp2.0\HSBot.runtimeconfig.json
+C:\Users\Alex\Source\Repos\hs-bot\HSBot\bin\Debug\netcoreapp2.0\HSBot.runtimeconfig.dev.json
+C:\Users\Alex\Source\Repos\hs-bot\HSBot\bin\Debug\netcoreapp2.0\HSBot.dll
+C:\Users\Alex\Source\Repos\hs-bot\HSBot\bin\Debug\netcoreapp2.0\HSBot.pdb
+C:\Users\Alex\Source\Repos\hs-bot\HSBot\obj\Debug\netcoreapp2.0\HSBot.csprojAssemblyReference.cache
+C:\Users\Alex\Source\Repos\hs-bot\HSBot\obj\Debug\netcoreapp2.0\HSBot.csproj.CoreCompileInputs.cache
+C:\Users\Alex\Source\Repos\hs-bot\HSBot\obj\Debug\netcoreapp2.0\HSBot.AssemblyInfoInputs.cache
+C:\Users\Alex\Source\Repos\hs-bot\HSBot\obj\Debug\netcoreapp2.0\HSBot.AssemblyInfo.cs
+C:\Users\Alex\Source\Repos\hs-bot\HSBot\obj\Debug\netcoreapp2.0\HSBot.dll
+C:\Users\Alex\Source\Repos\hs-bot\HSBot\obj\Debug\netcoreapp2.0\HSBot.pdb

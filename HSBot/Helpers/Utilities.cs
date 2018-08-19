@@ -27,7 +27,7 @@ namespace HSBot.Helpers
             Verbose,
             Normal
         };
-        public static LogMode GlobalLogMode = LogMode.Normal;
+        public static LogMode GlobalLogMode = LogMode.Debug;
 
         static Utilities()
         {
@@ -213,6 +213,7 @@ namespace HSBot.Helpers
                 if (length == 0) length = 1;
                 if (strEnd == "") length = strSource.Length - start;
                 if (strStart == "") length = end;
+                if (length < 0) length = 0;
                 return strSource.Substring(start, length);
             }
             else

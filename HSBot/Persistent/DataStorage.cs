@@ -1,10 +1,12 @@
 ﻿using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
 using Discord;
 using HSBot.Helpers;
+using System.Globalization;
 
 namespace HSBot.Persistent
 {
@@ -14,6 +16,15 @@ namespace HSBot.Persistent
     public static class DataStorage
     {
         private const string ResourcesFolder = "Resources";
+        public static readonly JsonSerializerSettings SerializerSettings = new JsonSerializerSettings
+        {
+            MetadataPropertyHandling = MetadataPropertyHandling.Ignore,
+            DateParseHandling = DateParseHandling.None,
+            Converters = {
+                new IsoDateTimeConverter { DateTimeStyles = DateTimeStyles.AssumeUniversal },
+                new StringEnumConverter { AllowIntegerValues = true }
+            },
+        };
 
         static DataStorage()
         {
@@ -21,12 +32,19 @@ namespace HSBot.Persistent
             {
                 Directory.CreateDirectory(ResourcesFolder);
             }
+            Utilities.Log(MethodBase.GetCurrentMethod(), $"Resources folder found in {Directory.GetCurrentDirectory()}\\{ResourcesFolder}");
         }
 
         public static void SaveEnumeratedObject<T>(IEnumerable<T> objects, string file, Formatting formatting)
         {
-            string json = JsonConvert.SerializeObject(objects, formatting);
-            File.WriteAllText(file, json);
+            string filePath = String.Concat(Directory.GetCurrentDirectory(), "/", ResourcesFolder, "/", file);
+            SerializerSettings.Formatting = formatting;
+            JsonSerializer serializer = JsonSerializer.Create(SerializerSettings);
+            using (StreamWriter sw = new StreamWriter(filePath))
+            using (JsonWriter writer = new JsonTextWriter(sw))
+            {
+                serializer.Serialize(writer, objects);
+            }
         }
 
         public static void SaveEnumeratedObject<T>(IEnumerable<T> objects, string file, bool useIndentations)
@@ -39,10 +57,16 @@ namespace HSBot.Persistent
         {
             try
             {
-                string json = JsonConvert.SerializeObject(obj, formatting);
-                string filePath = String.Concat(ResourcesFolder, "/", file);
-                File.WriteAllText(filePath, json);
+                string filePath = String.Concat(Directory.GetCurrentDirectory(), "/", ResourcesFolder, "/", file);
+                SerializerSettings.Formatting = formatting;
+                JsonSerializer serializer = JsonSerializer.Create(SerializerSettings);
+                using (StreamWriter sw = new StreamWriter(filePath))
+                using (JsonWriter writer = new JsonTextWriter(sw))
+                {
+                    serializer.Serialize(writer, obj);
+                }
                 var fileStream = File.OpenRead(filePath);
+                Utilities.Log("DataStorage.StoreObject", $"{file} stored.", LogSeverity.Debug);
                 return fileStream;
             }
             catch (Exception ex)
