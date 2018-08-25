@@ -14,11 +14,14 @@ using System.Web;
 using HSBot.Entities;
 using HSBot.Helpers;
 using System.Reflection;
+using System.Web;
+using System.Net.Http;
 
 namespace HSBot.Modules
 {
     public sealed class LeaderRoleCommands : ModuleBase<SocketCommandContext>
     {
+        [RequireContext(ContextType.Guild)]
         [Command("group")]
         public async Task Group([Remainder]string message)
         {
@@ -31,12 +34,12 @@ namespace HSBot.Modules
                     var embed = new EmbedBuilder();
                     embed.WithTitle("You don't have permissions to use this!")
                         .WithDescription($"Contact a member with one of these roles: "
-                        + $" {RoleFromID(user, guildconfig.ChannelManagerRoleID).Name} "
-                        + $" {RoleFromID(user, guildconfig.DirectorRoleID).Name} "
-                        + $" {RoleFromID(user, guildconfig.GroupManagerRoleID).Name} "
-                        + $" {RoleFromID(user, guildconfig.VoiceManagerRoleID).Name} ")
+                        + $"\n - **{RoleFromID(user, guildconfig.ChannelManagerRoleID).Name}** "
+                        + $"\n - **{RoleFromID(user, guildconfig.DirectorRoleID).Name}** "
+                        + $"\n - **{RoleFromID(user, guildconfig.GroupManagerRoleID).Name}** "
+                        + $"\n - **{RoleFromID(user, guildconfig.VoiceManagerRoleID).Name}** ")
                         .WithColor(new Color(60, 176, 222))
-                        .WithFooter(" -Alex https://discord.gg/emFQ6s4", "https://i.imgur.com/HAI5vMj.png");
+                        .WithFooter(" -Alex https://discord.gg/DVSjvGa", "https://i.imgur.com/HAI5vMj.png");
                     await Context.Channel.SendMessageAsync("", false, embed);
                     return;
                 }
@@ -46,20 +49,75 @@ namespace HSBot.Modules
                     embed.WithTitle("You don't have permissions to use this!")
                         .WithDescription("Contact server owner, RoleIDs are not properly setup.")
                         .WithColor(new Color(60, 176, 222))
-                        .WithFooter(" -Alex https://discord.gg/emFQ6s4", "https://i.imgur.com/HAI5vMj.png");
+                        .WithFooter(" -Alex https://discord.gg/DVSjvGa", "https://i.imgur.com/HAI5vMj.png");
                     await Context.Channel.SendMessageAsync("", false, embed);
                     return;
                 }
             }
             
-            var Group = await Context.Guild.CreateTextChannelAsync("a");
-            await Group.TriggerTypingAsync();
-            //RestGuildChannel.PermissionOverwrites
+            var firstWord = message.IndexOf(" ") > -1
+                  ? message.Substring(0, message.IndexOf(" "))
+                  : message;
+
+            switch (firstWord)
+            {
+                case "Overseen":
+                case "Inherent":
+                case "Idiomatic":
+                case "Functional":
+                case "Class":
+                    if (firstWord == message)
+                    {
+                        var Embed = new EmbedBuilder();
+                        Embed.WithTitle("Syntax problem")
+                            .WithDescription("It seems no perameters were provided, check how to use the specified group type! :smiley:")
+                            .WithColor(new Color(60, 176, 222))
+                            .WithFooter(" -Alex https://discord.gg/DVSjvGa", "https://i.imgur.com/HAI5vMj.png");
+                        await Context.Channel.SendMessageAsync("", false, Embed);
+                        return;
+                    }
+                    string scan = message.Substring(message.IndexOf(" "));
+                    string[] arguments = ParseArguments(scan);
+                    MethodInfo Command = this.GetType().GetMethod($"Group_{firstWord}");
+                    Command.Invoke(this, new object[] { Context, arguments });
+                    break;
+                default:
+                    var embed = new EmbedBuilder();
+                    embed.WithTitle("Syntax problem")
+                        .WithDescription("No group type found! Check the syntax for this command! :smiley:")
+                        .WithColor(new Color(60, 176, 222))
+                        .WithFooter(" -Alex https://discord.gg/DVSjvGa", "https://i.imgur.com/HAI5vMj.png");
+                    await Context.Channel.SendMessageAsync("", false, embed);
+                    return;
+            }
         }
-        
+
+        protected async Task Group_Class(SocketCommandContext context, params string[] list)
+        {
+
+            await Context.Channel.SendMessageAsync($"{string.Join(" + ", list.Skip(1))}");
+            //var Group = await Context.Guild.CreateTextChannelAsync(string.Join(" ", list.Skip(1)));
+            //await Group.TriggerTypingAsync();
+        }
 
 
 
+
+
+
+        static string[] ParseArguments(string commandLine)
+        {
+            char[] parmChars = commandLine.ToCharArray();
+            bool inQuote = false;
+            for (int index = 0; index < parmChars.Length; index++)
+            {
+                if (parmChars[index] == '"')
+                    inQuote = !inQuote;
+                if (!inQuote && parmChars[index] == ' ')
+                    parmChars[index] = '\n';
+            }
+            return (new string(parmChars)).Split('\n');
+        }
 
         private bool UserIsGroupLeader(SocketGuildUser user, GuildConfig guildconfig)
         {

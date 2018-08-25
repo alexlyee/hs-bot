@@ -28,7 +28,9 @@ namespace HSBot.Modules
         {
             // spend time here developing system to display all the commands properly and allow the user to specify depth and detail.
 
+     
         }
+
 
         [Command("getroleid")]
         public async Task getroleid([Remainder]string message)
@@ -46,10 +48,10 @@ namespace HSBot.Modules
                 await Context.Channel.SendMessageAsync("", embed: embed);
                 return;
             }
-            embed.WithTitle("Got it!")
+            embed.WithTitle("**Got it!**")
                 .WithDescription(id)
                 .WithColor(new Color(60, 176, 222))
-                .WithFooter(" -Alex https://discord.gg/emFQ6s4", "https://i.imgur.com/HAI5vMj.png");
+                .WithFooter(" -Alex https://discord.gg/DVSjvGa", "https://i.imgur.com/HAI5vMj.png");
             await Context.Channel.SendMessageAsync("", embed: embed);
         }
 
@@ -58,7 +60,7 @@ namespace HSBot.Modules
         {
             var embed = new EmbedBuilder();
             int count = 0;
-            embed.WithTitle("Captured Roles in " + Context.Guild.Name)
+            embed.WithTitle("**Captured Roles in " + Context.Guild.Name + "**")
                 .WithColor(new Color(60, 176, 222));
             foreach (SocketRole role in Context.Guild.Roles)
             {
@@ -125,7 +127,7 @@ namespace HSBot.Modules
                 .WithAuthor(Context.User)
                 .AddInlineField("Login", $"Username : {dataObject.results[0].login.username.ToString()} \nPassword : {dataObject.results[0].login.password.ToString()}")
                 .AddInlineField("Phone", $"Home {phone}\nCell {cell}")
-                .WithFooter(dataObject.results[0].email.ToString() + " -Alex https://discord.gg/emFQ6s4", "https://i.imgur.com/HAI5vMj.png");
+                .WithFooter(dataObject.results[0].email.ToString() + " -Alex https://discord.gg/DVSjvGa", "https://i.imgur.com/HAI5vMj.png");
 
             await Context.Channel.SendMessageAsync("", embed: embed);
         }
@@ -149,7 +151,7 @@ namespace HSBot.Modules
         {
             EmbedBuilder builder = new EmbedBuilder();
             builder.WithTitle($":ping_pong:  Pong!")
-                .WithFooter(" -Alex https://discord.gg/emFQ6s4", "https://i.imgur.com/HAI5vMj.png");
+                .WithFooter(" -Alex https://discord.gg/DVSjvGa", "https://i.imgur.com/HAI5vMj.png");
             await ReplyAsync("", false, builder.Build());
         }
 
@@ -161,7 +163,7 @@ namespace HSBot.Modules
             embed.WithTitle("Echoed message")
                 .WithDescription(r)
                 .WithColor(new Color(60, 176, 222))
-                .WithFooter(" -Alex https://discord.gg/emFQ6s4", "https://i.imgur.com/HAI5vMj.png");
+                .WithFooter(" -Alex https://discord.gg/DVSjvGa", "https://i.imgur.com/HAI5vMj.png");
 
 
             await Context.Channel.SendMessageAsync("", false, embed);
