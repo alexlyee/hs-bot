@@ -43,7 +43,7 @@ namespace HSBot.Modules
                     await Context.Channel.SendMessageAsync("", false, embed);
                     return;
                 }
-                catch
+                catch (Exception ex)
                 {
                     var embed = new EmbedBuilder();
                     embed.WithTitle("You don't have permissions to use this!")
@@ -51,10 +51,11 @@ namespace HSBot.Modules
                         .WithColor(new Color(60, 176, 222))
                         .WithFooter(" -Alex https://discord.gg/DVSjvGa", "https://i.imgur.com/HAI5vMj.png");
                     await Context.Channel.SendMessageAsync("", false, embed);
+                    Utilities.Log(MethodBase.GetCurrentMethod(), "Failure with RoleIDs", ex, LogSeverity.Warning);
                     return;
                 }
             }
-            
+
             var firstWord = message.IndexOf(" ") > -1
                   ? message.Substring(0, message.IndexOf(" "))
                   : message;
@@ -79,7 +80,14 @@ namespace HSBot.Modules
                     string scan = message.Substring(message.IndexOf(" "));
                     string[] arguments = ParseArguments(scan);
                     MethodInfo Command = this.GetType().GetMethod($"Group_{firstWord}");
-                    Command.Invoke(this, new object[] { Context, arguments });
+                    try
+                    {
+                        Command.Invoke(this, new object[] { Context, arguments });
+                    }
+                    catch (Exception ex)
+                    {
+                        Utilities.Log(MethodBase.GetCurrentMethod(), "Error invoking command.", ex, LogSeverity.Error);
+                    }
                     break;
                 default:
                     var embed = new EmbedBuilder();
@@ -92,10 +100,91 @@ namespace HSBot.Modules
             }
         }
 
-        protected async Task Group_Class(SocketCommandContext context, params string[] list)
-        {
 
-            await Context.Channel.SendMessageAsync($"{string.Join(" + ", list.Skip(1))}");
+        public async Task Group_Class(SocketCommandContext context, params string[] list)
+        {
+            EmbedBuilder embed = new EmbedBuilder();
+            string subjectfile = GuildsData.GuildsFolder + "/" + Context.Guild.Id + "/ClassSubjects";
+            if (!DataStorage.LocalFolderExists(subjectfile, true))
+                Utilities.Log(MethodBase.GetCurrentMethod(), "SubjectFile Created", LogSeverity.Verbose);
+            var ClassName = list[1].Replace("\"", "");
+
+            string subject, file;
+            embed = new EmbedBuilder();
+            switch (ClassName)
+            {
+                case "Subject.Add":
+                    subject = list[2].Replace("\"", "");
+                    file = $"{subjectfile}/Subjects.json";
+                    string[] subjects = DataStorage.LoadStringArray(file, true);
+                    int subjectscount = 1;
+                    if (subjects == null)
+                    {
+                        subjects = new string[1] { subject };
+                        DataStorage.StoreStringArray(subjects, file, true);
+                    }
+                    else
+                    {
+                        subjectscount = subjects.Length + 1;
+                        string[] newsubjects = new string[subjectscount];
+                        for (int i = 0; i < subjects.Length; i++) newsubjects[i] = subjects[i];
+                        newsubjects[subjects.Length] = subject;
+                        DataStorage.StoreStringArray(newsubjects, file, true);
+                    }
+                    embed = new EmbedBuilder();
+                    embed.WithTitle($"Subject with the name \"{subject}\" added to {Context.Guild.Name}.")
+                        .WithDescription($"View them all with Subject.Display! *We're now up to {subjectscount} subjects* :smiley:")
+                        .WithColor(new Color(60, 176, 222))
+                        .WithFooter(" -Alex https://discord.gg/DVSjvGa", "https://i.imgur.com/HAI5vMj.png");
+                    await Context.Channel.SendMessageAsync("", false, embed);
+                    return;
+                case "Subject.Remove":
+                    subject = list[2].Replace("\"", "");
+                    file = $"{subjectfile}/Subjects.json";
+
+                    return;
+                case "Subject.Display":
+                    file = $"{subjectfile}/Subjects.json";
+                    subjects = DataStorage.LoadStringArray(file, true);
+                    if (subjects == null)
+                    {
+                        embed = new EmbedBuilder();
+                        embed.WithTitle($"No subjects added to {Context.Guild.Name}.")
+                            .WithDescription("Go ahead and add one with Subject.Add! :smiley:")
+                            .WithColor(new Color(60, 176, 222))
+                            .WithFooter(" -Alex https://discord.gg/DVSjvGa", "https://i.imgur.com/HAI5vMj.png");
+                        await Context.Channel.SendMessageAsync("", false, embed);
+                        return;
+                    }
+                    else
+                    {
+                        embed = new EmbedBuilder();
+                        int count = 0;
+                        embed.WithTitle("**Subjects in " + Context.Guild.Name + "**")
+                            .WithColor(new Color(60, 176, 222));
+                        foreach (string s in subjects)
+                        {
+                            embed.AddField(s, "");
+                            if (IsDivisible(count, 24))
+                            {
+                                await Context.Channel.SendMessageAsync("", embed: embed);
+                                embed = new EmbedBuilder();
+                                embed.WithTitle("Some more subjects in " + Context.Guild.Name + "...")
+                                    .WithColor(new Color(60, 176, 222));
+                            }
+                            count++;
+                        }
+                        embed.WithFooter(count + " subjects in this school.", "https://i.imgur.com/HAI5vMj.png");
+                        await Context.Channel.SendMessageAsync("", embed: embed);
+                    }
+                    return;
+            }
+
+            var Teacher = list[2].Replace("\"", "");
+            var Subject = list[3].Replace("\"", "");
+            string[] Hours = list[4].Replace("\"", "").Split(",");
+            await Context.Channel.SendMessageAsync($"{ClassName} // {Teacher} {Hours.ToString()} [{Subject}]");
+            //DataStorage.StoreObject(selection, GuildsData.GuildsFolder + "/" + Context.Guild.Id + ".json", true);
             //var Group = await Context.Guild.CreateTextChannelAsync(string.Join(" ", list.Skip(1)));
             //await Group.TriggerTypingAsync();
         }
@@ -104,8 +193,33 @@ namespace HSBot.Modules
 
 
 
-
-        static string[] ParseArguments(string commandLine)
+        private bool IsDivisible(int x, int n)
+        {
+            return (x % n) == 0;
+        }
+        public static string[] SplitArguments(string commandLine)
+        {
+            var parmChars = commandLine.ToCharArray();
+            var inSingleQuote = false;
+            var inDoubleQuote = false;
+            for (var index = 0; index < parmChars.Length; index++)
+            {
+                if (parmChars[index] == '"' && !inSingleQuote)
+                {
+                    inDoubleQuote = !inDoubleQuote;
+                    parmChars[index] = '\n';
+                }  
+                if (parmChars[index] == '\'' && !inDoubleQuote)
+                {
+                    inSingleQuote = !inSingleQuote;
+                    parmChars[index] = '\n';
+                }
+                if (!inSingleQuote && !inDoubleQuote && parmChars[index] == ' ')
+                    parmChars[index] = '\n';
+            }
+            return (new string(parmChars)).Split(new[] { '\n' }, StringSplitOptions.RemoveEmptyEntries);
+        }
+        public static string[] ParseArguments(string commandLine)
         {
             char[] parmChars = commandLine.ToCharArray();
             bool inQuote = false;
@@ -118,7 +232,6 @@ namespace HSBot.Modules
             }
             return (new string(parmChars)).Split('\n');
         }
-
         private bool UserIsGroupLeader(SocketGuildUser user, GuildConfig guildconfig)
         {
             try
@@ -133,13 +246,14 @@ namespace HSBot.Modules
             {
                 Utilities.Log(MethodBase.GetCurrentMethod(), "Failure checking roles.", ex, LogSeverity.Warning);
             }
-            Utilities.Log(MethodBase.GetCurrentMethod(), "F",LogSeverity.Warning);
+            //Utilities.Log(MethodBase.GetCurrentMethod(), "F",LogSeverity.Warning);
             return false;
         }
         private bool UserHasRole(SocketGuildUser user, ulong roleId)
         {
             foreach (SocketRole role in user.Roles)
             {
+                // Utilities.Log(MethodBase.GetCurrentMethod(), role.Id + " -- " + roleId);
                 if (role.Id == roleId) return true;
             }
             return false;

@@ -31,6 +31,76 @@ namespace HSBot.Modules
      
         }
 
+        [Command("schoolsettings")]
+        public async Task settings([Remainder]string message)
+        {
+            var embed = new EmbedBuilder();
+            var firstWord = message.IndexOf(" ") > -1
+                ? message.Substring(0, message.IndexOf(" "))
+                : message;
+            switch (firstWord)
+            {
+                case "View":
+                    embed.WithTitle("**Config.json**")
+                        .WithDescription($"The configuration for {Context.Guild.Name} :smiley:")
+                        .WithColor(new Color(60, 176, 222))
+                        .WithFooter(" -Alex https://discord.gg/DVSjvGa", "https://i.imgur.com/HAI5vMj.png")
+                        .AddField("LogChannelID", GuildsData.FindOrCreateGuildConfig(Context.Guild).LogChannelID)
+                        .AddField("Prefix", GuildsData.FindOrCreateGuildConfig(Context.Guild).Prefix)
+                        .AddField("Id", GuildsData.FindOrCreateGuildConfig(Context.Guild).Id)
+                        .AddField("ActivityChannelID", GuildsData.FindOrCreateGuildConfig(Context.Guild).ActivityChannelID)
+                        .AddField("DirectorRoleID", GuildsData.FindOrCreateGuildConfig(Context.Guild).DirectorRoleID)
+                        .AddField("ManagerRoleID", GuildsData.FindOrCreateGuildConfig(Context.Guild).ManagerRoleID)
+                        .AddField("ContriverRoleID", GuildsData.FindOrCreateGuildConfig(Context.Guild).ContriverRoleID)
+                        .AddField("JudgeRoleID", GuildsData.FindOrCreateGuildConfig(Context.Guild).JudgeRoleID)
+                        .AddField("AdministratorRoleID", GuildsData.FindOrCreateGuildConfig(Context.Guild).AdministratorRoleID)
+                        .AddField("ModeratorRoleID", GuildsData.FindOrCreateGuildConfig(Context.Guild).ModeratorRoleID)
+                        .AddField("GraduatedRoleID", GuildsData.FindOrCreateGuildConfig(Context.Guild).GraduatedRoleID)
+                        .AddField("StudentRoleID", GuildsData.FindOrCreateGuildConfig(Context.Guild).StudentRoleID)
+                        .AddField("VisitorRoleID", GuildsData.FindOrCreateGuildConfig(Context.Guild).VisitorRoleID)
+                        .AddField("ChannelManagerRoleID", GuildsData.FindOrCreateGuildConfig(Context.Guild).ChannelManagerRoleID)
+                        .AddField("WebhookManagerRoleID", GuildsData.FindOrCreateGuildConfig(Context.Guild).WebhookManagerRoleID)
+                        .AddField("GroupManagerRoleID", GuildsData.FindOrCreateGuildConfig(Context.Guild).GroupManagerRoleID)
+                        .AddField("VoiceManagerRoleID", GuildsData.FindOrCreateGuildConfig(Context.Guild).VoiceManagerRoleID)
+                        .AddField("TimeCreated", GuildsData.FindOrCreateGuildConfig(Context.Guild).TimeCreated);
+                    await Context.Channel.SendMessageAsync("", false, embed);
+                    break;
+                case "Modify":
+                    string scan = message.Substring(message.IndexOf(" "));
+                    string[] vars = scan.Split('=');
+                    try
+                    {
+                        PropertyInfo tochange = GuildsData.FindOrCreateGuildConfig(Context.Guild).GetType().GetProperty(vars[0]);
+                        tochange.SetValue(vars[1], Convert.ChangeType(vars[1], tochange.PropertyType), null);
+                        embed.WithTitle("**Config.json**")
+                            .WithDescription($"Set {vars[0]} to {vars[1]}.")
+                            .WithColor(new Color(60, 176, 222))
+                            .WithFooter(" -Alex https://discord.gg/DVSjvGa", "https://i.imgur.com/HAI5vMj.png");
+                        await Context.Channel.SendMessageAsync("", false, embed);
+                    }
+                    catch (Exception ex)
+                    {
+                        embed.WithTitle("**Syntax error**")
+                        .WithDescription($"Check for spaces and a proper value=this format. :smiley:")
+                        .WithColor(new Color(60, 176, 222))
+                        .WithFooter(" -Alex https://discord.gg/DVSjvGa", "https://i.imgur.com/HAI5vMj.png");
+                        await Context.Channel.SendMessageAsync("", false, embed);
+                        Utilities.Log(MethodBase.GetCurrentMethod(), $"Error changing GuildData. {vars[0]} = {vars[1]}", ex, LogSeverity.Error);
+                    }
+                    break;
+                case "Reset":
+
+                    break;
+                default:
+                    embed = new EmbedBuilder();
+                    embed.WithTitle("Syntax problem")
+                        .WithDescription("Choose to View, Modify, or Reset! :smiley:")
+                        .WithColor(new Color(60, 176, 222))
+                        .WithFooter(" -Alex https://discord.gg/DVSjvGa", "https://i.imgur.com/HAI5vMj.png");
+                    await Context.Channel.SendMessageAsync("", false, embed);
+                    return;
+            }
+        }
 
         [Command("getroleid")]
         public async Task getroleid([Remainder]string message)

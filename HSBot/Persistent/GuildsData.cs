@@ -1,8 +1,10 @@
-﻿using Discord.WebSocket;
+﻿using Discord;
+using Discord.WebSocket;
 using HSBot.Entities;
 using HSBot.Helpers;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Reflection;
 
 namespace HSBot.Persistent
@@ -12,8 +14,8 @@ namespace HSBot.Persistent
     /// </summary>
     public static class GuildsData
     {
-        private static List<GuildConfig> _guilds;
-        private static GuildsDataStruct _guildGlobalSettings;
+        public static List<GuildConfig> _guilds;
+        public static GuildsDataStruct _guildGlobalSettings;
 
         public const string ConfigFile = "guilds.json";
         public const string GuildsFolder = "guilds";
@@ -40,9 +42,10 @@ namespace HSBot.Persistent
             SyncGuilds();
         }
 
+
         internal static GuildConfig[] GetConfigs()
         {
-            Utilities.Log("GuildsData", "Getting Guild Configurations...", Discord.LogSeverity.Debug);
+            Utilities.Log("GuildsData", "Getting Guild Configurations...", LogSeverity.Debug);
             return _guilds.ToArray();
         }
 
@@ -53,10 +56,12 @@ namespace HSBot.Persistent
                 int guildcount = 0;
                 foreach (Discord.WebSocket.SocketGuild guild in Global.Client.Guilds)
                 {
-                    if (!(DataStorage.LocalFileExists(GuildsFolder + "/" + guild.Id + ".json")))
+                    if (!DataStorage.LocalFolderExists(GuildsFolder + "/" + guild.Id, true))
+                        Utilities.Log(MethodBase.GetCurrentMethod(), "Guild folder created for " + guild.Name, LogSeverity.Verbose);                        
+                    if (!DataStorage.LocalFileExists(GuildsFolder + "/" + guild.Id + "/config.json"))
                     {
                         InitializeGuild(guild);
-                        Utilities.Log("GuildData.SyncGuilds", "Guild" + guild.Name + " saved.", Discord.LogSeverity.Verbose);
+                        Utilities.Log("GuildData.SyncGuilds", "Guild" + guild.Name + " saved.", LogSeverity.Verbose);
                         guildcount++;
                     }
                 }
@@ -66,20 +71,19 @@ namespace HSBot.Persistent
             {
                 Utilities.Log("GuildData.SyncGuilds", "Error in initializing guilds.", ex);
             }
-            Utilities.Log("GuildsData.SyncGuils", "Reastoring Guilds...", Discord.LogSeverity.Verbose);
+            Utilities.Log("GuildsData.SyncGuils", "Reastoring Guilds...", LogSeverity.Verbose);
             ReinitializeGuilds();
         }
 
         private static void ReinitializeGuilds()
         {
-            string[] files = DataStorage.GetFilesInFolder(GuildsFolder);
+            string[] folders = DataStorage.GetFoldersInFolder(GuildsFolder);
             try
             {
                 int guildcount = 0;
-                foreach (string file in files)
+                foreach (string id in folders)
                 {
-                    LoadGuild(file);
-                    Utilities.Log("GuildData.ReinitializeGuilds", file + " Loaded.", Discord.LogSeverity.Verbose);
+                    LoadGuild(id);
                     guildcount++;
                 }
                 Utilities.Log("GuildData.ReinitializeGuilds", guildcount + "/" + Global.Client.Guilds.Count + " Guild(s) reinitialized.");
@@ -90,10 +94,11 @@ namespace HSBot.Persistent
             }
         }
 
-        internal static ActionResult LoadGuild(string file)
+        internal static ActionResult LoadGuild(string id)
         {
             var result = new ActionResult();
-            GuildConfig config = DataStorage.RestoreObject<GuildConfig>(GuildsFolder + "/" + file);
+            GuildConfig config = DataStorage.RestoreObject<GuildConfig>(GuildsFolder + "/" + id + "/config.json");
+            Utilities.Log("GuildData.LoadGuild", GuildsFolder + "/" + id + "/config.json" + " Loaded. logchannel = " + config.LogChannelID, Discord.LogSeverity.Verbose);
             _guilds.Remove(FindGuildConfig(config.Id));
             _guilds.Add(config);
             return result;
@@ -109,7 +114,7 @@ namespace HSBot.Persistent
                 TimeCreated = DateTime.Now.ToString()
             };
             _guilds.Add(guildconfig);
-            DataStorage.StoreObject(guildconfig, $"{GuildsFolder}/{guildconfig.Id}.json", _guildGlobalSettings.UseNiceFormatting);
+            DataStorage.StoreObject(guildconfig, $"{GuildsFolder}/{guildconfig.Id}/config.json", _guildGlobalSettings.UseNiceFormatting);
             Utilities.Log("GuildsData.InitializeGuild", guild.Name + "Initialized in GuildDataSystem.");
             return result;
         }
@@ -118,7 +123,7 @@ namespace HSBot.Persistent
         {
             var result = new ActionResult();
             _guilds.Remove(_guilds.Find(g => g.Id == guild.Id));
-            DataStorage.DeleteFile(GuildsFolder + guild.Id + ".json");
+            DataStorage.DeleteFolder(GuildsFolder + "/" + guild.Id + ".json");
             Utilities.Log("GuildsData.RemoveGuild", guild.Name + "Removed from GuildDataSystem.");
             return result;
         }
@@ -129,7 +134,7 @@ namespace HSBot.Persistent
             try
             {
                 var selection = FindGuildConfig(id);
-                DataStorage.StoreObject(selection, GuildsFolder + "/" + id + ".json", _guildGlobalSettings.UseNiceFormatting);
+                DataStorage.StoreObject(selection, GuildsFolder + "/" + id + "/config.json", _guildGlobalSettings.UseNiceFormatting);
             }
             catch
             {
@@ -145,12 +150,14 @@ namespace HSBot.Persistent
             if (GuildConfig.Equals(null))
             {
                 InitializeGuild(guild);
+                GuildConfig = _guilds.Find(g => g.Id == guild.Id);
             }
-            GuildConfig = _guilds.Find(g => g.Id == guild.Id);
-            Utilities.Log("FindOrCreateGuildConfig", $"Guild found with id {guild.Id}", Discord.LogSeverity.Debug);
+            Utilities.Log("FindOrCreateGuildConfig", $"Guild found with id {guild.Id} [{GuildConfig.Popularity}]", Discord.LogSeverity.Debug);
             return GuildConfig;
         }
-        
+
+        public static GuildsDataStruct GetGuildData() => _guildGlobalSettings;
+
         /// <summary>
         /// Not failsafe. Perferably use FindOrCreateGuildConfig
         /// </summary>
@@ -158,13 +165,13 @@ namespace HSBot.Persistent
         internal static GuildConfig FindGuildConfig(ulong id)
         {
             GuildConfig guild = GuildsData._guilds.Find(g => g.Id == id);
-            Utilities.Log("FildGuildConfig", $"Guild found with id {id}, {guild.Prefix}", Discord.LogSeverity.Debug);
+            Utilities.Log("FildGuildConfig", $"Guild found with id {id} [{guild.Popularity}]", Discord.LogSeverity.Verbose);
             return guild;
         }
 
     }
 
-    internal struct GuildsDataStruct
+    public struct GuildsDataStruct
     {
         public bool UseNiceFormatting;
     }
