@@ -221,6 +221,52 @@ namespace HSBot.Helpers
                 return "";
             }
         }
+
+        /// <summary>
+        /// Returns a random long from min (inclusive) to max (exclusive)
+        /// </summary>
+        /// <param name="random">The given random instance</param>
+        /// <param name="min">The inclusive minimum bound</param>
+        /// <param name="max">The exclusive maximum bound.  Must be greater than min</param>
+        public static long NextLong(long min, long max)
+        {
+            Random random = new Random();
+            if (max <= min)
+                throw new ArgumentOutOfRangeException("max", "max must be > min!");
+
+            ulong uRange = (ulong)(max - min);
+
+            ulong ulongRand;
+            do
+            {
+                byte[] buf = new byte[8];
+                random.NextBytes(buf);
+                ulongRand = (ulong)BitConverter.ToInt64(buf, 0);
+            } while (ulongRand > ulong.MaxValue - ((ulong.MaxValue % uRange) + 1) % uRange);
+
+            return (long)(ulongRand % uRange) + min;
+        }
+
+        /// <summary>
+        /// Returns a random long from 0 (inclusive) to max (exclusive)
+        /// </summary>
+        /// <param name="random">The given random instance</param>
+        /// <param name="max">The exclusive maximum bound.  Must be greater than 0</param>
+        public static long NextLong(long max) => NextLong(0, max);
+
+        /// <summary>
+        /// Returns a random long over all possible values of long (except long.MaxValue, similar to
+        /// random.Next())
+        /// </summary>
+        /// <param name="random">The given random instance</param>
+        public static long NextLong() => NextLong(long.MinValue, long.MaxValue);
+
+        /// <summary>
+        /// Returns a random ulong over all possible values from 0 to the maximum value of a long.
+        /// Does not cover all of ulong.
+        /// </summary>
+        /// <returns></returns>
+        public static ulong NextUlong() => (ulong)NextLong(long.MaxValue);
     }
 
 

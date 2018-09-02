@@ -59,7 +59,7 @@ namespace HSBot.Persistent
 
         private static FileStream SaveSettings()
         {
-            var file = DataStorage.StoreObject(BotConfig, ConfigFile, useIndentations: true);
+            var file = DataStorage.StoreObject(BotConfig, ConfigFile, true, true);
             if (file != null) return file;
             Process.Start(@"cmd.exe ", @"/c """ + (DataStorage.GetFileStream(ConfigFile).Name) + @"""");
             Utilities.Log("Settings error", "Could not save the Settings, is your file incomplete?",

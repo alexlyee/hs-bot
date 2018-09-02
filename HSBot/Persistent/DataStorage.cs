@@ -36,7 +36,14 @@ namespace HSBot.Persistent
             Utilities.Log("DataStorage()", $"Resources folder found in {Directory.GetCurrentDirectory()}\\{ResourcesFolder}");
         }
 
-        public static FileStream StoreStringArray(string[] set, string file, Formatting formatting = Formatting.None)
+        /// <summary>
+        /// Automatically converts list to array. Make sure to close filestream.
+        /// </summary>
+        /// <param name="set"></param>
+        /// <param name="file"></param>
+        /// <param name="formatting"></param>
+        /// <returns></returns>
+        public static FileStream StoreStringArray(List<string> set, string file, Formatting formatting = Formatting.None, bool returnFileStream = false)
         {
             try
             {
@@ -46,11 +53,10 @@ namespace HSBot.Persistent
                 using (StreamWriter sw = new StreamWriter(filePath))
                 using (JsonWriter writer = new JsonTextWriter(sw))
                 {
-                    serializer.Serialize(writer, set);
+                    serializer.Serialize(writer, set.ToArray<string>());
                 }
-                var fileStream = File.OpenRead(filePath);
                 Utilities.Log("DataStorage.StoreStringArray", $"{file} stored.", LogSeverity.Debug);
-                return fileStream;
+                if (returnFileStream) return File.OpenRead(filePath); else return null;
             }
             catch (Exception ex)
             {
@@ -59,13 +65,26 @@ namespace HSBot.Persistent
             }
         }
 
-        public static FileStream StoreStringArray(string[] set, string file, bool useIndentations)
+        /// <summary>
+        /// Automatically converts list to array. Make sure to close filestream.
+        /// </summary>
+        /// <param name="set"></param>
+        /// <param name="file"></param>
+        /// <param name="useIndentations"></param>
+        /// <returns></returns>
+        public static FileStream StoreStringArray(List<string> set, string file, bool useIndentations, bool returnFileStream = false)
         {
             var formatting = (useIndentations) ? Formatting.Indented : Formatting.None;
-            return StoreStringArray(set, file, formatting);
+            return StoreStringArray(set, file, formatting, returnFileStream);
         }
 
-        public static string[] LoadStringArray(string file, bool noerror = false)
+        /// <summary>
+        /// Automatically converts list to array.
+        /// </summary>
+        /// <param name="file"></param>
+        /// <param name="noerror"></param>
+        /// <returns></returns>
+        public static List<string> LoadStringArray(string file, bool noerror = false)
         {
             string filePath = String.Concat(Directory.GetCurrentDirectory(), "/", ResourcesFolder, "/", file);
             if (!LocalFileExists(file))
@@ -74,10 +93,10 @@ namespace HSBot.Persistent
                 return null;
             }
             string json = File.ReadAllText(filePath);
-            return JsonConvert.DeserializeObject<string[]>(json);
+            return JsonConvert.DeserializeObject<string[]>(json).ToList<string>();
         }
 
-        public static FileStream StoreEnumeratedObject<T>(IEnumerable<T> objects, string file, Formatting formatting = Formatting.None)
+        public static FileStream StoreEnumeratedObject<T>(IEnumerable<T> objects, string file, Formatting formatting = Formatting.None, bool returnFileStream = false)
         {
             try
             {
@@ -89,9 +108,8 @@ namespace HSBot.Persistent
                 {
                     serializer.Serialize(writer, objects);
                 }
-                var fileStream = File.OpenRead(filePath);
                 Utilities.Log("DataStorage.SaveEnumeratedObject", $"{file} stored.", LogSeverity.Debug);
-                return fileStream;
+                if (returnFileStream) return File.OpenRead(filePath); else return null;
             }
             catch (Exception ex)
             {
@@ -100,13 +118,30 @@ namespace HSBot.Persistent
             }
         }
 
-        public static FileStream StoreEnumeratedObject<T>(IEnumerable<T> objects, string file, bool useIndentations)
+        /// <summary>
+        /// Make sure to close filestream.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="objects"></param>
+        /// <param name="file"></param>
+        /// <param name="useIndentations"></param>
+        /// <param name="returnFileStream"></param>
+        /// <returns></returns>
+        public static FileStream StoreEnumeratedObject<T>(IEnumerable<T> objects, string file, bool useIndentations, bool returnFileStream = false)
         {
             var formatting = (useIndentations) ? Formatting.Indented : Formatting.None;
-            return StoreEnumeratedObject<T>(objects, file, formatting);
+            return StoreEnumeratedObject<T>(objects, file, formatting, returnFileStream);
         }
 
-        public static FileStream StoreObject(object obj, string file, Formatting formatting = Formatting.None)
+        /// <summary>
+        /// Make sure to close filestream.
+        /// </summary>
+        /// <param name="obj"></param>
+        /// <param name="file"></param>
+        /// <param name="formatting"></param>
+        /// <param name="returnFileStream"></param>
+        /// <returns></returns>
+        public static FileStream StoreObject(object obj, string file, Formatting formatting = Formatting.None, bool returnFileStream = false)
         {
             try
             {
@@ -120,7 +155,7 @@ namespace HSBot.Persistent
                 }
                 var fileStream = File.OpenRead(filePath);
                 Utilities.Log("DataStorage.StoreObject", $"{file} stored.", LogSeverity.Debug);
-                return fileStream;
+                if (returnFileStream) return File.OpenRead(filePath); else return null;
             }
             catch (Exception ex)
             {
@@ -129,10 +164,18 @@ namespace HSBot.Persistent
             }
         }
 
-        public static FileStream StoreObject(object obj, string file, bool useIndentations)
+        /// <summary>
+        /// Make sure to close filestream.
+        /// </summary>
+        /// <param name="obj"></param>
+        /// <param name="file"></param>
+        /// <param name="useIndentations"></param>
+        /// <param name="returnFileStream"></param>
+        /// <returns></returns>
+        public static FileStream StoreObject(object obj, string file, bool useIndentations, bool returnFileStream = false)
         {
             var formatting = (useIndentations) ? Formatting.Indented : Formatting.None;
-            return StoreObject(obj, file, formatting);
+            return StoreObject(obj, file, formatting, returnFileStream);
         }
 
         public static IEnumerable<T> LoadEnumeratedObject<T>(string file)
@@ -163,12 +206,46 @@ namespace HSBot.Persistent
             return File.Exists(filePath);
         }
 
-        public static string[] GetFilesInFolder(string folder)
+        /// <summary>
+        /// Assumes all files in folder are .json deserializable objects of the same type.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="folder"></param>
+        /// <returns></returns>
+        public static List<T> GetObjectsInFolder<T>(string folder)
+        {
+            List<T> Objects = new List<T>();
+            foreach (string file in GetFilesInFolder(folder, "*.json", false))
+            {
+                try
+                {
+                    Objects.Add(RestoreObject<T>(folder + "/" + file));
+                }
+                catch (Exception ex)
+                {
+                    Utilities.Log(MethodBase.GetCurrentMethod(), $"Unable to restore object from {folder}/{file}", ex,
+                        LogSeverity.Error);
+                }
+            }
+            return Objects;
+        }
+
+        //public static void StoreObjectsInFolder(string folder, List<dynamic> objects)
+
+        public static string[] GetFilesInFolder(string folder, string criterion = "*.json", bool removeextension = true)
         {
             string folderPath = String.Concat(ResourcesFolder, "/", folder);
-            string[] files = Directory.GetFiles(folderPath);
-            for (int i = 0; i < files.Length; i++) files[i] = Path.GetFileName(files[i]);
-            return files;
+            DirectoryInfo d = new DirectoryInfo(folderPath);//Assuming Test is your Folder
+            FileInfo[] Files = d.GetFiles(criterion); //Getting Text files
+            string str = "";
+            List<string> strs = new List<string>();
+            foreach (FileInfo file in Files)
+            {
+                str = str + ", " + file.Name;
+                if (removeextension) strs.Add(Path.GetFileNameWithoutExtension(file.Name));
+                else strs.Add(file.Name);
+            }
+            return strs.ToArray();
         }
 
         public static string[] GetFoldersInFolder(string folder)
@@ -203,6 +280,11 @@ namespace HSBot.Persistent
 
         public static void DeleteFolder(string folder) => Directory.Delete(ResourcesFolder + "/" + folder);
 
+        /// <summary>
+        /// Make sure to close filestream!
+        /// </summary>
+        /// <param name="file"></param>
+        /// <returns></returns>
         public static FileStream GetFileStream(string file) => File.OpenRead(ResourcesFolder + "/" + file);
 
         private static string GetOrCreateFileContents(string file)

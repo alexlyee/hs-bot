@@ -66,38 +66,34 @@ namespace HSBot.Modules
                     await Context.Channel.SendMessageAsync("", false, embed);
                     break;
                 case "Modify":
-                    string scan = message.Substring(message.IndexOf(" "));
-                    string[] vars = scan.Split('=');
-                    try
+                    if (Context.User.Id == Context.Guild.OwnerId)
                     {
-                        PropertyInfo tochange = GuildsData.FindOrCreateGuildConfig(Context.Guild).GetType().GetProperty(vars[0]);
-                        tochange.SetValue(vars[1], Convert.ChangeType(vars[1], tochange.PropertyType), null);
-                        embed.WithTitle("**Config.json**")
-                            .WithDescription($"Set {vars[0]} to {vars[1]}.")
-                            .WithColor(new Color(60, 176, 222))
-                            .WithFooter(" -Alex https://discord.gg/DVSjvGa", "https://i.imgur.com/HAI5vMj.png");
-                        await Context.Channel.SendMessageAsync("", false, embed);
+                        string scan = message.Substring(message.IndexOf(" "));
+                        string[] vars = scan.Split('=');
+                        try
+                        {
+                            PropertyInfo tochange = GuildsData.FindOrCreateGuildConfig(Context.Guild).GetType().GetProperty(vars[0]);
+                            tochange.SetValue(vars[1], Convert.ChangeType(vars[1], tochange.PropertyType), null);
+                            await SendClassicEmbed("**Config.json**", $"Set {vars[0]} to {vars[1]}.");
+                        }
+                        catch (Exception ex)
+                        {
+                            await SendClassicEmbed("**Syntax error**", "Check for spaces and a proper value=this format. :smiley:");
+                            Utilities.Log(MethodBase.GetCurrentMethod(), $"Error changing GuildData. {vars[0]} = {vars[1]}", ex, LogSeverity.Error);
+                        }
                     }
-                    catch (Exception ex)
-                    {
-                        embed.WithTitle("**Syntax error**")
-                        .WithDescription($"Check for spaces and a proper value=this format. :smiley:")
-                        .WithColor(new Color(60, 176, 222))
-                        .WithFooter(" -Alex https://discord.gg/DVSjvGa", "https://i.imgur.com/HAI5vMj.png");
-                        await Context.Channel.SendMessageAsync("", false, embed);
-                        Utilities.Log(MethodBase.GetCurrentMethod(), $"Error changing GuildData. {vars[0]} = {vars[1]}", ex, LogSeverity.Error);
-                    }
+                    else await SendClassicEmbed("**Only an owner can use this command**", "");
                     break;
                 case "Reset":
-
+                    if (Context.User.Id == Context.Guild.OwnerId)
+                    {
+                        GuildsData.DeleteGuildConfig(Context.Guild.Id);
+                        await SendClassicEmbed("**Success!", "To confirm, use View. :smiley:");
+                    }
+                    else await SendClassicEmbed("**Only an owner can use this command**", "");
                     break;
                 default:
-                    embed = new EmbedBuilder();
-                    embed.WithTitle("Syntax problem")
-                        .WithDescription("Choose to View, Modify, or Reset! :smiley:")
-                        .WithColor(new Color(60, 176, 222))
-                        .WithFooter(" -Alex https://discord.gg/DVSjvGa", "https://i.imgur.com/HAI5vMj.png");
-                    await Context.Channel.SendMessageAsync("", false, embed);
+                    await SendClassicEmbed("Syntax problem", "Choose to View, Modify, or Reset! :smiley:");
                     return;
             }
         }
@@ -118,11 +114,7 @@ namespace HSBot.Modules
                 await Context.Channel.SendMessageAsync("", embed: embed);
                 return;
             }
-            embed.WithTitle("**Got it!**")
-                .WithDescription(id)
-                .WithColor(new Color(60, 176, 222))
-                .WithFooter(" -Alex https://discord.gg/DVSjvGa", "https://i.imgur.com/HAI5vMj.png");
-            await Context.Channel.SendMessageAsync("", embed: embed);
+            await SendClassicEmbed("**Got it!**", id);
         }
 
         [Command("getroleids")]
@@ -228,22 +220,23 @@ namespace HSBot.Modules
         [Command("echo")]
         public async Task Echo([Remainder]string message)
         {
-            var embed = new EmbedBuilder();
             string r = Utilities.GetFormattedAlert("WELCOME_&NAME", Context.User.Username);
-            embed.WithTitle("Echoed message")
-                .WithDescription(r)
-                .WithColor(new Color(60, 176, 222))
-                .WithFooter(" -Alex https://discord.gg/DVSjvGa", "https://i.imgur.com/HAI5vMj.png");
-
-
-            await Context.Channel.SendMessageAsync("", false, embed);
+            await SendClassicEmbed("Sent by " + Context.User.Mention, r);
         }
 
+        public async Task SendClassicEmbed(string title, string desc)
+        {
+            var embed = new EmbedBuilder();
+            embed.WithTitle(title)
+                .WithDescription(desc)
+                .WithColor(new Color(60, 176, 222))
+                .WithFooter(" -Alex https://discord.gg/DVSjvGa", "https://i.imgur.com/HAI5vMj.png");
+            await Context.Channel.SendMessageAsync("", false, embed);
+        }
         private bool IsDivisible(int x, int n)
         {
             return (x % n) == 0;
         }
-
         private SocketRole RoleFromName(SocketGuildUser user, string targetRoleName)
         {
             var result = from r in user.Guild.Roles

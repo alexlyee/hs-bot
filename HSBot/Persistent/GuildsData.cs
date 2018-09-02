@@ -104,6 +104,8 @@ namespace HSBot.Persistent
             return result;
         }
 
+        internal static void DeleteGuildConfig(ulong id) => DataStorage.DeleteFile(GuildsFolder + "/" + id + "/config.json");
+
         internal static ActionResult InitializeGuild(Discord.WebSocket.SocketGuild guild)
         {
             var result = new ActionResult();
