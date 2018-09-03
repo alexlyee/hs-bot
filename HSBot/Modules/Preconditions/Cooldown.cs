@@ -12,7 +12,7 @@ namespace HSBot.Modules.Preconditions
         private bool AdminsAreLimited { get; set; }
         private bool AnnounceCooldownLength { get; set; }
         private readonly ConcurrentDictionary<CooldownInfo, DateTime> _cooldowns = new ConcurrentDictionary<CooldownInfo, DateTime>();
-
+        public string Group { get; set; }
         /// <summary>
         /// Sets the cooldown for a user to use this command
         /// </summary>
@@ -25,7 +25,7 @@ namespace HSBot.Modules.Preconditions
             AnnounceCooldownLength = announceCooldownLength;
         }
 
-        public override Task<PreconditionResult> CheckPermissions(ICommandContext context, Discord.Commands.CommandInfo command, IServiceProvider services)
+        public override Task<PreconditionResult> CheckPermissionsAsync(ICommandContext context, Discord.Commands.CommandInfo command, IServiceProvider services)
         {
             // Check if the user is administrator and if it needs to apply cooldown for him.
             if (!AdminsAreLimited && context.User is IGuildUser user && user.GuildPermissions.Administrator)
@@ -53,6 +53,7 @@ namespace HSBot.Modules.Preconditions
 
             return Task.FromResult(PreconditionResult.FromSuccess());
         }
+        
 
         public struct CooldownInfo
         {

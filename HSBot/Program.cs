@@ -22,8 +22,10 @@ namespace HSBot
 {
     internal class Program
     {
-        private DiscordSocketClient _client;
-        private IServiceProvider _services;
+        private volatile IServiceCollection _services;
+        private volatile IServiceProvider _provider;
+        private volatile DiscordSocketClient _client;
+
         protected internal static bool Online = true;
         private CommandService _commands;
         private readonly string _version = Assembly.GetExecutingAssembly().GetName().Version.ToString();
@@ -47,14 +49,15 @@ namespace HSBot
                 LogLevel = LogSeverity.Debug
             });
             _services = new ServiceCollection() // Microsoft.Extensions.DependencyInjection
-                .AddSingleton(_client) // Singleton means to a static like class.
-                .AddSingleton(_commands)
-                .BuildServiceProvider();
-            Global.Client = _client;
-            var commandhandler = new CommandHandler();
-            await Utilities.Log(MethodBase.GetCurrentMethod(), "Static or singleton objects initialized.", LogSeverity.Verbose);
+                            .AddSingleton(_client) // Singleton means to a static like class. <-- NOT REALLY
+                            .AddSingleton(_commands) //<-- what is _commands?
+                            .AddSingleton<CommandHandler>();
+            //.BuildServiceProvider(); removed this
 
-            await commandhandler.InitializeAsync(_client);
+            _provider = _services.BuildServiceProvider();
+            await _provider.GetRequiredService<CommandHandler>().InitializeAsync();
+
+            await Utilities.Log(MethodBase.GetCurrentMethod(), "Client and command services started.");
 
             _client.JoinedGuild += JoinedGuildHandler.Announce;
             _client.Log += ClientHandler.Log;

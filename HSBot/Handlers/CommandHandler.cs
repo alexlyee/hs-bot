@@ -6,41 +6,36 @@ using System.Reflection;
 using System.Threading.Tasks;
 using Discord;
 using System.IO;
+using System;
 
 namespace HSBot.Handlers
 {
     internal class CommandHandler
     {
-        private DiscordSocketClient _client;
-        private CommandService _service;
-        private SocketCommandContext context;
+        private volatile DiscordSocketClient _client;
+        private volatile CommandService _cmdService;
+        private volatile SocketCommandContext context;
+        private readonly IServiceProvider _serviceProvider;
 
-        public async Task InitializeAsync(DiscordSocketClient client)
+        public async Task InitializeAsync()
         {
-            _client = client;
-            _service = new CommandService();
-            await _service.AddModulesAsync(Assembly.GetEntryAssembly());
+            await _cmdService.AddModulesAsync(Assembly.GetEntryAssembly());
             _client.MessageReceived += HandleCommandAsync;
             _client.UserJoined += _client_UserJoined;
             _client.UserLeft += _client_UserLeft;
-            Global.Client = client;
-            await Utilities.Log(MethodBase.GetCurrentMethod(), "CommandHandler Initialized.");
+            Global.Client = _client;
+            await Utilities.Log(MethodBase.GetCurrentMethod(), "CommandHandler initialized.", LogSeverity.Verbose);
         }
-        
-        /*
-        private async Task HandleTagsAsync(SocketMessage s)
+
+        public CommandHandler(DiscordSocketClient client, CommandService cmdService, IServiceProvider serviceProvider)
         {
-
-
-            var msg = s as SocketUserMessage;
-            var context = new SocketCommandContext(_client, msg);
-            int argPos = 0;
-            if (msg.HasMentionPrefix(_client.CurrentUser, ref argPos))
-            {
-
-            }
+            _client = client;
+            _cmdService = cmdService;
+            _serviceProvider = serviceProvider;
+            Utilities.Log(MethodBase.GetCurrentMethod(), "CommandHandler constructed.", LogSeverity.Verbose);
         }
-        */
+
+
         private static async Task _client_UserJoined(SocketGuildUser user)
         {
             var dmChannel = await user.GetOrCreateDMChannelAsync();
@@ -49,7 +44,7 @@ namespace HSBot.Handlers
 
         private async Task _client_UserLeft(SocketGuildUser user)
         {
-            if (user.Guild.Name == "Discord-BOT-Tutorial")
+            if (user.Guild.Name == "IA Central Discord")
             {
                 if (_client.GetChannel(GuildsData.FindGuildConfig(user.Guild.Id).LogChannelID) is SocketTextChannel discordBotTutorialGeneral)
                     await discordBotTutorialGeneral.SendMessageAsync(
@@ -80,7 +75,7 @@ namespace HSBot.Handlers
                 }
                 */
 
-                var result = await _service.ExecuteAsync(context, argPos);
+                var result = await _cmdService.ExecuteAsync(context, argPos);
                 if(!result.IsSuccess && result.Error != CommandError.UnknownCommand)
                 {
                     await context.Channel.SendMessageAsync(result.ErrorReason);

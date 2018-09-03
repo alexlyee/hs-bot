@@ -7,7 +7,7 @@ namespace HSBot.Modules.References
     class GroupType
     {
         ulong id;
-        
+        string name;
 
     }
     class GroupClass : GroupType

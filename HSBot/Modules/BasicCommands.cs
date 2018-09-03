@@ -21,7 +21,7 @@ using NReco;
 
 namespace HSBot.Modules
 {
-    public sealed class BasicCommands : ModuleBase<SocketCommandContext>
+    public sealed partial class BasicCommands : ModuleBase<SocketCommandContext>
     {
         [Command("help")]
         public async Task Help()
@@ -63,7 +63,7 @@ namespace HSBot.Modules
                         .AddField("GroupManagerRoleID", GuildsData.FindOrCreateGuildConfig(Context.Guild).GroupManagerRoleID)
                         .AddField("VoiceManagerRoleID", GuildsData.FindOrCreateGuildConfig(Context.Guild).VoiceManagerRoleID)
                         .AddField("TimeCreated", GuildsData.FindOrCreateGuildConfig(Context.Guild).TimeCreated);
-                    await Context.Channel.SendMessageAsync("", false, embed);
+                    await Context.Channel.SendMessageAsync("", false, embed.Build());
                     break;
                 case "Modify":
                     if (Context.User.Id == Context.Guild.OwnerId)
@@ -101,20 +101,41 @@ namespace HSBot.Modules
         [Command("getroleid")]
         public async Task getroleid([Remainder]string message)
         {
-            string id = "";
             var embed = new EmbedBuilder();
             try
             {
-                id = RoleFromName((SocketGuildUser)Context.User, message).Id.ToString();
+                List<SocketRole> roles = RolesFromName(message);
+                if (roles.Count == 1)
+                    await SendClassicEmbed("**Got it!**", roles.FirstOrDefault().Id.ToString());
+                if (roles.Count > 1)
+                {
+                    int count = 0;
+                    embed.WithTitle("**Captured Roles with name " + message + "**")
+                        .WithColor(new Color(60, 176, 222));
+                    foreach (SocketRole role in roles)
+                    {
+                        embed.AddField(role.Name, role.Id.ToString());
+                        if (IsDivisible(count, 24))
+                        {
+                            await Context.Channel.SendMessageAsync("", embed: embed.Build());
+                            embed = new EmbedBuilder();
+                            embed.WithTitle("Captured Roles with name " + message)
+                                .WithColor(new Color(60, 176, 222));
+                        }
+                        count++;
+                    }
+                    embed.WithFooter(count + " roles with given name.", "https://i.imgur.com/HAI5vMj.png");
+                    await Context.Channel.SendMessageAsync("", embed: embed.Build());
+                }
+
             }
             catch
             {
                 embed.WithTitle("Couldn't find " + message + ", try to be exact!")
                     .WithColor(new Color(255, 0, 0));
-                await Context.Channel.SendMessageAsync("", embed: embed);
+                await Context.Channel.SendMessageAsync("", embed: embed.Build());
                 return;
             }
-            await SendClassicEmbed("**Got it!**", id);
         }
 
         [Command("getroleids")]
@@ -129,7 +150,7 @@ namespace HSBot.Modules
                 embed.AddField(role.Name, role.Id.ToString());
                 if (IsDivisible(count, 24))
                 {
-                    await Context.Channel.SendMessageAsync("", embed: embed);
+                    await Context.Channel.SendMessageAsync("", embed: embed.Build());
                     embed = new EmbedBuilder();
                     embed.WithTitle("Captured Roles in " + Context.Guild.Name)
                         .WithColor(new Color(60, 176, 222));
@@ -137,7 +158,7 @@ namespace HSBot.Modules
                 count++;
             }
             embed.WithFooter(count + " roles in this server.", "https://i.imgur.com/HAI5vMj.png");
-            await Context.Channel.SendMessageAsync("", embed: embed);
+            await Context.Channel.SendMessageAsync("", embed: embed.Build());
         }
 
         [Command("hello")]
@@ -183,15 +204,15 @@ namespace HSBot.Modules
 
             embed.WithThumbnailUrl(portrait)
                 .WithTitle("Random person: ")
-                .AddInlineField("Name", name)
+                .AddField("Name", name, true)
                 .WithDescription($"{gender}, from {nationality} in {dob.TrimEnd()}.")
-                .AddInlineField("Location", location)
+                .AddField("Location", location, true)
                 .WithAuthor(Context.User)
-                .AddInlineField("Login", $"Username : {dataObject.results[0].login.username.ToString()} \nPassword : {dataObject.results[0].login.password.ToString()}")
-                .AddInlineField("Phone", $"Home {phone}\nCell {cell}")
+                .AddField("Login", $"Username : {dataObject.results[0].login.username.ToString()} \nPassword : {dataObject.results[0].login.password.ToString()}", true)
+                .AddField("Phone", $"Home {phone}\nCell {cell}", true)
                 .WithFooter(dataObject.results[0].email.ToString() + " -Alex https://discord.gg/DVSjvGa", "https://i.imgur.com/HAI5vMj.png");
 
-            await Context.Channel.SendMessageAsync("", embed: embed);
+            await Context.Channel.SendMessageAsync("", embed: embed.Build());
         }
 
         [Command("purge")]
@@ -224,26 +245,69 @@ namespace HSBot.Modules
             await SendClassicEmbed("Sent by " + Context.User.Mention, r);
         }
 
+    }
+
+    // Methods
+    public sealed partial class BasicCommands : ModuleBase<SocketCommandContext>
+    {
+        public async Task SendSuccessEmbed(string title, string desc)
+        {
+            var embed = new EmbedBuilder
+            {
+                Title = title,
+                Description = desc,
+                Color = new Color(33, 160, 52),
+                Footer = new EmbedFooterBuilder()
+                    .WithText(" -Alex https://discord.gg/DVSjvGa")
+                    .WithIconUrl("https://i.imgur.com/HAI5vMj.png"),
+            }.Build();
+            await Context.Channel.SendMessageAsync("", false, embed);
+        }
+        public async Task SendErrorEmbed(string title, string desc, Exception ex = null)
+        {
+            var embed = new EmbedBuilder
+            {
+                Title = title,
+                Description = desc,
+                Color = new Color(219, 57, 75),
+                Footer = new EmbedFooterBuilder()
+                    .WithText(" -Alex https://discord.gg/DVSjvGa")
+                    .WithIconUrl("https://i.imgur.com/HAI5vMj.png"),
+                Fields = new List<EmbedFieldBuilder>
+                {
+                    new EmbedFieldBuilder()
+                        .WithName("`Error content:` ")
+                        .WithValue($"*{ex.ToString()}*")
+                        .WithIsInline(true)
+                    // Repeat with comma for another field here.
+                }
+            }.Build();
+            await Context.Channel.SendMessageAsync("", false, embed);
+        }
         public async Task SendClassicEmbed(string title, string desc)
         {
-            var embed = new EmbedBuilder();
-            embed.WithTitle(title)
-                .WithDescription(desc)
-                .WithColor(new Color(60, 176, 222))
-                .WithFooter(" -Alex https://discord.gg/DVSjvGa", "https://i.imgur.com/HAI5vMj.png");
+            var embed = new EmbedBuilder
+            {
+                Title = title,
+                Description = desc,
+                Color = new Color(60, 176, 222),
+                Footer = new EmbedFooterBuilder()
+                    .WithText(" -Alex https://discord.gg/DVSjvGa")
+                    .WithIconUrl("https://i.imgur.com/HAI5vMj.png"),
+            }.Build();
             await Context.Channel.SendMessageAsync("", false, embed);
         }
         private bool IsDivisible(int x, int n)
         {
             return (x % n) == 0;
         }
-        private SocketRole RoleFromName(SocketGuildUser user, string targetRoleName)
+        private List<SocketRole> RolesFromName(string targetRoleName)
         {
-            var result = from r in user.Guild.Roles
+            var result = from r in Context.Guild.Roles
                          where r.Name == targetRoleName
                          select r;
 
-            return result.FirstOrDefault();
+            return result.ToList();
         }
     }
 }

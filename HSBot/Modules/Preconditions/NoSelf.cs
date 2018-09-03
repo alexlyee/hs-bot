@@ -10,7 +10,7 @@ namespace HSBot.Modules.Preconditions
 {
     public class NoSelf : ParameterPreconditionAttribute
     {
-        public override Task<PreconditionResult> CheckPermissions(ICommandContext context, ParameterInfo parameter, object value, IServiceProvider services)
+        public override Task<PreconditionResult> CheckPermissionsAsync(ICommandContext context, ParameterInfo parameter, object value, IServiceProvider services)
         {
             var user = value is IUser ? (IUser)value : null;
             if ((user != null) && (context.User.Id == user.Id))
