@@ -6,6 +6,7 @@ using Discord;
 using System.Reflection;
 using System.Threading.Tasks;
 using NReco.Converting;
+using System.Security.Cryptography;
 
 namespace HSBot.Helpers
 {
@@ -269,5 +270,47 @@ namespace HSBot.Helpers
         public static ulong NextUlong() => (ulong)NextLong(long.MaxValue);
     }
 
+    // Thanks to Charly!
+    public class SecureRandom
+    {
+        // The random number provider.
+        private RNGCryptoServiceProvider Rand =
+            new RNGCryptoServiceProvider();
 
+        // Return a random integer between a min and max value.
+        public int Next(int min, int max)
+        {
+            uint scale = uint.MaxValue;
+            while (scale == uint.MaxValue)
+            {
+                // Get four random bytes.
+                byte[] fourBytes = new byte[4];
+                Rand.GetBytes(fourBytes);
+
+                // Convert that into an uint.
+                scale = BitConverter.ToUInt32(fourBytes, 0);
+            }
+
+            // Add min to the scaled difference between max and min.
+            return (int)(min + (max - min) *
+                          (scale / (double)uint.MaxValue));
+        }
+
+        public int Next(int max)
+        {
+            uint scale = uint.MaxValue;
+            while (scale == uint.MaxValue)
+            {
+                // Get four random bytes.
+                byte[] fourBytes = new byte[4];
+                Rand.GetBytes(fourBytes);
+
+                // Convert that into an uint.
+                scale = BitConverter.ToUInt32(fourBytes, 0);
+            }
+
+            // Add min to the scaled difference between max and min.
+            return (int)((max) * (scale / (double)uint.MaxValue));
+        }
+    }
 }

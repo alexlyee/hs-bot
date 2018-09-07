@@ -26,7 +26,7 @@ namespace HSBot.Modules
                 Utilities.Log(MethodBase.GetCurrentMethod(), "SubjectFile Created", LogSeverity.Verbose);
             GuildConfig guildconfig = GuildsData.FindOrCreateGuildConfig(Context.Guild);
             SocketGuildUser user = (SocketGuildUser)Context.User;
-            if (!(UserIsGroupLeader(user, guildconfig)))
+            if (!(UserIsGroupLeader(guildconfig)))
             {
                 try
                 {
@@ -85,14 +85,254 @@ namespace HSBot.Modules
         {
             var embed = new EmbedBuilder();
             string subjectfolder = GuildsData.GuildsFolder + "/" + Context.Guild.Id + "/ClassSubjects";
+            string teacherfolder = GuildsData.GuildsFolder + "/" + Context.Guild.Id + "/ClassTeachers";
+            string hourfolder = GuildsData.GuildsFolder + "/" + Context.Guild.Id + "/ClassHours";
             if (!DataStorage.LocalFolderExists(subjectfolder, true))
-                Utilities.Log(MethodBase.GetCurrentMethod(), "SubjectFile Created", LogSeverity.Verbose);
+                await Utilities.Log(MethodBase.GetCurrentMethod(), "SubjectFolder Created for " + context.Guild.Name, LogSeverity.Verbose);
+            if (!DataStorage.LocalFolderExists(teacherfolder, true))
+                await Utilities.Log(MethodBase.GetCurrentMethod(), "TeacherFolder Created for " + context.Guild.Name, LogSeverity.Verbose);
+            if (!DataStorage.LocalFolderExists(hourfolder, true))
+                await Utilities.Log(MethodBase.GetCurrentMethod(), "HourFolder Created for " + context.Guild.Name, LogSeverity.Verbose);
             var ClassName = list[1].Replace("\"", "");
+
+            List<ulong> hourids;
+            string hourname;
+            List<Hour> hours;
+            Hour hour;
+            switch (ClassName) // Teacher Functions
+            {
+                case "Hour.Add":
+                    hourname = list[2].Replace("\"", "");
+                    hourids = SafeConversion<ulong>(DataStorage.GetFilesInFolder(subjectfolder), 0);
+
+                    if (hourids == null || !hourids.Any())
+                    {
+                        hour = new Hour
+                        {
+                            id = GenerateID(hourfolder),
+                            title = hourname,
+                        };
+                        hourids = new List<ulong>
+                        {
+                            hour.id
+                        };
+                        DataStorage.StoreObject(hour, hourfolder + "/" + hour.id + ".json", false);
+                    }
+                    else
+                    {
+                        hours = DataStorage.GetObjectsInFolder<Hour>(hourfolder);
+                        Hour hourtoremove = hours.Find(x => x.title == hourname);
+                        if (hourtoremove.title == hourname)
+                        {
+                            await SendClassicEmbed($"Hour with the name \"{hourtoremove.title}\" is already in the list.",
+                                "If you want to see the full list, use hour.Display! :smiley:");
+                            return;
+                        }
+                        hour = new Hour
+                        {
+                            id = GenerateID(hourfolder),
+                            title = hourname,
+                        };
+                        hours.Add(hour);
+                        DataStorage.StoreObject(hour, hourfolder + "/" + hour.id + ".json", false);
+                    }
+
+
+                    hours = DataStorage.GetObjectsInFolder<Hour>(hourfolder);
+                    embed = new EmbedBuilder();
+                    embed.WithTitle($"Hour with the name \"{hour.title}\" added to {Context.Guild.Name}.")
+                        .WithDescription("View them all with Hour.Display! :smiley:" +
+                            (hours.Count < 2 ? "" : $" *We're now up to {hours.Count} hours*"))
+                        .AddField("**Data**", $":notepad_spiral: ReferenceID: `{hour.id}`")
+                        .WithColor(new Color(60, 176, 222))
+                        .WithFooter(" -Alex https://discord.gg/DVSjvGa", "https://i.imgur.com/HAI5vMj.png");
+                    await Context.Channel.SendMessageAsync("", false, embed.Build());
+                    return;
+
+                case "Hour.Remove":
+                    hourname = list[2].Replace("\"", "");
+                    hourids = SafeConversion<ulong>(DataStorage.GetFilesInFolder(hourfolder), 0);
+                    if (hourids == null || !hourids.Any())
+                        await SendClassicEmbed($"No hours found on {Context.Guild.Name}.",
+                            $"Use Hour.Add to add the first one! :smiley:");
+                    else
+                    {
+                        hours = DataStorage.GetObjectsInFolder<Hour>(hourfolder);
+                        Hour hourtoremove = hours.Find(x => x.title == hourname);
+                        if (!(hours.Count == 0 || hourtoremove.title == string.Empty))
+                            await SendClassicEmbed($"{hourname} not found on {Context.Guild.Name}.",
+                                $"Try to use Hour.Display to see it's exact name! :smiley:");
+                        else
+                        {
+                            hours.Remove(hourtoremove);
+                            DataStorage.DeleteFile(hourfolder + "/" + hourtoremove.id + ".json");
+                            await SendClassicEmbed($"hour with the name \"{hourtoremove.title}\" removed from {Context.Guild.Name}.",
+                                "View them all with hour.Display! :smiley:" +
+                                (hours.Count < 2 ? "" : $" *We're now down to {hours.Count} hours*"));
+                            try
+                            {
+                                //attempt capture of related classes.
+                            }
+                            catch (Exception ex)
+                            {
+                                await SendErrorEmbed("Failure attempting to delete some roles and channels.",
+                                    "Exception during deletion of associated voice and text channels, and role.");
+                            }
+                        }
+                    }
+                    return;
+
+                case "Hour.Display":
+                    hourids = SafeConversion<ulong>(DataStorage.GetFilesInFolder(hourfolder), 0);
+                    if (hourids == null || !hourids.Any())
+                        await SendClassicEmbed($"No hours added to {Context.Guild.Name}.", "Go ahead and add one with hour.Add!");
+                    else
+                    {
+                        hours = DataStorage.GetObjectsInFolder<Hour>(hourfolder);
+                        int count = 0;
+                        embed.WithTitle("**hours in " + Context.Guild.Name + "**")
+                            .WithDescription("Add with hour.Add, remove with hour.Remove! :smiley:")
+                            .WithColor(new Color(60, 176, 222));
+                        foreach (Hour h in hours)
+                        {
+                            count++;
+                            embed.AddField($"{count} | ReferenceID: {h.id}", h.title);
+                            if (IsDivisible(count, 24))
+                            {
+                                await Context.Channel.SendMessageAsync("", false, embed.Build());
+                                embed = new EmbedBuilder();
+                                embed.WithTitle("Some more hours in " + Context.Guild.Name + "...")
+                                    .WithColor(new Color(60, 176, 222));
+                            }
+                        }
+                        embed.WithFooter(count + " hours in this school.", "https://i.imgur.com/HAI5vMj.png");
+                        await Context.Channel.SendMessageAsync("", false, embed.Build());
+                    }
+                    return;
+
+            } // hour functions.
+
+            List<ulong> teacherids;
+            string teachername;
+            List<Teacher> teachers;
+            Teacher teacher;
+            switch (ClassName) // Teacher Functions
+            {
+                case "Teacher.Add":
+                    teachername = list[2].Replace("\"", "");
+                    teacherids = SafeConversion<ulong>(DataStorage.GetFilesInFolder(subjectfolder), 0);
+
+                    if (teacherids == null || !teacherids.Any())
+                    {
+                        teacher = new Teacher
+                        {
+                            id = GenerateID(teacherfolder),
+                            name = teachername,
+                        };
+                        teacherids = new List<ulong>
+                        {
+                            teacher.id
+                        };
+                        DataStorage.StoreObject(teacher, teacherfolder + "/" + teacher.id + ".json", false);
+                    }
+                    else
+                    {
+                        teachers = DataStorage.GetObjectsInFolder<Teacher>(teacherfolder);
+                        Teacher teachertoremove = teachers.Find(x => x.name == teachername);
+                        if (!(teachertoremove.name == string.Empty))
+                        {
+                            await SendClassicEmbed($"Teacher with the name \"{teachername}\" is already in the list.",
+                                "If you want to see the full list, use teacher.Display! :smiley:");
+                            return;
+                        }
+                        teacher = new Teacher
+                        {
+                            id = GenerateID(teacherfolder),
+                            name = teachername,
+                        };
+                        teachers.Add(teacher);
+                        DataStorage.StoreObject(teacher, teacherfolder + "/" + teacher.id + ".json", false);
+                    }
+
+
+                    teachers = DataStorage.GetObjectsInFolder<Teacher>(teacherfolder);
+                    embed = new EmbedBuilder();
+                    embed.WithTitle($"Teacher with the name \"{teacher.name}\" added to {Context.Guild.Name}.")
+                        .WithDescription("View them all with Teacher.Display! :smiley:" +
+                            (teachers.Count < 2 ? "" : $" *We're now up to {teachers.Count} teachers*"))
+                        .AddField("**Data**", $":notepad_spiral: ReferenceID: `{teacher.id}`")
+                        .WithColor(new Color(60, 176, 222))
+                        .WithFooter(" -Alex https://discord.gg/DVSjvGa", "https://i.imgur.com/HAI5vMj.png");
+                    await Context.Channel.SendMessageAsync("", false, embed.Build());
+                    return;
+
+                case "Teacher.Remove":
+                    teachername = list[2].Replace("\"", "");
+                    teacherids = SafeConversion<ulong>(DataStorage.GetFilesInFolder(teacherfolder), 0);
+                    if (teacherids == null || !teacherids.Any())
+                        await SendClassicEmbed($"No teachers found on {Context.Guild.Name}.",
+                            $"Use Teacher.Add to add the first one! :smiley:");
+                    else
+                    {
+                        teachers = DataStorage.GetObjectsInFolder<Teacher>(teacherfolder);
+                        Teacher teachertoremove = teachers.Find(x => x.name == teachername);
+                        if (!(teachertoremove.name == string.Empty))
+                            await SendClassicEmbed($"{teachername} not found on {Context.Guild.Name}.",
+                                $"Try to use Teacher.Display to see it's exact name! :smiley:");
+                        else
+                        {
+                            teachers.Remove(teachertoremove);
+                            DataStorage.DeleteFile(teacherfolder + "/" + teachertoremove.id + ".json");
+                            await SendClassicEmbed($"Teacher with the name \"{teachertoremove.name}\" removed from {Context.Guild.Name}.",
+                                "View them all with Teacher.Display! :smiley:" +
+                                (teachers.Count < 2 ? "" : $" *We're now down to {teachers.Count} teachers*"));
+                            try
+                            {
+                                //attempt capture of related classes.
+                            }
+                            catch (Exception ex)
+                            {
+                                await SendErrorEmbed("Failure attempting to delete some roles and channels.",
+                                    "Exception during deletion of associated voice and text channels, and role.");
+                            }
+                        }
+                    }
+                    return;
+
+                case "Teacher.Display":
+                    teacherids = SafeConversion<ulong>(DataStorage.GetFilesInFolder(teacherfolder), 0);
+                    if (teacherids == null || !teacherids.Any())
+                        await SendClassicEmbed($"No teachers added to {Context.Guild.Name}.", "Go ahead and add one with teacher.Add!");
+                    else
+                    {
+                        teachers = DataStorage.GetObjectsInFolder<Teacher>(teacherfolder);
+                        int count = 0;
+                        embed.WithTitle("**teachers in " + Context.Guild.Name + "**")
+                            .WithDescription("Add with teacher.Add, remove with teacher.Remove! :smiley:")
+                            .WithColor(new Color(60, 176, 222));
+                        foreach (Teacher t in teachers)
+                        {
+                            count++;
+                            embed.AddField($"{count} | ReferenceID: {t.id}", t.name);
+                            if (IsDivisible(count, 24))
+                            {
+                                await Context.Channel.SendMessageAsync("", false, embed.Build());
+                                embed = new EmbedBuilder();
+                                embed.WithTitle("Some more teachers in " + Context.Guild.Name + "...")
+                                    .WithColor(new Color(60, 176, 222));
+                            }
+                        }
+                        embed.WithFooter(count + " teachers in this school.", "https://i.imgur.com/HAI5vMj.png");
+                        await Context.Channel.SendMessageAsync("", false, embed.Build());
+                    }
+                    return;
+
+            } // Teacher functions.
+
             List<ulong> subjectids;
             string subjectname;
             List<Subject> subjects;
             Subject subject;
-
             switch (ClassName) // Subject functions
             {
 
@@ -114,7 +354,7 @@ namespace HSBot.Modules
                     {
                         subjects = DataStorage.GetObjectsInFolder<Subject>(subjectfolder);
                         Subject subjecttoremove = subjects.Find(x => x.name == subjectname);
-                        if (!subjecttoremove.Equals(null))
+                        if (!(subjecttoremove.name == string.Empty))
                         {
                             await SendClassicEmbed($"Subject with the name \"{subjectname}\" is already in the list.",
                                 "If you want to see the full list, use Subject.Display! :smiley:");
@@ -132,9 +372,9 @@ namespace HSBot.Modules
                         .WithDescription("View them all with Subject.Display! :smiley:" +
                             (subjects.Count < 2 ? "" : $" *We're now up to {subjects.Count} subjects*"))
                         .AddField("**Data**", $":notepad_spiral: ReferenceID: `{subject.id}`\n\n" +
-                        $":mag_right: VoiceChannelID: `{subject.voicechannelid}`\n" +
-                        $":mag_right: TextChannelID: `{subject.textchannelid}`\n" +
-                        $":mag_right: RoleID: `{subject.roleid}`")
+                        $":mag_right: VoiceChannelID `{subject.voicechannelid}`\n" +
+                        $":mag_right: TextChannelID `{subject.textchannelid}`\n" +
+                        $":mag_right: RoleID `{subject.roleid}`")
                         .WithColor(new Color(60, 176, 222))
                         .WithFooter(" -Alex https://discord.gg/DVSjvGa", "https://i.imgur.com/HAI5vMj.png");
                     await Context.Channel.SendMessageAsync("", false, embed.Build());
@@ -150,7 +390,7 @@ namespace HSBot.Modules
                     {
                         subjects = DataStorage.GetObjectsInFolder<Subject>(subjectfolder);
                         Subject subjecttoremove = subjects.Find(x => x.name == subjectname);
-                        if (!(subjecttoremove.name == subjectname))
+                        if (!(subjecttoremove.name == string.Empty))
                             await SendClassicEmbed($"{subjectname} not found on {Context.Guild.Name}.",
                                 $"Try to use Subject.Display to see it's exact name! :smiley:");
                         else
@@ -160,6 +400,20 @@ namespace HSBot.Modules
                             await SendClassicEmbed($"Subject with the name \"{subjecttoremove.name}\" removed from {Context.Guild.Name}.",
                                 "View them all with Subject.Display! :smiley:" +
                                 (subjects.Count < 2 ? "" : $" *We're now down to {subjects.Count} subjects*"));
+                            try
+                            {
+                                await Context.Guild.GetChannel(subjecttoremove.textchannelid).DeleteAsync();
+                                await Context.Guild.GetChannel(subjecttoremove.voicechannelid).DeleteAsync();
+                                await Context.Guild.GetRole(subjecttoremove.roleid).DeleteAsync();
+
+                                //attempt capture of related classes.
+
+                            }
+                            catch (Exception ex)
+                            {
+                                await SendErrorEmbed("Failure attempting to delete some roles and channels.",
+                                    "Exception during deletion of associated voice and text channels, and role.");
+                            }
                         }
                     }
                     return;
@@ -206,7 +460,7 @@ namespace HSBot.Modules
 
                 subjectname = list[4].Replace("\"", "");
                 subject = subjects.Find(x => String.Compare(x.name, subjectname) == 0);
-                if (subject.Equals(null))
+                if (subject.Equals(null) || subject.name == "")
                 {
                     await SendClassicEmbed($"**Subject not found! with name {subject.name}**",
                         "Use Subject.Add to add the new subject! Or ensure it matches.");
@@ -260,6 +514,25 @@ namespace HSBot.Modules
     // Methods
     public sealed partial class LeaderRoleCommands : ModuleBase<SocketCommandContext>
     {
+        /// <summary>
+        /// Sends each property of given object in embed.
+        /// </summary>
+        /// <param name="obj"></param>
+        /// <param name=""></param>
+        /// <returns></returns>
+        public async Task SendClassEmbed<T>(string title, string desc, object obj)
+        {
+            var embed = new EmbedBuilder();
+            embed.WithTitle($"**{title}**")
+                .WithDescription($"*{desc}*")
+                .WithColor(new Color(60, 176, 222))
+                .WithFooter(" -Alex https://discord.gg/DVSjvGa", "https://i.imgur.com/HAI5vMj.png")
+                .WithCurrentTimestamp();
+            PropertyInfo[] properties = typeof(T).GetProperties();
+            foreach (PropertyInfo property in properties)
+                embed.AddField($"**{property.Name}**", $"*{property.GetValue(obj)}*", true);
+            await Context.Channel.SendMessageAsync("", false, embed.Build());
+        }
         public async Task SendSuccessEmbed(string title, string desc)
         {
             var embed = new EmbedBuilder
@@ -270,6 +543,7 @@ namespace HSBot.Modules
                 Footer = new EmbedFooterBuilder()
                     .WithText(" -Alex https://discord.gg/DVSjvGa")
                     .WithIconUrl("https://i.imgur.com/HAI5vMj.png"),
+                Timestamp = DateTime.UtcNow,
             }.Build();
             await Context.Channel.SendMessageAsync("", false, embed);
         }
@@ -283,6 +557,7 @@ namespace HSBot.Modules
                 Footer = new EmbedFooterBuilder()
                     .WithText(" -Alex https://discord.gg/DVSjvGa")
                     .WithIconUrl("https://i.imgur.com/HAI5vMj.png"),
+                Timestamp = DateTime.UtcNow,
                 Fields = new List<EmbedFieldBuilder>
                 {
                     new EmbedFieldBuilder()
@@ -304,6 +579,7 @@ namespace HSBot.Modules
                 Footer = new EmbedFooterBuilder()
                     .WithText(" -Alex https://discord.gg/DVSjvGa")
                     .WithIconUrl("https://i.imgur.com/HAI5vMj.png"),
+                Timestamp = DateTime.UtcNow,
             }.Build();
             await Context.Channel.SendMessageAsync("", false, embed);
         }
@@ -316,18 +592,16 @@ namespace HSBot.Modules
                 RestTextChannel subjectTC = Context.Guild.CreateTextChannelAsync(subjectname).Result;
                 GuildConfig guildconfig = GuildsData.FindOrCreateGuildConfig(Context.Guild);
                 var restrole = await Context.Guild.CreateRoleAsync(subjectname);
-                Utilities.Log(MethodBase.GetCurrentMethod(), $"RestRole: {restrole.Id}", LogSeverity.Info);
                 subject = new Subject
                 {
                     id = GenerateID(subjectfolder),
                     name = subjectname,
-                    voicechannelid = 0,
-                    textchannelid = 0,
+                    voicechannelid = subjectVC.Id,
+                    textchannelid = subjectTC.Id,
                     roleid = restrole.Id, // Converting to socketroleid
                 };
                 // Modify role settings.
-                var subjectrole = Context.Guild.Roles.FirstOrDefault(x => x.Id == restrole.Id);
-                await subjectrole.ModifyAsync(r =>
+                await restrole.ModifyAsync(r =>
                 {
                     r.Color = new Color(36, 110, 105);
                     r.Hoist = false;
@@ -335,17 +609,12 @@ namespace HSBot.Modules
                     r.Permissions = GuildPermissions.None;
                     //r.Position = Context.Guild.GetRole(guildconfig.VisitorRoleID).Position - 1;
                 });
-                Utilities.Log(MethodBase.GetCurrentMethod(), subject.roleid.ToString(), LogSeverity.Verbose);
                 // Add voice channel perms.
                 await subjectVC.AddPermissionOverwriteAsync(Context.Guild.EveryoneRole, EveryonePermissions());
-                Utilities.Log(MethodBase.GetCurrentMethod(), "SubjectFile Created", LogSeverity.Verbose);
-                await subjectVC.AddPermissionOverwriteAsync(Context.Guild.GetRole(subject.roleid), ClassPermissions());
-                Utilities.Log(MethodBase.GetCurrentMethod(), "SubjectFile Created", LogSeverity.Verbose);
+                await subjectVC.AddPermissionOverwriteAsync(restrole, ClassPermissions());
                 // Add text channel perms.
                 await subjectTC.AddPermissionOverwriteAsync(Context.Guild.EveryoneRole, EveryonePermissions());
-
-                await subjectTC.AddPermissionOverwriteAsync(Context.Guild.GetRole(subject.roleid), ClassPermissions());
-                Utilities.Log(MethodBase.GetCurrentMethod(), "SubjectFile Created", LogSeverity.Verbose);
+                await subjectTC.AddPermissionOverwriteAsync(restrole, ClassPermissions());
                                 
                 return subject;
             }
@@ -455,14 +724,14 @@ namespace HSBot.Modules
             }
             return (new string(parmChars)).Split('\n');
         }
-        public bool UserIsGroupLeader(SocketGuildUser user, GuildConfig guildconfig)
+        public bool UserIsGroupLeader(GuildConfig guildconfig)
         {
             try
             {
-                if (UserHasRole(user, guildconfig.ChannelManagerRoleID)
-                    || UserHasRole(user, guildconfig.DirectorRoleID)
-                    || UserHasRole(user, guildconfig.GroupManagerRoleID)
-                    || UserHasRole(user, guildconfig.VoiceManagerRoleID)) return true;
+                if (UserHasRole(guildconfig.ChannelManagerRoleID)
+                    || UserHasRole(guildconfig.DirectorRoleID)
+                    || UserHasRole(guildconfig.GroupManagerRoleID)
+                    || UserHasRole(guildconfig.VoiceManagerRoleID)) return true;
             }
             catch (Exception ex)
             {
@@ -471,8 +740,9 @@ namespace HSBot.Modules
             //Utilities.Log(MethodBase.GetCurrentMethod(), "F",LogSeverity.Warning);
             return false;
         }
-        public bool UserHasRole(SocketGuildUser user, ulong roleId)
+        public bool UserHasRole(ulong roleId)
         {
+            var user = (SocketGuildUser)Context.User;
             foreach (SocketRole role in user.Roles)
             {
                 // Utilities.Log(MethodBase.GetCurrentMethod(), role.Id + " -- " + roleId);

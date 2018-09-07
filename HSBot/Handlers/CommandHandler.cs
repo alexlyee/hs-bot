@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using Discord;
 using System.IO;
 using System;
+using HSBot.Modules;
 
 namespace HSBot.Handlers
 {
@@ -14,7 +15,7 @@ namespace HSBot.Handlers
     {
         private volatile DiscordSocketClient _client;
         private volatile CommandService _cmdService;
-        private volatile SocketCommandContext context;
+        //private volatile SocketCommandContext context;
         private readonly IServiceProvider _serviceProvider;
 
         public async Task InitializeAsync()
@@ -49,15 +50,16 @@ namespace HSBot.Handlers
                 if (_client.GetChannel(GuildsData.FindGuildConfig(user.Guild.Id).LogChannelID) is SocketTextChannel discordBotTutorialGeneral)
                     await discordBotTutorialGeneral.SendMessageAsync(
                         $"{user.Username} ({user.Id}) left **{user.Guild.Name}**!");
+                Utilities.Log(MethodBase.GetCurrentMethod(), $"{user.Nickname} left IAC.", LogSeverity.Verbose);
             }
         }
 
         public async Task HandleCommandAsync(SocketMessage s)
         {
             if (!(s is SocketUserMessage msg)) return;
-            context = new SocketCommandContext(_client, msg);
+                var Context = new Context(_client, msg, _serviceProvider);
             int argPos = 0;
-            if (msg.HasStringPrefix(GuildsData.FindOrCreateGuildConfig(context.Guild).Prefix, ref argPos)
+            if (msg.HasStringPrefix(GuildsData.FindOrCreateGuildConfig(Context.Guild).Prefix, ref argPos)
                 || msg.HasMentionPrefix(_client.CurrentUser, ref argPos))
             {
                 await Utilities.Log(MethodBase.GetCurrentMethod(), "Command detected.", Discord.LogSeverity.Verbose);
@@ -75,16 +77,16 @@ namespace HSBot.Handlers
                 }
                 */
 
-                var result = await _cmdService.ExecuteAsync(context, argPos);
-                if(!result.IsSuccess && result.Error != CommandError.UnknownCommand)
+                var result = await _cmdService.ExecuteAsync(Context, argPos, _serviceProvider);
+                if (!result.IsSuccess && result.Error != CommandError.UnknownCommand)
                 {
-                    await context.Channel.SendMessageAsync(result.ErrorReason);
+                    await Context.Channel.SendMessageAsync(result.ErrorReason);
                 }
                 else
                 {
                     // ------------------ create statistics machine. Class DatabaseHandler
                     // ------------------ create 
-                    context.Guild.GetTextChannel(GuildsData.FindGuildConfig(context.Guild.Id).LogChannelID);
+                    Context.Guild.GetTextChannel(GuildsData.FindGuildConfig(Context.Guild.Id).LogChannelID);
                 }
             }
         }

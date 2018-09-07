@@ -17,13 +17,14 @@ namespace HSBot.Modules
 {
     public partial class UserRoleCommands : ModuleBase<SocketCommandContext>
     {
-
+        /* This will never work because the context will not update
         [Command("TestRole")]
         public async Task TestRole(string rolename)
         {
             var role = Task.Run(async () => { return await Context.Guild.CreateRoleAsync(rolename); }).Result;
             var socketRoles = Context.Guild.Roles;
             SocketRole srole = RolesFromName(role.Name).FirstOrDefault();
+            
             foreach (SocketRole r in socketRoles)
             {
                 Utilities.Log(MethodBase.GetCurrentMethod(), $"{r.Name} : {r.Id} looking for {role.Id}", LogSeverity.Verbose);
@@ -35,11 +36,11 @@ namespace HSBot.Modules
                 }
                 
             }
-
+            
             await SendClassicEmbed($"RestRole: {role.Id}\nSocketRole: {srole.Id}", "hi");
             await role.DeleteAsync();
         }
-
+        */
 
         [Command("Stats")]
         public async Task Stats([Remainder]string arg = "")
@@ -154,6 +155,25 @@ public async Task T([Remainder] string roleSelection)
     // Methods
     public sealed partial class UserRoleCommands : ModuleBase<SocketCommandContext>
     {
+        /// <summary>
+        /// Sends each property of given object in embed.
+        /// </summary>
+        /// <param name="obj"></param>
+        /// <param name=""></param>
+        /// <returns></returns>
+        public async Task SendClassEmbed<T>(string title, string desc, object obj)
+        {
+            var embed = new EmbedBuilder();
+            embed.WithTitle($"**{title}**")
+                .WithDescription($"*{desc}*")
+                .WithColor(new Color(60, 176, 222))
+                .WithFooter(" -Alex https://discord.gg/DVSjvGa", "https://i.imgur.com/HAI5vMj.png")
+                .WithCurrentTimestamp();
+            PropertyInfo[] properties = typeof(T).GetProperties();
+            foreach (PropertyInfo property in properties)
+                embed.AddField($"**{property.Name}**", $"*{property.GetValue(obj)}*", true);
+            await Context.Channel.SendMessageAsync("", false, embed.Build());
+        }
         public async Task SendSuccessEmbed(string title, string desc)
         {
             var embed = new EmbedBuilder
@@ -164,6 +184,7 @@ public async Task T([Remainder] string roleSelection)
                 Footer = new EmbedFooterBuilder()
                     .WithText(" -Alex https://discord.gg/DVSjvGa")
                     .WithIconUrl("https://i.imgur.com/HAI5vMj.png"),
+                Timestamp = DateTime.UtcNow,
             }.Build();
             await Context.Channel.SendMessageAsync("", false, embed);
         }
@@ -177,6 +198,7 @@ public async Task T([Remainder] string roleSelection)
                 Footer = new EmbedFooterBuilder()
                     .WithText(" -Alex https://discord.gg/DVSjvGa")
                     .WithIconUrl("https://i.imgur.com/HAI5vMj.png"),
+                Timestamp = DateTime.UtcNow,
                 Fields = new List<EmbedFieldBuilder>
                 {
                     new EmbedFieldBuilder()
@@ -198,6 +220,7 @@ public async Task T([Remainder] string roleSelection)
                 Footer = new EmbedFooterBuilder()
                     .WithText(" -Alex https://discord.gg/DVSjvGa")
                     .WithIconUrl("https://i.imgur.com/HAI5vMj.png"),
+                Timestamp = DateTime.UtcNow,
             }.Build();
             await Context.Channel.SendMessageAsync("", false, embed);
         }

@@ -18,6 +18,7 @@ using HSBot.Modules.References;
 using System.Net;
 using Newtonsoft.Json;
 using NReco;
+using HSBot.Entities;
 
 namespace HSBot.Modules
 {
@@ -38,48 +39,29 @@ namespace HSBot.Modules
             var firstWord = message.IndexOf(" ") > -1
                 ? message.Substring(0, message.IndexOf(" "))
                 : message;
+            string configfile = $"{GuildsData.GuildsFolder}/{Context.Guild.Id}/config.json";
+            GuildConfig config = DataStorage.RestoreObject<GuildConfig>(configfile);
             switch (firstWord)
             {
                 case "View":
-                    embed.WithTitle("**Config.json**")
-                        .WithDescription($"The configuration for {Context.Guild.Name} :smiley:")
-                        .WithColor(new Color(60, 176, 222))
-                        .WithFooter(" -Alex https://discord.gg/DVSjvGa", "https://i.imgur.com/HAI5vMj.png")
-                        .AddField("LogChannelID", GuildsData.FindOrCreateGuildConfig(Context.Guild).LogChannelID)
-                        .AddField("Prefix", GuildsData.FindOrCreateGuildConfig(Context.Guild).Prefix)
-                        .AddField("Id", GuildsData.FindOrCreateGuildConfig(Context.Guild).Id)
-                        .AddField("ActivityChannelID", GuildsData.FindOrCreateGuildConfig(Context.Guild).ActivityChannelID)
-                        .AddField("DirectorRoleID", GuildsData.FindOrCreateGuildConfig(Context.Guild).DirectorRoleID)
-                        .AddField("ManagerRoleID", GuildsData.FindOrCreateGuildConfig(Context.Guild).ManagerRoleID)
-                        .AddField("ContriverRoleID", GuildsData.FindOrCreateGuildConfig(Context.Guild).ContriverRoleID)
-                        .AddField("JudgeRoleID", GuildsData.FindOrCreateGuildConfig(Context.Guild).JudgeRoleID)
-                        .AddField("AdministratorRoleID", GuildsData.FindOrCreateGuildConfig(Context.Guild).AdministratorRoleID)
-                        .AddField("ModeratorRoleID", GuildsData.FindOrCreateGuildConfig(Context.Guild).ModeratorRoleID)
-                        .AddField("GraduatedRoleID", GuildsData.FindOrCreateGuildConfig(Context.Guild).GraduatedRoleID)
-                        .AddField("StudentRoleID", GuildsData.FindOrCreateGuildConfig(Context.Guild).StudentRoleID)
-                        .AddField("VisitorRoleID", GuildsData.FindOrCreateGuildConfig(Context.Guild).VisitorRoleID)
-                        .AddField("ChannelManagerRoleID", GuildsData.FindOrCreateGuildConfig(Context.Guild).ChannelManagerRoleID)
-                        .AddField("WebhookManagerRoleID", GuildsData.FindOrCreateGuildConfig(Context.Guild).WebhookManagerRoleID)
-                        .AddField("GroupManagerRoleID", GuildsData.FindOrCreateGuildConfig(Context.Guild).GroupManagerRoleID)
-                        .AddField("VoiceManagerRoleID", GuildsData.FindOrCreateGuildConfig(Context.Guild).VoiceManagerRoleID)
-                        .AddField("TimeCreated", GuildsData.FindOrCreateGuildConfig(Context.Guild).TimeCreated);
-                    await Context.Channel.SendMessageAsync("", false, embed.Build());
+                    await SendClassEmbed<GuildConfig>("config.json", $"Configuration for {Context.Guild.Name} :smiley:", config);
+                    DataStorage.StoreObject(config, configfile);
                     break;
                 case "Modify":
-                    if (Context.User.Id == Context.Guild.OwnerId)
+                    if (Context.User.Id == Context.Guild.OwnerId || UserHasRole(config.DirectorRoleID))
                     {
-                        string scan = message.Substring(message.IndexOf(" "));
+                        string scan = message.Substring(message.IndexOf(" ") + 1);
                         string[] vars = scan.Split('=');
                         try
                         {
                             PropertyInfo tochange = GuildsData.FindOrCreateGuildConfig(Context.Guild).GetType().GetProperty(vars[0]);
-                            tochange.SetValue(vars[1], Convert.ChangeType(vars[1], tochange.PropertyType), null);
+                            tochange.SetValue(vars[1], tochange.GetValue(config, null), null);
                             await SendClassicEmbed("**Config.json**", $"Set {vars[0]} to {vars[1]}.");
                         }
                         catch (Exception ex)
                         {
                             await SendClassicEmbed("**Syntax error**", "Check for spaces and a proper value=this format. :smiley:");
-                            Utilities.Log(MethodBase.GetCurrentMethod(), $"Error changing GuildData. {vars[0]} = {vars[1]}", ex, LogSeverity.Error);
+                            await Utilities.Log(MethodBase.GetCurrentMethod(), $"Error changing GuildData. {vars[0]} = {vars[1]}", ex, LogSeverity.Error);
                         }
                     }
                     else await SendClassicEmbed("**Only an owner can use this command**", "");
@@ -250,6 +232,25 @@ namespace HSBot.Modules
     // Methods
     public sealed partial class BasicCommands : ModuleBase<SocketCommandContext>
     {
+        /// <summary>
+        /// Sends each property of given object in embed.
+        /// </summary>
+        /// <param name="obj"></param>
+        /// <param name=""></param>
+        /// <returns></returns>
+        public async Task SendClassEmbed<T>(string title, string desc, object obj)
+        {
+            var embed = new EmbedBuilder();
+            embed.WithTitle($"**{title}**")
+                .WithDescription($"*{desc}*")
+                .WithColor(new Color(60, 176, 222))
+                .WithFooter(" -Alex https://discord.gg/DVSjvGa", "https://i.imgur.com/HAI5vMj.png")
+                .WithCurrentTimestamp();
+            PropertyInfo[] properties = typeof(T).GetProperties();
+            foreach (PropertyInfo property in properties)
+                embed.AddField($"**{property.Name}**", $"*{property.GetValue(obj)}*", true);
+            await Context.Channel.SendMessageAsync("", false, embed.Build());
+        }
         public async Task SendSuccessEmbed(string title, string desc)
         {
             var embed = new EmbedBuilder
@@ -260,6 +261,7 @@ namespace HSBot.Modules
                 Footer = new EmbedFooterBuilder()
                     .WithText(" -Alex https://discord.gg/DVSjvGa")
                     .WithIconUrl("https://i.imgur.com/HAI5vMj.png"),
+                Timestamp = DateTime.UtcNow,
             }.Build();
             await Context.Channel.SendMessageAsync("", false, embed);
         }
@@ -273,6 +275,7 @@ namespace HSBot.Modules
                 Footer = new EmbedFooterBuilder()
                     .WithText(" -Alex https://discord.gg/DVSjvGa")
                     .WithIconUrl("https://i.imgur.com/HAI5vMj.png"),
+                Timestamp = DateTime.UtcNow,
                 Fields = new List<EmbedFieldBuilder>
                 {
                     new EmbedFieldBuilder()
@@ -294,8 +297,35 @@ namespace HSBot.Modules
                 Footer = new EmbedFooterBuilder()
                     .WithText(" -Alex https://discord.gg/DVSjvGa")
                     .WithIconUrl("https://i.imgur.com/HAI5vMj.png"),
+                Timestamp = DateTime.UtcNow,
             }.Build();
             await Context.Channel.SendMessageAsync("", false, embed);
+        }
+        public bool UserIsGroupLeader(GuildConfig guildconfig)
+        {
+            try
+            {
+                if (UserHasRole(guildconfig.ChannelManagerRoleID)
+                    || UserHasRole(guildconfig.DirectorRoleID)
+                    || UserHasRole(guildconfig.GroupManagerRoleID)
+                    || UserHasRole(guildconfig.VoiceManagerRoleID)) return true;
+            }
+            catch (Exception ex)
+            {
+                Utilities.Log(MethodBase.GetCurrentMethod(), "Failure checking roles.", ex, LogSeverity.Warning);
+            }
+            //Utilities.Log(MethodBase.GetCurrentMethod(), "F",LogSeverity.Warning);
+            return false;
+        }
+        public bool UserHasRole(ulong roleId)
+        {
+            var user = (SocketGuildUser)Context.User;
+            foreach (SocketRole role in user.Roles)
+            {
+                // Utilities.Log(MethodBase.GetCurrentMethod(), role.Id + " -- " + roleId);
+                if (role.Id == roleId) return true;
+            }
+            return false;
         }
         private bool IsDivisible(int x, int n)
         {
