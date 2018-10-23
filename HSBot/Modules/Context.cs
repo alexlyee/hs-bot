@@ -6,6 +6,7 @@ using HSBot.Entities;
 using Microsoft.Extensions.DependencyInjection;
 using Discord.WebSocket;
 using HSBot.Helpers;
+using HSBot.Persistent;
 // Thank you Charly#7094
 
 namespace HSBot.Modules
@@ -16,8 +17,8 @@ namespace HSBot.Modules
         public new SocketGuild Guild { get; }
         public SecureRandom Random { get; }
         private IServiceProvider _provider;
-        private UserAccount _userAccount;
-
+        public UserAccount _userAccount { get; }
+        public GuildConfig GuildConfig { get; }
 
         public new DiscordSocketClient Client { get; }
         public HttpClient HttpClient { get; }
@@ -32,6 +33,8 @@ namespace HSBot.Modules
             User = message.Author;
             Channel = message.Channel;
             Guild = (message.Channel as SocketGuildChannel)?.Guild;
+            GuildConfig = GuildsData.FindOrCreateGuildConfig(Guild);
+            _userAccount = UserAccounts.CreateUserAccount(message.Author.Id, true);
         }
     }
 }

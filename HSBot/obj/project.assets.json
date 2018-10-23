@@ -2,6 +2,34 @@
   "version": 3,
   "targets": {
     ".NETCoreApp,Version=v2.0": {
+      "Discord.Addons.CommandCache/2.0.0": {
+        "type": "package",
+        "dependencies": {
+          "Discord.Net.Commands": "1.0.2",
+          "Discord.Net.WebSocket": "1.0.2",
+          "NETStandard.Library": "1.6.1"
+        },
+        "compile": {
+          "lib/netstandard1.3/Discord.Addons.CommandCache.dll": {}
+        },
+        "runtime": {
+          "lib/netstandard1.3/Discord.Addons.CommandCache.dll": {}
+        }
+      },
+      "Discord.Addons.Interactive/1.0.1": {
+        "type": "package",
+        "dependencies": {
+          "Discord.Net.Commands": "1.0.1",
+          "Discord.Net.WebSocket": "1.0.1",
+          "NETStandard.Library": "1.6.1"
+        },
+        "compile": {
+          "lib/netstandard1.1/Discord.Addons.Interactive.dll": {}
+        },
+        "runtime": {
+          "lib/netstandard1.1/Discord.Addons.Interactive.dll": {}
+        }
+      },
       "Discord.Net/2.0.0-beta": {
         "type": "package",
         "dependencies": {
@@ -2464,6 +2492,26 @@
     }
   },
   "libraries": {
+    "Discord.Addons.CommandCache/2.0.0": {
+      "sha512": "XR7LUZu5jSwa5G8/U7Fi6AF5HO14Zg6NPVqYtFq7uoP/UFrru+2MQ2gy7FusyYdEV+OwY9m63Up51qLibjjCUw==",
+      "type": "package",
+      "path": "discord.addons.commandcache/2.0.0",
+      "files": [
+        "discord.addons.commandcache.2.0.0.nupkg.sha512",
+        "discord.addons.commandcache.nuspec",
+        "lib/netstandard1.3/Discord.Addons.CommandCache.dll"
+      ]
+    },
+    "Discord.Addons.Interactive/1.0.1": {
+      "sha512": "jpLtwySgRtkng2DVu8Q0ZKQjCUW9WpxEJ62eqwO1LYmnqrnhFl0mbRz7HlJCJiWay4FsS3vap3pixW+sXE4Y+Q==",
+      "type": "package",
+      "path": "discord.addons.interactive/1.0.1",
+      "files": [
+        "discord.addons.interactive.1.0.1.nupkg.sha512",
+        "discord.addons.interactive.nuspec",
+        "lib/netstandard1.1/Discord.Addons.Interactive.dll"
+      ]
+    },
     "Discord.Net/2.0.0-beta": {
       "sha512": "hOB5NeqRTrPTM7+k6y/O8XyYs9aM+fmymYGdGsbACEPGKXwWvjo84Sg2saie9OSNMcJOv/4LuscjhbVkG/uZsA==",
       "type": "package",
@@ -7630,6 +7678,8 @@
   },
   "projectFileDependencyGroups": {
     ".NETCoreApp,Version=v2.0": [
+      "Discord.Addons.CommandCache >= 2.0.0",
+      "Discord.Addons.Interactive >= 1.0.1",
       "Discord.Net >= 2.0.0-beta",
       "Discord.Net.Analyzers >= 2.0.0-beta",
       "Discord.Net.Commands >= 2.0.0-beta",
@@ -7686,6 +7736,14 @@
     "frameworks": {
       "netcoreapp2.0": {
         "dependencies": {
+          "Discord.Addons.CommandCache": {
+            "target": "Package",
+            "version": "[2.0.0, )"
+          },
+          "Discord.Addons.Interactive": {
+            "target": "Package",
+            "version": "[1.0.1, )"
+          },
           "Discord.Net": {
             "target": "Package",
             "version": "[2.0.0-beta, )"

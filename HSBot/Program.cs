@@ -68,7 +68,8 @@ namespace HSBot
 
             await _client.LoginAsync(TokenType.Bot, Config.BotConfig.Token);
             await _client.StartAsync();
-            await Utilities.Log(MethodBase.GetCurrentMethod(), "Program running!");
+            await _client.SetGameAsync(Config.BotConfig.Playing, "https://www.twitch.tv/alexlyee", ActivityType.Streaming);
+            await Utilities.Log(MethodBase.GetCurrentMethod(), "Program running! :)");
             await Task.Delay(-1);
         }
 

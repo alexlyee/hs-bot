@@ -190,6 +190,7 @@ public async Task T([Remainder] string roleSelection)
         }
         public async Task SendErrorEmbed(string title, string desc, Exception ex = null)
         {
+            if (ex == null) ex = new Exception();
             var embed = new EmbedBuilder
             {
                 Title = title,

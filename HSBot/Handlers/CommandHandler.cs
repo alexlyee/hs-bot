@@ -81,6 +81,7 @@ namespace HSBot.Handlers
                 if (!result.IsSuccess && result.Error != CommandError.UnknownCommand)
                 {
                     await Context.Channel.SendMessageAsync(result.ErrorReason);
+                    
                 }
                 else
                 {

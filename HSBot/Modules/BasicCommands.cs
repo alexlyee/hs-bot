@@ -28,8 +28,9 @@ namespace HSBot.Modules
         public async Task Help()
         {
             // spend time here developing system to display all the commands properly and allow the user to specify depth and detail.
-
-     
+            await SendClassicEmbed("**Thanks for showing interest in our bot!**", "All of the official documentation is on our wiki! *and if" +
+                " you're interested in developing with us check out the rest of the github!* :smiley: https://github.com/alexlyee/hs-bot/wiki");
+            Context.
         }
 
         [Command("schoolsettings")]
@@ -60,7 +61,7 @@ namespace HSBot.Modules
                         }
                         catch (Exception ex)
                         {
-                            await SendClassicEmbed("**Syntax error**", "Check for spaces and a proper value=this format. :smiley:");
+                            await SendErrorEmbed("**Syntax error**", "Check for spaces and a proper value=this format. :smiley:");
                             await Utilities.Log(MethodBase.GetCurrentMethod(), $"Error changing GuildData. {vars[0]} = {vars[1]}", ex, LogSeverity.Error);
                         }
                     }
@@ -75,7 +76,7 @@ namespace HSBot.Modules
                     else await SendClassicEmbed("**Only an owner can use this command**", "");
                     break;
                 default:
-                    await SendClassicEmbed("Syntax problem", "Choose to View, Modify, or Reset! :smiley:");
+                    await SendErrorEmbed("Syntax problem", "Choose to View, Modify, or Reset! :smiley:");
                     return;
             }
         }
@@ -267,6 +268,7 @@ namespace HSBot.Modules
         }
         public async Task SendErrorEmbed(string title, string desc, Exception ex = null)
         {
+            if (ex == null) ex = new Exception();
             var embed = new EmbedBuilder
             {
                 Title = title,

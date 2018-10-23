@@ -1,13 +1,15 @@
 {
   "runtimeTarget": {
     "name": ".NETCoreApp,Version=v2.0",
-    "signature": "28bd412e17eea83e0c9b4acd2a31db084d732110"
+    "signature": "2682f6b6be7a8a597673a3a2e7f3e204aab42295"
   },
   "compilationOptions": {},
   "targets": {
     ".NETCoreApp,Version=v2.0": {
       "HSBot/1.0.0": {
         "dependencies": {
+          "Discord.Addons.CommandCache": "2.0.0",
+          "Discord.Addons.Interactive": "1.0.1",
           "Discord.Net": "2.0.0-beta",
           "Discord.Net.Analyzers": "2.0.0-beta",
           "Discord.Net.Commands": "2.0.0-beta",
@@ -23,6 +25,30 @@
         },
         "runtime": {
           "HSBot.dll": {}
+        }
+      },
+      "Discord.Addons.CommandCache/2.0.0": {
+        "dependencies": {
+          "Discord.Net.Commands": "2.0.0-beta",
+          "Discord.Net.WebSocket": "2.0.0-beta"
+        },
+        "runtime": {
+          "lib/netstandard1.3/Discord.Addons.CommandCache.dll": {
+            "assemblyVersion": "2.0.0.0",
+            "fileVersion": "2.0.0.0"
+          }
+        }
+      },
+      "Discord.Addons.Interactive/1.0.1": {
+        "dependencies": {
+          "Discord.Net.Commands": "2.0.0-beta",
+          "Discord.Net.WebSocket": "2.0.0-beta"
+        },
+        "runtime": {
+          "lib/netstandard1.1/Discord.Addons.Interactive.dll": {
+            "assemblyVersion": "1.0.1.0",
+            "fileVersion": "1.0.1.0"
+          }
         }
       },
       "Discord.Net/2.0.0-beta": {
@@ -1678,6 +1704,20 @@
       "type": "project",
       "serviceable": false,
       "sha512": ""
+    },
+    "Discord.Addons.CommandCache/2.0.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-XR7LUZu5jSwa5G8/U7Fi6AF5HO14Zg6NPVqYtFq7uoP/UFrru+2MQ2gy7FusyYdEV+OwY9m63Up51qLibjjCUw==",
+      "path": "discord.addons.commandcache/2.0.0",
+      "hashPath": "discord.addons.commandcache.2.0.0.nupkg.sha512"
+    },
+    "Discord.Addons.Interactive/1.0.1": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-jpLtwySgRtkng2DVu8Q0ZKQjCUW9WpxEJ62eqwO1LYmnqrnhFl0mbRz7HlJCJiWay4FsS3vap3pixW+sXE4Y+Q==",
+      "path": "discord.addons.interactive/1.0.1",
+      "hashPath": "discord.addons.interactive.1.0.1.nupkg.sha512"
     },
     "Discord.Net/2.0.0-beta": {
       "type": "package",

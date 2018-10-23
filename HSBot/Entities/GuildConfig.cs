@@ -31,6 +31,7 @@ namespace HSBot.Entities
         public ulong VoiceManagerRoleID { get; set; }
 
         public uint ClassChannelPosition { get; set; }
+        public uint ClassVoiceChannelPosition { get; set; }
 
         public string TimeCreated { get; set; }
     }

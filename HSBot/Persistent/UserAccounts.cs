@@ -77,7 +77,7 @@ namespace HSBot.Persistent
                          select a;
 
             var account = result.FirstOrDefault();
-            if (account == null && createifempty) CreateUserAccount(id);
+            if (account == null && createifempty) account = CreateUserAccount(id);
             return account;
         }
 

@@ -32,7 +32,11 @@ namespace HSBot.Modules.References
                 Utilities.Log(MethodBase.GetCurrentMethod(), "Failed to create class with both subject and channel.");
                 return;
             }
-
+            hours = this.hours;
+            teacher = this.teacher;
+            roles = this.roles;
+            subject = this.subject;
+            channel = this.channel;
         }
     }
     class GroupOverseen : GroupType
