@@ -619,6 +619,7 @@ namespace HSBot.Modules
              * Store hours.json
              * Under Classes save id.json for class id and inside store name, teacher, hour, roleid, possible subject name or voicechannelid and textchannelid.
              * classes have ids because they can have the same name.
+             * Cannot be two hours with same name.
              */
 
             await Utilities.Log(MethodBase.GetCurrentMethod(), "SubjectFile Created", LogSeverity.Verbose);
@@ -736,7 +737,7 @@ namespace HSBot.Modules
                 // Modify role settings.
                 await restrole.ModifyAsync(r =>
                 {
-                    r.Color = new Color(36, 110, 105);
+                    r.Color = new Color(119, 118, 158);
                     r.Hoist = false;
                     r.Mentionable = true;
                     r.Permissions = GuildPermissions.None;
@@ -770,24 +771,121 @@ namespace HSBot.Modules
                 PermValue.Deny, PermValue.Deny, PermValue.Deny, PermValue.Deny,
                 PermValue.Deny, PermValue.Deny, PermValue.Deny, PermValue.Deny,
                 PermValue.Deny, PermValue.Deny, PermValue.Deny);
-        /*
-        public async Task<GroupClass> CreateGroupClass()
+        
+        public async Task<GroupClass> CreateGroupClass(string hourFolder, string teacherFolder, string classFolder, string subjectFolder = "")
         {
+            // find class name!
+            await ReplyAsync("**Alright, before anything** a group must have a name! What is the name of this class?");
+            var classname = await AwaitMessage(100);
+            if (classname.Equals(null)) return null;
+            // find hour.
             await ReplyAsync("Firstly, specify the **hours this class is in**. Format it like this: \n" +
                 "```hourname,hourname,hourname```\nOr simply\n```hourname```");
-            var hoursmsg = await NextMessageAsync(true, true, new TimeSpan(10000000 * 10)); // 10000000 ticks is one second.
-            if (hoursmsg == null)
+            var hoursmsg = await AwaitMessage(100, "Try `h!group Class Hour.Add`");
+            if (hoursmsg.Equals(null)) return null;
+            List<Hour> hours = DataStorage.GetObjectsInFolder<Hour>(hourFolder); List<Hour> shours;
+            if (hoursmsg.Content.Contains(",")) shours = hours.FindAll(x => hoursmsg.Content.Split(",").Contains(x.title));
+                else shours = hours.FindAll(h => h.title == hoursmsg.Content);
+            if (shours.Equals(null) || shours.Count == 0)
             {
-                await ReplyAsync("You did not reply in time! ");
+                await ReplyAsync("No group found, remember to be exact! Try `h!group Class Hour.Add`");
                 return null;
             }
-            string[] hours;
-            if (hoursmsg.Content.Contains(",")) hours = hoursmsg.Content.Split(","); else hours = new string[1] { hoursmsg.Content };
-            hours = DataStorage.GetObjectsInFolder<Hour>(hourfolder);
-            // locate each hour...
-            //var C = new GroupClass()
+            await ReplyAsync(shours.Count + ((shours.Count > 1) ? " hours" : " hour") + " found!");
+            // find teacher.
+            await ReplyAsync("Great! Next up, the teacher of this class. Just say the name of the teacher as it is.");
+            var teachermsg = await AwaitMessage(100, "Try `h!group Class Teacher.Add`");
+            if (teachermsg.Equals(null)) return null;
+            List<Teacher> teachers = DataStorage.GetObjectsInFolder<Teacher>(hourFolder); Teacher teacher;
+            teacher = teachers.Find(t => t.name == hoursmsg.Content);
+            if (teacher.Equals(null))
+            {
+                await ReplyAsync($"No teacher found with name **{hoursmsg.Content}**, remember to be exact!" +
+                    $" Try `h!group Class Hour.Add`");
+                return null;
+            }
+            await ReplyAsync($"Teacher found with name {teacher.name}.");
+            // subject?
+            await ReplyAsync("Perfect! Is there a subject in this school that can be applied to this class? If so," +
+                " say the name of the subject. If not, simply say \"no\"");
+            var subjectmsg = await AwaitMessage(100, "Try `h!group Class Subject.Add`");
+            if (subjectmsg.Equals(null)) return null;
+            Subject subject; SocketTextChannel channel;
+            if (subjectmsg.Content != "no")
+            {
+                var subjects = DataStorage.GetObjectsInFolder<Subject>(subjectFolder);
+                subject = subjects.Find(s => s.name == subjectmsg.Content);
+                if (subject.Equals(null))
+                {
+                    await ReplyAsync($"No subject found with name **{subjectmsg.Content}**, remember to be exact!" +
+                        $" Try `h!group Class Subject.Add`");
+                    return null;
+                }
+                await ReplyAsync($"Subject found with name {subject.name}.");
+            }
+            //
+            await ReplyAsync("**All set!** I'll automatically generate the channels and roles for this class, " +
+                "and get back to you once I'm done...");
+            // generate roles...
+            List<RestRole> roles = new List<RestRole>();
+            foreach (Hour h in shours)
+            {
+                RestRole role = await Context.Guild.CreateRoleAsync($"{h.title}: {teacher.name}, {classname}");
+                await role.ModifyAsync(r =>
+                {
+                    r.Color = new Color(89, 88, 133);
+                    r.Hoist = false;
+                    r.Mentionable = true;
+                    r.Permissions = GuildPermissions.None;
+                    //r.Position = Context.Guild.GetRole(guildconfig.VisitorRoleID).Position - 1;
+                });
+                roles.Add(role);
+            }
+
+            if (subjectmsg.Content == "no")
+            {
+                await ReplyAsync("Would you like to create a channel for this class? \"yes\" or anything else.");
+                var qchannel = await AwaitMessage(100, "Well this is an awkward step to fail at.");
+                if (qchannel.Equals(null)) return null;
+                List<ulong> roleids = new List<ulong>();
+                if (qchannel.Content == "yes")
+                {
+                    var newchannel = Context.Guild.CreateTextChannelAsync($"{teacher.name}, {classname}").Result;
+                    await newchannel.AddPermissionOverwriteAsync(Context.Guild.EveryoneRole, EveryonePermissions());
+                    foreach (RestRole r in roles) await newchannel.AddPermissionOverwriteAsync(r, ClassPermissions());
+                    // Here class is complete. With new channel.
+                    foreach (RestRole r in roles) roleids.Add(r.Id);
+                    var finalclass = new GroupClass(hours.ToArray(), teacher, roleids.ToArray(), null, newchannel.Id);
+                    return finalclass;
+                }
+                // Here class is complete. Without new channel.
+                foreach (RestRole r in roles) roleids.Add(r.Id);
+                var finalclass2 = new GroupClass(hours.ToArray(), teacher, roleids.ToArray(), null, null);
+                return finalclass2;
+            }
+            else
+            {
+                var subjects = DataStorage.GetObjectsInFolder<Subject>(subjectFolder);
+                subject = subjects.Find(s => s.name == subjectmsg.Content); // Have to relocate subject... inefficient I know.
+                channel = Context.Guild.GetTextChannel(subject.textchannelid);
+                foreach (RestRole r in roles) await channel.AddPermissionOverwriteAsync(r, ClassPermissions());
+                // Here class is complete. With subject.
+                List<ulong> roleids = new List<ulong>();
+                foreach (RestRole r in roles) roleids.Add(r.Id);
+                var finalclass3 = new GroupClass(hours.ToArray(), teacher, roleids.ToArray(), subject, null);
+                return finalclass3;
+            }
         }
-        */
+        public async Task<SocketMessage> AwaitMessage(int wait, string comment = "")
+        {
+            var msg = await NextMessageAsync(true, true, new TimeSpan(10000000 * wait));
+            if (msg == null)
+            {
+                await ReplyAsync($"**You did not reply in time {Context.User.Mention}!** Waited {wait} seconds. {comment}");
+                return null;
+            }
+            return msg;
+        }
         /// <summary>
         /// Gemerates unique ID ulong.
         /// </summary>

@@ -30,7 +30,7 @@ namespace HSBot.Modules
             // spend time here developing system to display all the commands properly and allow the user to specify depth and detail.
             await SendClassicEmbed("**Thanks for showing interest in our bot!**", "All of the official documentation is on our wiki! *and if" +
                 " you're interested in developing with us check out the rest of the github!* :smiley: https://github.com/alexlyee/hs-bot/wiki");
-            Context.
+            
         }
 
         [Command("schoolsettings")]

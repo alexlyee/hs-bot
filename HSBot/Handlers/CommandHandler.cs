@@ -50,7 +50,7 @@ namespace HSBot.Handlers
                 if (_client.GetChannel(GuildsData.FindGuildConfig(user.Guild.Id).LogChannelID) is SocketTextChannel discordBotTutorialGeneral)
                     await discordBotTutorialGeneral.SendMessageAsync(
                         $"{user.Username} ({user.Id}) left **{user.Guild.Name}**!");
-                Utilities.Log(MethodBase.GetCurrentMethod(), $"{user.Nickname} left IAC.", LogSeverity.Verbose);
+                await Utilities.Log(MethodBase.GetCurrentMethod(), $"{user.Nickname} left IAC.", LogSeverity.Verbose);
             }
         }
 
