@@ -30,6 +30,20 @@
           "lib/netstandard1.1/Discord.Addons.Interactive.dll": {}
         }
       },
+      "Discord.Addons.InteractiveBuilder/1.1.1": {
+        "type": "package",
+        "dependencies": {
+          "Discord.Net.Commands": "1.0.1",
+          "Discord.Net.WebSocket": "1.0.1",
+          "JetBrains.Annotations": "11.1.0"
+        },
+        "compile": {
+          "lib/netstandard2.0/Discord.Addons.Interactive.dll": {}
+        },
+        "runtime": {
+          "lib/netstandard2.0/Discord.Addons.Interactive.dll": {}
+        }
+      },
       "Discord.Net/2.0.0-beta": {
         "type": "package",
         "dependencies": {
@@ -155,10 +169,10 @@
           "lib/netstandard1.3/Discord.Net.WebSocket.dll": {}
         }
       },
-      "DiscordBotsList.Api/1.1.0": {
+      "DiscordBotsList.Api/1.3.0": {
         "type": "package",
         "dependencies": {
-          "Miki.Rest": "1.2.2",
+          "Miki.Net.Http": "2.0.0",
           "NETStandard.Library": "1.6.1"
         },
         "compile": {
@@ -168,11 +182,11 @@
           "lib/netstandard1.6/DiscordBotsList.Api.dll": {}
         }
       },
-      "DiscordBotsList.Api.Adapter.Discord.Net/1.0.0": {
+      "DiscordBotsList.Api.Adapter.Discord.Net/1.1.0": {
         "type": "package",
         "dependencies": {
-          "Discord.Net": "1.0.2",
-          "DiscordBotsList.Api": "1.1.0",
+          "Discord.Net": "2.0.0-beta",
+          "DiscordBotsList.Api": "1.3.0",
           "NETStandard.Library": "1.6.1"
         },
         "compile": {
@@ -189,6 +203,18 @@
         },
         "runtime": {
           "lib/HtmlToPdfOrImage.dll": {}
+        }
+      },
+      "JetBrains.Annotations/11.1.0": {
+        "type": "package",
+        "dependencies": {
+          "System.Runtime": "4.1.0"
+        },
+        "compile": {
+          "lib/netstandard1.0/JetBrains.Annotations.dll": {}
+        },
+        "runtime": {
+          "lib/netstandard1.0/JetBrains.Annotations.dll": {}
         }
       },
       "Microsoft.CodeAnalysis/2.6.0": {
@@ -317,33 +343,6 @@
         },
         "runtime": {
           "lib/netstandard1.3/Microsoft.CodeAnalysis.Workspaces.dll": {}
-        }
-      },
-      "Microsoft.CSharp/4.3.0": {
-        "type": "package",
-        "dependencies": {
-          "System.Collections": "4.3.0",
-          "System.Diagnostics.Debug": "4.3.0",
-          "System.Dynamic.Runtime": "4.3.0",
-          "System.Globalization": "4.3.0",
-          "System.Linq": "4.3.0",
-          "System.Linq.Expressions": "4.3.0",
-          "System.ObjectModel": "4.3.0",
-          "System.Reflection": "4.3.0",
-          "System.Reflection.Extensions": "4.3.0",
-          "System.Reflection.Primitives": "4.3.0",
-          "System.Reflection.TypeExtensions": "4.3.0",
-          "System.Resources.ResourceManager": "4.3.0",
-          "System.Runtime": "4.3.0",
-          "System.Runtime.Extensions": "4.3.0",
-          "System.Runtime.InteropServices": "4.3.0",
-          "System.Threading": "4.3.0"
-        },
-        "compile": {
-          "ref/netstandard1.0/Microsoft.CSharp.dll": {}
-        },
-        "runtime": {
-          "lib/netstandard1.3/Microsoft.CSharp.dll": {}
         }
       },
       "Microsoft.Extensions.DependencyInjection/1.1.1": {
@@ -572,17 +571,17 @@
           "ref/netstandard1.3/_._": {}
         }
       },
-      "Miki.Rest/1.2.2": {
+      "Miki.Net.Http/2.0.0": {
         "type": "package",
         "dependencies": {
           "NETStandard.Library": "1.6.1",
-          "Newtonsoft.Json": "10.0.3"
+          "Newtonsoft.Json": "11.0.2"
         },
         "compile": {
-          "lib/netstandard1.6/Miki.Rest.dll": {}
+          "lib/netstandard1.6/Miki.Net.Http.dll": {}
         },
         "runtime": {
-          "lib/netstandard1.6/Miki.Rest.dll": {}
+          "lib/netstandard1.6/Miki.Net.Http.dll": {}
         }
       },
       "NETStandard.Library/2.0.0": {
@@ -600,30 +599,13 @@
           "build/netstandard2.0/NETStandard.Library.targets": {}
         }
       },
-      "Newtonsoft.Json/10.0.3": {
-        "type": "package",
-        "dependencies": {
-          "Microsoft.CSharp": "4.3.0",
-          "NETStandard.Library": "1.6.1",
-          "System.ComponentModel.TypeConverter": "4.3.0",
-          "System.Runtime.Serialization.Formatters": "4.3.0",
-          "System.Runtime.Serialization.Primitives": "4.3.0",
-          "System.Xml.XmlDocument": "4.3.0"
-        },
-        "compile": {
-          "lib/netstandard1.3/Newtonsoft.Json.dll": {}
-        },
-        "runtime": {
-          "lib/netstandard1.3/Newtonsoft.Json.dll": {}
-        }
-      },
-      "NReco/2.0.3": {
+      "Newtonsoft.Json/11.0.2": {
         "type": "package",
         "compile": {
-          "lib/net40/NReco.dll": {}
+          "lib/netstandard2.0/Newtonsoft.Json.dll": {}
         },
         "runtime": {
-          "lib/net40/NReco.dll": {}
+          "lib/netstandard2.0/Newtonsoft.Json.dll": {}
         }
       },
       "runtime.debian.8-x64.runtime.native.System.Security.Cryptography.OpenSsl/4.3.0": {
@@ -919,7 +901,7 @@
           "System.Threading": "4.3.0"
         },
         "compile": {
-          "ref/netstandard1.3/System.Collections.NonGeneric.dll": {}
+          "ref/netstandard1.3/_._": {}
         },
         "runtime": {
           "lib/netstandard1.3/System.Collections.NonGeneric.dll": {}
@@ -953,46 +935,6 @@
         },
         "runtime": {
           "lib/netstandard1.3/System.ComponentModel.dll": {}
-        }
-      },
-      "System.ComponentModel.Primitives/4.3.0": {
-        "type": "package",
-        "dependencies": {
-          "System.ComponentModel": "4.3.0",
-          "System.Resources.ResourceManager": "4.3.0",
-          "System.Runtime": "4.3.0"
-        },
-        "compile": {
-          "ref/netstandard1.0/System.ComponentModel.Primitives.dll": {}
-        },
-        "runtime": {
-          "lib/netstandard1.0/System.ComponentModel.Primitives.dll": {}
-        }
-      },
-      "System.ComponentModel.TypeConverter/4.3.0": {
-        "type": "package",
-        "dependencies": {
-          "System.Collections": "4.3.0",
-          "System.Collections.NonGeneric": "4.3.0",
-          "System.Collections.Specialized": "4.3.0",
-          "System.ComponentModel": "4.3.0",
-          "System.ComponentModel.Primitives": "4.3.0",
-          "System.Globalization": "4.3.0",
-          "System.Linq": "4.3.0",
-          "System.Reflection": "4.3.0",
-          "System.Reflection.Extensions": "4.3.0",
-          "System.Reflection.Primitives": "4.3.0",
-          "System.Reflection.TypeExtensions": "4.3.0",
-          "System.Resources.ResourceManager": "4.3.0",
-          "System.Runtime": "4.3.0",
-          "System.Runtime.Extensions": "4.3.0",
-          "System.Threading": "4.3.0"
-        },
-        "compile": {
-          "ref/netstandard1.5/System.ComponentModel.TypeConverter.dll": {}
-        },
-        "runtime": {
-          "lib/netstandard1.5/System.ComponentModel.TypeConverter.dll": {}
         }
       },
       "System.Composition/1.0.31": {
@@ -1881,35 +1823,6 @@
           "lib/netstandard1.3/System.Runtime.Numerics.dll": {}
         }
       },
-      "System.Runtime.Serialization.Formatters/4.3.0": {
-        "type": "package",
-        "dependencies": {
-          "System.Collections": "4.3.0",
-          "System.Reflection": "4.3.0",
-          "System.Resources.ResourceManager": "4.3.0",
-          "System.Runtime": "4.3.0",
-          "System.Runtime.Serialization.Primitives": "4.3.0"
-        },
-        "compile": {
-          "ref/netstandard1.3/System.Runtime.Serialization.Formatters.dll": {}
-        },
-        "runtime": {
-          "lib/netstandard1.4/System.Runtime.Serialization.Formatters.dll": {}
-        }
-      },
-      "System.Runtime.Serialization.Primitives/4.3.0": {
-        "type": "package",
-        "dependencies": {
-          "System.Resources.ResourceManager": "4.3.0",
-          "System.Runtime": "4.3.0"
-        },
-        "compile": {
-          "ref/netstandard1.3/System.Runtime.Serialization.Primitives.dll": {}
-        },
-        "runtime": {
-          "lib/netstandard1.3/System.Runtime.Serialization.Primitives.dll": {}
-        }
-      },
       "System.Security.Claims/4.3.0": {
         "type": "package",
         "dependencies": {
@@ -2425,7 +2338,7 @@
           "System.Xml.ReaderWriter": "4.3.0"
         },
         "compile": {
-          "ref/netstandard1.3/System.Xml.XmlDocument.dll": {}
+          "ref/netstandard1.3/_._": {}
         },
         "runtime": {
           "lib/netstandard1.3/System.Xml.XmlDocument.dll": {}
@@ -2510,6 +2423,16 @@
         "discord.addons.interactive.1.0.1.nupkg.sha512",
         "discord.addons.interactive.nuspec",
         "lib/netstandard1.1/Discord.Addons.Interactive.dll"
+      ]
+    },
+    "Discord.Addons.InteractiveBuilder/1.1.1": {
+      "sha512": "1akXI7GtHBuxLux5dlM76Mn0qlUxcFXNvh24GAGVjmDpjAmeJmQv6XTbKZn+6wFbNIZUd+1X6TUHAgQ3NxGkoQ==",
+      "type": "package",
+      "path": "discord.addons.interactivebuilder/1.1.1",
+      "files": [
+        "discord.addons.interactivebuilder.1.1.1.nupkg.sha512",
+        "discord.addons.interactivebuilder.nuspec",
+        "lib/netstandard2.0/Discord.Addons.Interactive.dll"
       ]
     },
     "Discord.Net/2.0.0-beta": {
@@ -2625,22 +2548,24 @@
         "lib/netstandard1.3/Discord.Net.WebSocket.xml"
       ]
     },
-    "DiscordBotsList.Api/1.1.0": {
-      "sha512": "8KDmuPc4vBB+z459GzeqNZGMA8t7pOQIB65aiCyFjI2iY8CFHs0yqTFS3biVbJgzBhEFmikM3eQEE22Q+pwS1w==",
+    "DiscordBotsList.Api/1.3.0": {
+      "sha512": "B/X91zn1+1S+tXrV6KH9vMdp8MZWrq4zIq8lNHrBee+O3bEcTPsw0XaIDq//bMaFGGsknp3+Qkvn/R8bvcVCqA==",
       "type": "package",
-      "path": "discordbotslist.api/1.1.0",
+      "path": "discordbotslist.api/1.3.0",
       "files": [
-        "discordbotslist.api.1.1.0.nupkg.sha512",
+        ".signature.p7s",
+        "discordbotslist.api.1.3.0.nupkg.sha512",
         "discordbotslist.api.nuspec",
         "lib/netstandard1.6/DiscordBotsList.Api.dll"
       ]
     },
-    "DiscordBotsList.Api.Adapter.Discord.Net/1.0.0": {
-      "sha512": "8SRjzoyo9pGqexJyNyE4e6o+12maJ7vd8tUJUWls6fredfEEJq/He9N6imnY1rWXyYRHP/B9FpitzX/TMF+W3w==",
+    "DiscordBotsList.Api.Adapter.Discord.Net/1.1.0": {
+      "sha512": "H1sr3To14IRYDWiZ5v1mQ3MTUBB+rK6xIYl2UZ8FmUN2Uhog9Zkq2Ruq0lvDopdFgWyoFYb/mwKLhu2YgCdNrQ==",
       "type": "package",
-      "path": "discordbotslist.api.adapter.discord.net/1.0.0",
+      "path": "discordbotslist.api.adapter.discord.net/1.1.0",
       "files": [
-        "discordbotslist.api.adapter.discord.net.1.0.0.nupkg.sha512",
+        ".signature.p7s",
+        "discordbotslist.api.adapter.discord.net.1.1.0.nupkg.sha512",
         "discordbotslist.api.adapter.discord.net.nuspec",
         "lib/netstandard1.6/DiscordBotsList.Api.Adapter.Discord.Net.dll"
       ]
@@ -2653,6 +2578,25 @@
         "htmltopdforimage.1.0.2.nupkg.sha512",
         "htmltopdforimage.nuspec",
         "lib/HtmlToPdfOrImage.dll"
+      ]
+    },
+    "JetBrains.Annotations/11.1.0": {
+      "sha512": "0xxJi7UMrUA+r+KjS8KIzerWBiAhbgb5cZpvE8rultYO/ZAqrwd2bGJhDeHg/oaEkshvazcOme1D0DNWWDuCDw==",
+      "type": "package",
+      "path": "jetbrains.annotations/11.1.0",
+      "files": [
+        ".signature.p7s",
+        "jetbrains.annotations.11.1.0.nupkg.sha512",
+        "jetbrains.annotations.nuspec",
+        "lib/net20/JetBrains.Annotations.dll",
+        "lib/net20/JetBrains.Annotations.xml",
+        "lib/netstandard1.0/JetBrains.Annotations.deps.json",
+        "lib/netstandard1.0/JetBrains.Annotations.dll",
+        "lib/netstandard1.0/JetBrains.Annotations.xml",
+        "lib/portable40-net40+sl4+win8+wp7/JetBrains.Annotations.dll",
+        "lib/portable40-net40+sl4+win8+wp7/JetBrains.Annotations.xml",
+        "lib/portable40-net40+sl5+win8+wp8+wpa81/JetBrains.Annotations.dll",
+        "lib/portable40-net40+sl5+win8+wp8+wpa81/JetBrains.Annotations.xml"
       ]
     },
     "Microsoft.CodeAnalysis/2.6.0": {
@@ -2749,63 +2693,6 @@
         "lib/netstandard1.3/Microsoft.CodeAnalysis.Workspaces.xml",
         "microsoft.codeanalysis.workspaces.common.2.6.0.nupkg.sha512",
         "microsoft.codeanalysis.workspaces.common.nuspec"
-      ]
-    },
-    "Microsoft.CSharp/4.3.0": {
-      "sha512": "P+MBhIM0YX+JqROuf7i306ZLJEjQYA9uUyRDE+OqwUI5sh41e2ZbPQV3LfAPh+29cmceE1pUffXsGfR4eMY3KA==",
-      "type": "package",
-      "path": "microsoft.csharp/4.3.0",
-      "files": [
-        "ThirdPartyNotices.txt",
-        "dotnet_library_license.txt",
-        "lib/MonoAndroid10/_._",
-        "lib/MonoTouch10/_._",
-        "lib/net45/_._",
-        "lib/netcore50/Microsoft.CSharp.dll",
-        "lib/netstandard1.3/Microsoft.CSharp.dll",
-        "lib/portable-net45+win8+wp8+wpa81/_._",
-        "lib/win8/_._",
-        "lib/wp80/_._",
-        "lib/wpa81/_._",
-        "lib/xamarinios10/_._",
-        "lib/xamarinmac20/_._",
-        "lib/xamarintvos10/_._",
-        "lib/xamarinwatchos10/_._",
-        "microsoft.csharp.4.3.0.nupkg.sha512",
-        "microsoft.csharp.nuspec",
-        "ref/MonoAndroid10/_._",
-        "ref/MonoTouch10/_._",
-        "ref/net45/_._",
-        "ref/netcore50/Microsoft.CSharp.dll",
-        "ref/netcore50/Microsoft.CSharp.xml",
-        "ref/netcore50/de/Microsoft.CSharp.xml",
-        "ref/netcore50/es/Microsoft.CSharp.xml",
-        "ref/netcore50/fr/Microsoft.CSharp.xml",
-        "ref/netcore50/it/Microsoft.CSharp.xml",
-        "ref/netcore50/ja/Microsoft.CSharp.xml",
-        "ref/netcore50/ko/Microsoft.CSharp.xml",
-        "ref/netcore50/ru/Microsoft.CSharp.xml",
-        "ref/netcore50/zh-hans/Microsoft.CSharp.xml",
-        "ref/netcore50/zh-hant/Microsoft.CSharp.xml",
-        "ref/netstandard1.0/Microsoft.CSharp.dll",
-        "ref/netstandard1.0/Microsoft.CSharp.xml",
-        "ref/netstandard1.0/de/Microsoft.CSharp.xml",
-        "ref/netstandard1.0/es/Microsoft.CSharp.xml",
-        "ref/netstandard1.0/fr/Microsoft.CSharp.xml",
-        "ref/netstandard1.0/it/Microsoft.CSharp.xml",
-        "ref/netstandard1.0/ja/Microsoft.CSharp.xml",
-        "ref/netstandard1.0/ko/Microsoft.CSharp.xml",
-        "ref/netstandard1.0/ru/Microsoft.CSharp.xml",
-        "ref/netstandard1.0/zh-hans/Microsoft.CSharp.xml",
-        "ref/netstandard1.0/zh-hant/Microsoft.CSharp.xml",
-        "ref/portable-net45+win8+wp8+wpa81/_._",
-        "ref/win8/_._",
-        "ref/wp80/_._",
-        "ref/wpa81/_._",
-        "ref/xamarinios10/_._",
-        "ref/xamarinmac20/_._",
-        "ref/xamarintvos10/_._",
-        "ref/xamarinwatchos10/_._"
       ]
     },
     "Microsoft.Extensions.DependencyInjection/1.1.1": {
@@ -3208,14 +3095,15 @@
         "ref/xamarinwatchos10/_._"
       ]
     },
-    "Miki.Rest/1.2.2": {
-      "sha512": "iMMHZCvkVRyQdDallCs/1h7LNThit+QlFZRffAHpF699Kb1zjwbjRyceMJ6nfyrgxosDXU1TVWh6qpoB2DO6VA==",
+    "Miki.Net.Http/2.0.0": {
+      "sha512": "ePZAkGMp6nyZRhXrlRJpKtFr0yJcph2Nvd7C1z1goByIaGGGKXBuxodgGF6LQtxJPCt+Hw+wGYIZAX6G4xZdXw==",
       "type": "package",
-      "path": "miki.rest/1.2.2",
+      "path": "miki.net.http/2.0.0",
       "files": [
-        "lib/netstandard1.6/Miki.Rest.dll",
-        "miki.rest.1.2.2.nupkg.sha512",
-        "miki.rest.nuspec"
+        ".signature.p7s",
+        "lib/netstandard1.6/Miki.Net.Http.dll",
+        "miki.net.http.2.0.0.nupkg.sha512",
+        "miki.net.http.nuspec"
       ]
     },
     "NETStandard.Library/2.0.0": {
@@ -3346,10 +3234,10 @@
         "netstandard.library.nuspec"
       ]
     },
-    "Newtonsoft.Json/10.0.3": {
-      "sha512": "hSXaFmh7hNCuEoC4XNY5DrRkLDzYHqPx/Ik23R4J86Z7PE/Y6YidhG602dFVdLBRSdG6xp9NabH3dXpcoxWvww==",
+    "Newtonsoft.Json/11.0.2": {
+      "sha512": "IvJe1pj7JHEsP8B8J8DwlMEx8UInrs/x+9oVY+oCD13jpLu4JbJU2WCIsMRn5C4yW9+DgkaO8uiVE5VHKjpmdQ==",
       "type": "package",
-      "path": "newtonsoft.json/10.0.3",
+      "path": "newtonsoft.json/11.0.2",
       "files": [
         "LICENSE.md",
         "lib/net20/Newtonsoft.Json.dll",
@@ -3364,24 +3252,14 @@
         "lib/netstandard1.0/Newtonsoft.Json.xml",
         "lib/netstandard1.3/Newtonsoft.Json.dll",
         "lib/netstandard1.3/Newtonsoft.Json.xml",
+        "lib/netstandard2.0/Newtonsoft.Json.dll",
+        "lib/netstandard2.0/Newtonsoft.Json.xml",
         "lib/portable-net40+sl5+win8+wp8+wpa81/Newtonsoft.Json.dll",
         "lib/portable-net40+sl5+win8+wp8+wpa81/Newtonsoft.Json.xml",
         "lib/portable-net45+win8+wp8+wpa81/Newtonsoft.Json.dll",
         "lib/portable-net45+win8+wp8+wpa81/Newtonsoft.Json.xml",
-        "newtonsoft.json.10.0.3.nupkg.sha512",
-        "newtonsoft.json.nuspec",
-        "tools/install.ps1"
-      ]
-    },
-    "NReco/2.0.3": {
-      "sha512": "JNuKMEh/8LlbaZgknKKvhpY3Ws2zT3s25aqA1MpuT5kogGn0GYDEpYjA5rh7YY82SjWdOSL4yD16N6ljvRehMA==",
-      "type": "package",
-      "path": "nreco/2.0.3",
-      "files": [
-        "lib/net40/NReco.XML",
-        "lib/net40/NReco.dll",
-        "nreco.2.0.3.nupkg.sha512",
-        "nreco.nuspec"
+        "newtonsoft.json.11.0.2.nupkg.sha512",
+        "newtonsoft.json.nuspec"
       ]
     },
     "runtime.debian.8-x64.runtime.native.System.Security.Cryptography.OpenSsl/4.3.0": {
@@ -3945,94 +3823,6 @@
         "ref/xamarinwatchos10/_._",
         "system.componentmodel.4.3.0.nupkg.sha512",
         "system.componentmodel.nuspec"
-      ]
-    },
-    "System.ComponentModel.Primitives/4.3.0": {
-      "sha512": "j8GUkCpM8V4d4vhLIIoBLGey2Z5bCkMVNjEZseyAlm4n5arcsJOeI3zkUP+zvZgzsbLTYh4lYeP/ZD/gdIAPrw==",
-      "type": "package",
-      "path": "system.componentmodel.primitives/4.3.0",
-      "files": [
-        "ThirdPartyNotices.txt",
-        "dotnet_library_license.txt",
-        "lib/MonoAndroid10/_._",
-        "lib/MonoTouch10/_._",
-        "lib/net45/System.ComponentModel.Primitives.dll",
-        "lib/netstandard1.0/System.ComponentModel.Primitives.dll",
-        "lib/xamarinios10/_._",
-        "lib/xamarinmac20/_._",
-        "lib/xamarintvos10/_._",
-        "lib/xamarinwatchos10/_._",
-        "ref/MonoAndroid10/_._",
-        "ref/MonoTouch10/_._",
-        "ref/net45/System.ComponentModel.Primitives.dll",
-        "ref/netstandard1.0/System.ComponentModel.Primitives.dll",
-        "ref/netstandard1.0/System.ComponentModel.Primitives.xml",
-        "ref/netstandard1.0/de/System.ComponentModel.Primitives.xml",
-        "ref/netstandard1.0/es/System.ComponentModel.Primitives.xml",
-        "ref/netstandard1.0/fr/System.ComponentModel.Primitives.xml",
-        "ref/netstandard1.0/it/System.ComponentModel.Primitives.xml",
-        "ref/netstandard1.0/ja/System.ComponentModel.Primitives.xml",
-        "ref/netstandard1.0/ko/System.ComponentModel.Primitives.xml",
-        "ref/netstandard1.0/ru/System.ComponentModel.Primitives.xml",
-        "ref/netstandard1.0/zh-hans/System.ComponentModel.Primitives.xml",
-        "ref/netstandard1.0/zh-hant/System.ComponentModel.Primitives.xml",
-        "ref/xamarinios10/_._",
-        "ref/xamarinmac20/_._",
-        "ref/xamarintvos10/_._",
-        "ref/xamarinwatchos10/_._",
-        "system.componentmodel.primitives.4.3.0.nupkg.sha512",
-        "system.componentmodel.primitives.nuspec"
-      ]
-    },
-    "System.ComponentModel.TypeConverter/4.3.0": {
-      "sha512": "16pQ6P+EdhcXzPiEK4kbA953Fu0MNG2ovxTZU81/qsCd1zPRsKc3uif5NgvllCY598k6bI0KUyKW8fanlfaDQg==",
-      "type": "package",
-      "path": "system.componentmodel.typeconverter/4.3.0",
-      "files": [
-        "ThirdPartyNotices.txt",
-        "dotnet_library_license.txt",
-        "lib/MonoAndroid10/_._",
-        "lib/MonoTouch10/_._",
-        "lib/net45/System.ComponentModel.TypeConverter.dll",
-        "lib/net462/System.ComponentModel.TypeConverter.dll",
-        "lib/netstandard1.0/System.ComponentModel.TypeConverter.dll",
-        "lib/netstandard1.5/System.ComponentModel.TypeConverter.dll",
-        "lib/xamarinios10/_._",
-        "lib/xamarinmac20/_._",
-        "lib/xamarintvos10/_._",
-        "lib/xamarinwatchos10/_._",
-        "ref/MonoAndroid10/_._",
-        "ref/MonoTouch10/_._",
-        "ref/net45/System.ComponentModel.TypeConverter.dll",
-        "ref/net462/System.ComponentModel.TypeConverter.dll",
-        "ref/netstandard1.0/System.ComponentModel.TypeConverter.dll",
-        "ref/netstandard1.0/System.ComponentModel.TypeConverter.xml",
-        "ref/netstandard1.0/de/System.ComponentModel.TypeConverter.xml",
-        "ref/netstandard1.0/es/System.ComponentModel.TypeConverter.xml",
-        "ref/netstandard1.0/fr/System.ComponentModel.TypeConverter.xml",
-        "ref/netstandard1.0/it/System.ComponentModel.TypeConverter.xml",
-        "ref/netstandard1.0/ja/System.ComponentModel.TypeConverter.xml",
-        "ref/netstandard1.0/ko/System.ComponentModel.TypeConverter.xml",
-        "ref/netstandard1.0/ru/System.ComponentModel.TypeConverter.xml",
-        "ref/netstandard1.0/zh-hans/System.ComponentModel.TypeConverter.xml",
-        "ref/netstandard1.0/zh-hant/System.ComponentModel.TypeConverter.xml",
-        "ref/netstandard1.5/System.ComponentModel.TypeConverter.dll",
-        "ref/netstandard1.5/System.ComponentModel.TypeConverter.xml",
-        "ref/netstandard1.5/de/System.ComponentModel.TypeConverter.xml",
-        "ref/netstandard1.5/es/System.ComponentModel.TypeConverter.xml",
-        "ref/netstandard1.5/fr/System.ComponentModel.TypeConverter.xml",
-        "ref/netstandard1.5/it/System.ComponentModel.TypeConverter.xml",
-        "ref/netstandard1.5/ja/System.ComponentModel.TypeConverter.xml",
-        "ref/netstandard1.5/ko/System.ComponentModel.TypeConverter.xml",
-        "ref/netstandard1.5/ru/System.ComponentModel.TypeConverter.xml",
-        "ref/netstandard1.5/zh-hans/System.ComponentModel.TypeConverter.xml",
-        "ref/netstandard1.5/zh-hant/System.ComponentModel.TypeConverter.xml",
-        "ref/xamarinios10/_._",
-        "ref/xamarinmac20/_._",
-        "ref/xamarintvos10/_._",
-        "ref/xamarinwatchos10/_._",
-        "system.componentmodel.typeconverter.4.3.0.nupkg.sha512",
-        "system.componentmodel.typeconverter.nuspec"
       ]
     },
     "System.Composition/1.0.31": {
@@ -6363,104 +6153,6 @@
         "system.runtime.numerics.nuspec"
       ]
     },
-    "System.Runtime.Serialization.Formatters/4.3.0": {
-      "sha512": "KT591AkTNFOTbhZlaeMVvfax3RqhH1EJlcwF50Wm7sfnBLuHiOeZRRKrr1ns3NESkM20KPZ5Ol/ueMq5vg4QoQ==",
-      "type": "package",
-      "path": "system.runtime.serialization.formatters/4.3.0",
-      "files": [
-        "ThirdPartyNotices.txt",
-        "dotnet_library_license.txt",
-        "lib/MonoAndroid10/_._",
-        "lib/MonoTouch10/_._",
-        "lib/net46/System.Runtime.Serialization.Formatters.dll",
-        "lib/netstandard1.4/System.Runtime.Serialization.Formatters.dll",
-        "lib/xamarinios10/_._",
-        "lib/xamarinmac20/_._",
-        "lib/xamarintvos10/_._",
-        "lib/xamarinwatchos10/_._",
-        "ref/MonoAndroid10/_._",
-        "ref/MonoTouch10/_._",
-        "ref/net46/System.Runtime.Serialization.Formatters.dll",
-        "ref/netstandard1.3/System.Runtime.Serialization.Formatters.dll",
-        "ref/xamarinios10/_._",
-        "ref/xamarinmac20/_._",
-        "ref/xamarintvos10/_._",
-        "ref/xamarinwatchos10/_._",
-        "system.runtime.serialization.formatters.4.3.0.nupkg.sha512",
-        "system.runtime.serialization.formatters.nuspec"
-      ]
-    },
-    "System.Runtime.Serialization.Primitives/4.3.0": {
-      "sha512": "Wz+0KOukJGAlXjtKr+5Xpuxf8+c8739RI1C+A2BoQZT+wMCCoMDDdO8/4IRHfaVINqL78GO8dW8G2lW/e45Mcw==",
-      "type": "package",
-      "path": "system.runtime.serialization.primitives/4.3.0",
-      "files": [
-        "ThirdPartyNotices.txt",
-        "dotnet_library_license.txt",
-        "lib/MonoAndroid10/_._",
-        "lib/MonoTouch10/_._",
-        "lib/net45/_._",
-        "lib/net46/System.Runtime.Serialization.Primitives.dll",
-        "lib/netcore50/System.Runtime.Serialization.Primitives.dll",
-        "lib/netstandard1.3/System.Runtime.Serialization.Primitives.dll",
-        "lib/portable-net45+win8+wp8+wpa81/_._",
-        "lib/win8/_._",
-        "lib/wp80/_._",
-        "lib/wpa81/_._",
-        "lib/xamarinios10/_._",
-        "lib/xamarinmac20/_._",
-        "lib/xamarintvos10/_._",
-        "lib/xamarinwatchos10/_._",
-        "ref/MonoAndroid10/_._",
-        "ref/MonoTouch10/_._",
-        "ref/net45/_._",
-        "ref/net46/System.Runtime.Serialization.Primitives.dll",
-        "ref/netcore50/System.Runtime.Serialization.Primitives.dll",
-        "ref/netcore50/System.Runtime.Serialization.Primitives.xml",
-        "ref/netcore50/de/System.Runtime.Serialization.Primitives.xml",
-        "ref/netcore50/es/System.Runtime.Serialization.Primitives.xml",
-        "ref/netcore50/fr/System.Runtime.Serialization.Primitives.xml",
-        "ref/netcore50/it/System.Runtime.Serialization.Primitives.xml",
-        "ref/netcore50/ja/System.Runtime.Serialization.Primitives.xml",
-        "ref/netcore50/ko/System.Runtime.Serialization.Primitives.xml",
-        "ref/netcore50/ru/System.Runtime.Serialization.Primitives.xml",
-        "ref/netcore50/zh-hans/System.Runtime.Serialization.Primitives.xml",
-        "ref/netcore50/zh-hant/System.Runtime.Serialization.Primitives.xml",
-        "ref/netstandard1.0/System.Runtime.Serialization.Primitives.dll",
-        "ref/netstandard1.0/System.Runtime.Serialization.Primitives.xml",
-        "ref/netstandard1.0/de/System.Runtime.Serialization.Primitives.xml",
-        "ref/netstandard1.0/es/System.Runtime.Serialization.Primitives.xml",
-        "ref/netstandard1.0/fr/System.Runtime.Serialization.Primitives.xml",
-        "ref/netstandard1.0/it/System.Runtime.Serialization.Primitives.xml",
-        "ref/netstandard1.0/ja/System.Runtime.Serialization.Primitives.xml",
-        "ref/netstandard1.0/ko/System.Runtime.Serialization.Primitives.xml",
-        "ref/netstandard1.0/ru/System.Runtime.Serialization.Primitives.xml",
-        "ref/netstandard1.0/zh-hans/System.Runtime.Serialization.Primitives.xml",
-        "ref/netstandard1.0/zh-hant/System.Runtime.Serialization.Primitives.xml",
-        "ref/netstandard1.3/System.Runtime.Serialization.Primitives.dll",
-        "ref/netstandard1.3/System.Runtime.Serialization.Primitives.xml",
-        "ref/netstandard1.3/de/System.Runtime.Serialization.Primitives.xml",
-        "ref/netstandard1.3/es/System.Runtime.Serialization.Primitives.xml",
-        "ref/netstandard1.3/fr/System.Runtime.Serialization.Primitives.xml",
-        "ref/netstandard1.3/it/System.Runtime.Serialization.Primitives.xml",
-        "ref/netstandard1.3/ja/System.Runtime.Serialization.Primitives.xml",
-        "ref/netstandard1.3/ko/System.Runtime.Serialization.Primitives.xml",
-        "ref/netstandard1.3/ru/System.Runtime.Serialization.Primitives.xml",
-        "ref/netstandard1.3/zh-hans/System.Runtime.Serialization.Primitives.xml",
-        "ref/netstandard1.3/zh-hant/System.Runtime.Serialization.Primitives.xml",
-        "ref/portable-net45+win8+wp8+wpa81/_._",
-        "ref/win8/_._",
-        "ref/wp80/_._",
-        "ref/wpa81/_._",
-        "ref/xamarinios10/_._",
-        "ref/xamarinmac20/_._",
-        "ref/xamarintvos10/_._",
-        "ref/xamarinwatchos10/_._",
-        "runtimes/aot/lib/netcore50/System.Runtime.Serialization.Primitives.dll",
-        "system.runtime.serialization.primitives.4.3.0.nupkg.sha512",
-        "system.runtime.serialization.primitives.nuspec"
-      ]
-    },
     "System.Security.Claims/4.3.0": {
       "sha512": "P/+BR/2lnc4PNDHt/TPBAWHVMLMRHsyYZbU1NphW4HIWzCggz8mJbTQQ3MKljFE7LS3WagmVFuBgoLcFzYXlkA==",
       "type": "package",
@@ -7680,6 +7372,7 @@
     ".NETCoreApp,Version=v2.0": [
       "Discord.Addons.CommandCache >= 2.0.0",
       "Discord.Addons.Interactive >= 1.0.1",
+      "Discord.Addons.InteractiveBuilder >= 1.1.1",
       "Discord.Net >= 2.0.0-beta",
       "Discord.Net.Analyzers >= 2.0.0-beta",
       "Discord.Net.Commands >= 2.0.0-beta",
@@ -7689,10 +7382,9 @@
       "Discord.Net.Rpc >= 1.0.2",
       "Discord.Net.WebSocket >= 2.0.0-beta",
       "Discord.Net.Webhook >= 2.0.0-beta",
-      "DiscordBotsList.Api.Adapter.Discord.Net >= 1.0.0",
+      "DiscordBotsList.Api.Adapter.Discord.Net >= 1.1.0",
       "HtmlToPdfOrImage >= 1.0.2",
-      "Microsoft.NETCore.App >= 2.0.0",
-      "NReco >= 2.0.3"
+      "Microsoft.NETCore.App >= 2.0.0"
     ]
   },
   "packageFolders": {
@@ -7720,7 +7412,8 @@
       ],
       "sources": {
         "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
-        "https://api.nuget.org/v3/index.json": {}
+        "https://api.nuget.org/v3/index.json": {},
+        "https://www.myget.org/F/discord-interactive-charly/api/v3/index.json": {}
       },
       "frameworks": {
         "netcoreapp2.0": {
@@ -7743,6 +7436,10 @@
           "Discord.Addons.Interactive": {
             "target": "Package",
             "version": "[1.0.1, )"
+          },
+          "Discord.Addons.InteractiveBuilder": {
+            "target": "Package",
+            "version": "[1.1.1, )"
           },
           "Discord.Net": {
             "target": "Package",
@@ -7782,7 +7479,7 @@
           },
           "DiscordBotsList.Api.Adapter.Discord.Net": {
             "target": "Package",
-            "version": "[1.0.0, )"
+            "version": "[1.1.0, )"
           },
           "HtmlToPdfOrImage": {
             "target": "Package",
@@ -7792,10 +7489,6 @@
             "target": "Package",
             "version": "[2.0.0, )",
             "autoReferenced": true
-          },
-          "NReco": {
-            "target": "Package",
-            "version": "[2.0.3, )"
           }
         },
         "imports": [
@@ -7813,16 +7506,6 @@
       "warningLevel": 1,
       "message": "Package 'HtmlToPdfOrImage 1.0.2' was restored using '.NETFramework,Version=v4.6.1' instead of the project target framework '.NETCoreApp,Version=v2.0'. This package may not be fully compatible with your project.",
       "libraryId": "HtmlToPdfOrImage",
-      "targetGraphs": [
-        ".NETCoreApp,Version=v2.0"
-      ]
-    },
-    {
-      "code": "NU1701",
-      "level": "Warning",
-      "warningLevel": 1,
-      "message": "Package 'NReco 2.0.3' was restored using '.NETFramework,Version=v4.6.1' instead of the project target framework '.NETCoreApp,Version=v2.0'. This package may not be fully compatible with your project.",
-      "libraryId": "NReco",
       "targetGraphs": [
         ".NETCoreApp,Version=v2.0"
       ]

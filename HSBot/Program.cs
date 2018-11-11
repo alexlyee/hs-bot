@@ -12,11 +12,13 @@ using HSBot.Helpers;
 using HSBot.Persistent;
 using System.Diagnostics;
 using System.IO;
+using Discord.Addons.Interactive;
 /* Namespace of discord command tools.
 https://www.nuget.org/packages/Discord.Net.Commands/ */
 /* Namespace of discord web tools.
 https://www.nuget.org/packages/Discord.Net.WebSocket/ */
 // Async Task.
+
 
 namespace HSBot
 {
@@ -25,6 +27,7 @@ namespace HSBot
         private volatile IServiceCollection _services;
         private volatile IServiceProvider _provider;
         private volatile DiscordSocketClient _client;
+        private volatile InteractiveService _interactive;
 
         protected internal static bool Online = true;
         private CommandService _commands;
@@ -48,16 +51,18 @@ namespace HSBot
             {
                 LogLevel = LogSeverity.Debug
             });
+            _interactive = new InteractiveService(_client);
             _services = new ServiceCollection() // Microsoft.Extensions.DependencyInjection
                             .AddSingleton(_client) // Singleton means to a static like class. <-- NOT REALLY
                             .AddSingleton(_commands) //<-- what is _commands?
-                            .AddSingleton<CommandHandler>();
+                            .AddSingleton<CommandHandler>()
+                            .AddSingleton(_interactive);
             //.BuildServiceProvider(); removed this
 
             _provider = _services.BuildServiceProvider();
             await _provider.GetRequiredService<CommandHandler>().InitializeAsync();
 
-            await Utilities.Log(MethodBase.GetCurrentMethod(), "Client and command services started.");
+            await Utilities.Log(MethodBase.GetCurrentMethod(), "Services started.");
 
             _client.JoinedGuild += JoinedGuildHandler.Announce;
             _client.Log += ClientHandler.Log;

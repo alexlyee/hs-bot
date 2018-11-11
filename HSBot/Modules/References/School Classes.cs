@@ -8,9 +8,10 @@ namespace HSBot.Modules.References
     {
         public ulong id;
         public string name;
-        public ulong voicechannelid;
         public ulong textchannelid;
         public ulong roleid;
+
+        public ulong? voicechannelid;
     }
     public struct Teacher
     {

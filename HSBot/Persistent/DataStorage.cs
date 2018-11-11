@@ -294,7 +294,7 @@ namespace HSBot.Persistent
             {
                 Utilities.Log(MethodBase.GetCurrentMethod(), "File not found, creating " + filePath,
                     LogSeverity.Verbose);
-                Directory.CreateDirectory(filePath);
+                // Directory.CreateDirectory(filePath);
                 File.Create(filePath);
                 return "";
             }

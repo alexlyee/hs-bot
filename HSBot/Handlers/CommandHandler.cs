@@ -57,7 +57,8 @@ namespace HSBot.Handlers
         public async Task HandleCommandAsync(SocketMessage s)
         {
             if (!(s is SocketUserMessage msg)) return;
-                var Context = new Context(_client, msg, _serviceProvider);
+            var Context = new SocketCommandContext(_client, msg);
+            var C = new Context(_client, msg, _serviceProvider);
             int argPos = 0;
             if (msg.HasStringPrefix(GuildsData.FindOrCreateGuildConfig(Context.Guild).Prefix, ref argPos)
                 || msg.HasMentionPrefix(_client.CurrentUser, ref argPos))

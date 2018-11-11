@@ -17,7 +17,6 @@ using System.Reflection;
 using HSBot.Modules.References;
 using System.Net;
 using Newtonsoft.Json;
-using NReco;
 using HSBot.Entities;
 
 namespace HSBot.Modules
@@ -198,12 +197,14 @@ namespace HSBot.Modules
             await Context.Channel.SendMessageAsync("", embed: embed.Build());
         }
 
+        /*
         [Command("purge")]
         [Cooldown(3600)]
         public async Task Purge([Remainder]string message)
         {
 
         }
+        */
 
         [Command("8ball"), Remarks("answers any question with a stunning level of wiseness")]
         public async Task EightBall([Remainder]string message)

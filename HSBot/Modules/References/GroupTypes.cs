@@ -19,20 +19,6 @@ namespace HSBot.Modules.References
 
         public Subject? subject;
         public ulong? channel;
-
-        public GroupClass(Hour[] hours, Teacher teacher, ulong[] roles, Subject? subject, ulong? channel)
-        {
-            if (!subject.Equals(null) && !channel.Equals(null))
-            {
-                Utilities.Log(MethodBase.GetCurrentMethod(), "Failed to create class with both subject and channel.");
-                return;
-            }
-            hours = this.hours;
-            teacher = this.teacher;
-            roles = this.roles;
-            if (!subject.Equals(null)) subject = this.subject;
-            if (!channel.Equals(null)) channel = this.channel;
-        }
     }
     class GroupOverseen : GroupType
     {

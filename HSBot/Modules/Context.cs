@@ -34,7 +34,7 @@ namespace HSBot.Modules
             Channel = message.Channel;
             Guild = (message.Channel as SocketGuildChannel)?.Guild;
             GuildConfig = GuildsData.FindOrCreateGuildConfig(Guild);
-            _userAccount = UserAccounts.CreateUserAccount(message.Author.Id, true);
+            // _userAccount = UserAccounts.CreateUserAccount(message.Author.Id, true);
         }
     }
 }

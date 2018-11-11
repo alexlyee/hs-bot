@@ -25,7 +25,7 @@ namespace HSBot.Entities
             _storage = (InMemoryStorage)storage;
             _storage.Initialize(this, ID.ToString(), UserAccounts.UsersFolder);
             var User = _storage.RestoreObject<UserAccount>(ID.ToString());
-            if (!User.Equals(null))
+            if (User != null)
             {
                 this.Points = User.Points;
                 this.Xp = User.Xp;

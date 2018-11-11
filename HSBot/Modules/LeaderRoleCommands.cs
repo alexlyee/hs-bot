@@ -28,7 +28,7 @@ namespace HSBot.Modules
         }
         */
         [RequireContext(ContextType.Guild)]
-        [Command("group")]
+        [Command("group", RunMode = RunMode.Async)]
         public async Task Group([Remainder]string message)
         {
             string groupfile = GuildsData.GuildsFolder + "/" + Context.Guild.Id + "/Groups";
@@ -62,9 +62,13 @@ namespace HSBot.Modules
             switch (firstWord)
             {
                 case "Overseen":
+                    break;
                 case "Inherent":
+                    break;
                 case "Idiomatic":
+                    break;
                 case "Functional":
+                    break;
                 case "Class":
                     if (firstWord == message)
                     {
@@ -104,7 +108,7 @@ namespace HSBot.Modules
                 await Utilities.Log(MethodBase.GetCurrentMethod(), "TeacherFolder Created for " + context.Guild.Name, LogSeverity.Verbose);
             if (!DataStorage.LocalFolderExists(hourfolder, true))
                 await Utilities.Log(MethodBase.GetCurrentMethod(), "HourFolder Created for " + context.Guild.Name, LogSeverity.Verbose);
-            if (!DataStorage.LocalFolderExists(hourfolder, true))
+            if (!DataStorage.LocalFolderExists(classfolder, true))
                 await Utilities.Log(MethodBase.GetCurrentMethod(), "ClassFolder Created for " + context.Guild.Name, LogSeverity.Verbose);
             var ClassName = list[1].Replace("\"", "");
             
@@ -113,50 +117,34 @@ namespace HSBot.Modules
             string classname;
             List<GroupClass> Classes;
             References.GroupClass Class;
-            /*
+            
             switch (ClassName) // Class Functions
             {
                 case "Class.New":
                     classname = list[2].Replace("\"", "");
                     classids = SafeConversion<ulong>(DataStorage.GetFilesInFolder(classfolder), 0);
-
                     if (classids == null || !classids.Any())
                     {
-                        // if there are no classes.
-                        // find selected hours, and/or teachers, and possibly subject.
-                        // if there is a failure to find any of these, abort.
-                        // if there is a class with matching teacher and (just one) class then remind user of impossibility.
-                        //Class = new GroupClass()
-                        Class = await CreateGroupClass();
+                        Class = await CreateGroupClass(classname, hourfolder, teacherfolder, classfolder, subjectfolder);
+
                         DataStorage.StoreObject(Class, classfolder + "/" + Class.id + ".json", true);
                     }
                     else
                     {
                         Classes = DataStorage.GetObjectsInFolder<GroupClass>(classfolder);
                         GroupClass classtoremove = Classes.Find(x => x.name == classname);
-                        if (classtoremove.name == classname)
+                        if (classtoremove != null && classtoremove.name == classname)
                         {
                             await SendClassicEmbed($"class with the name \"{classtoremove.name}\" is already in the list.",
                                 "If you want to see the full list, use class.Display! :smiley:");
                             return;
                         }
-                        Class = await CreateGroupClass();
+                        Class = await CreateGroupClass(classname, hourfolder, teacherfolder, classfolder, subjectfolder);
 
                         DataStorage.StoreObject(Class, classfolder + "/" + Class.id + ".json", true);
                     }
-
-
-                    Classes = DataStorage.GetObjectsInFolder<GroupClass>(classfolder);
-                    embed = new EmbedBuilder();
-                    embed.WithTitle($"class with the name \"{Class.title}\" added to {Context.Guild.Name}.")
-                        .WithDescription("View them all with class.Display! :smiley:" +
-                            (classs.Count < 2 ? "" : $" *We're now up to {classs.Count} classs*"))
-                        .AddField("**Data**", $":notepad_spiral: ReferenceID: `{hour.id}`")
-                        .WithColor(new Color(60, 176, 222))
-                        .WithFooter(" -Alex https://discord.gg/DVSjvGa", "https://i.imgur.com/HAI5vMj.png");
-                    await Context.Channel.SendMessageAsync("", false, embed.Build());
                     return;
-
+                    /*
                 case "Class.Remove":
                     hourname = list[2].Replace("\"", "");
                     hourids = SafeConversion<ulong>(DataStorage.GetFilesInFolder(hourfolder), 0);
@@ -217,9 +205,9 @@ namespace HSBot.Modules
                         await Context.Channel.SendMessageAsync("", false, embed.Build());
                     }
                     return;
-
+                    */
             } // class functions.
-            */
+            
             
             List<ulong> hourids;
             string hourname;
@@ -433,7 +421,7 @@ namespace HSBot.Modules
                     {
                         teachers = DataStorage.GetObjectsInFolder<Teacher>(teacherfolder);
                         int count = 0;
-                        embed.WithTitle("**teachers in " + Context.Guild.Name + "**")
+                        embed.WithTitle("**Teachers in " + Context.Guild.Name + "**")
                             .WithDescription("Add with teacher.Add, remove with teacher.Remove! :smiley:")
                             .WithColor(new Color(60, 176, 222));
                         foreach (Teacher t in teachers)
@@ -529,7 +517,8 @@ namespace HSBot.Modules
                             try
                             {
                                 await Context.Guild.GetChannel(subjecttoremove.textchannelid).DeleteAsync();
-                                await Context.Guild.GetChannel(subjecttoremove.voicechannelid).DeleteAsync();
+                                if (subjecttoremove.voicechannelid.HasValue)
+                                    await Context.Guild.GetChannel(subjecttoremove.voicechannelid.Value).DeleteAsync();
                                 await Context.Guild.GetRole(subjecttoremove.roleid).DeleteAsync();
 
                                 //attempt capture of related classes.
@@ -637,6 +626,24 @@ namespace HSBot.Modules
 
 
     }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     
     // Methods
     public sealed partial class LeaderRoleCommands : InteractiveBase
@@ -722,7 +729,9 @@ namespace HSBot.Modules
             Subject subject = new Subject();
             try
             {
-                RestVoiceChannel subjectVC = Context.Guild.CreateVoiceChannelAsync(subjectname).Result;
+
+
+                
                 RestTextChannel subjectTC = Context.Guild.CreateTextChannelAsync(subjectname).Result;
                 GuildConfig guildconfig = GuildsData.FindOrCreateGuildConfig(Context.Guild);
                 var restrole = await Context.Guild.CreateRoleAsync(subjectname);
@@ -730,7 +739,7 @@ namespace HSBot.Modules
                 {
                     id = GenerateID(subjectfolder),
                     name = subjectname,
-                    voicechannelid = subjectVC.Id,
+                    voicechannelid = null,
                     textchannelid = subjectTC.Id,
                     roleid = restrole.Id, // Converting to socketroleid
                 };
@@ -743,13 +752,21 @@ namespace HSBot.Modules
                     r.Permissions = GuildPermissions.None;
                     //r.Position = Context.Guild.GetRole(guildconfig.VisitorRoleID).Position - 1;
                 });
-                // Add voice channel perms.
-                await subjectVC.AddPermissionOverwriteAsync(Context.Guild.EveryoneRole, EveryonePermissions());
-                await subjectVC.AddPermissionOverwriteAsync(restrole, ClassPermissions());
                 // Add text channel perms.
                 await subjectTC.AddPermissionOverwriteAsync(Context.Guild.EveryoneRole, EveryonePermissions());
                 await subjectTC.AddPermissionOverwriteAsync(restrole, ClassPermissions());
-                                
+
+                await ReplyAsync("Would you like to create a voice channel for this subject? \"yes\" or anything else.");
+                var q = await AwaitMessage(100, "Well this is an awkward step to fail at.");
+                if (q.Content == "yes")
+                {
+                    RestVoiceChannel subjectVC = Context.Guild.CreateVoiceChannelAsync(subjectname).Result;
+                    subject.voicechannelid = subjectVC.Id;
+                    // Add voice channel perms.
+                    await subjectVC.AddPermissionOverwriteAsync(Context.Guild.EveryoneRole, EveryonePermissions());
+                    await subjectVC.AddPermissionOverwriteAsync(restrole, ClassPermissions());
+                }
+
                 return subject;
             }
             catch (Exception ex)
@@ -772,35 +789,31 @@ namespace HSBot.Modules
                 PermValue.Deny, PermValue.Deny, PermValue.Deny, PermValue.Deny,
                 PermValue.Deny, PermValue.Deny, PermValue.Deny);
         
-        public async Task<GroupClass> CreateGroupClass(string hourFolder, string teacherFolder, string classFolder, string subjectFolder = "")
+        public async Task<GroupClass> CreateGroupClass(string name, string hourFolder, string teacherFolder, string classFolder, string subjectFolder = "")
         {
-            // find class name!
-            await ReplyAsync("**Alright, before anything** a group must have a name! What is the name of this class?");
-            var classname = await AwaitMessage(100);
-            if (classname.Equals(null)) return null;
             // find hour.
-            await ReplyAsync("Firstly, specify the **hours this class is in**. Format it like this: \n" +
-                "```hourname,hourname,hourname```\nOr simply\n```hourname```");
+            await ReplyAsync("Firstly, specify the **hours this class is in**. Format it like " +
+                "`hourname,hourname,hourname` Or simply `hourname`");
             var hoursmsg = await AwaitMessage(100, "Try `h!group Class Hour.Add`");
             if (hoursmsg.Equals(null)) return null;
-            List<Hour> hours = DataStorage.GetObjectsInFolder<Hour>(hourFolder); List<Hour> shours;
-            if (hoursmsg.Content.Contains(",")) shours = hours.FindAll(x => hoursmsg.Content.Split(",").Contains(x.title));
-                else shours = hours.FindAll(h => h.title == hoursmsg.Content);
+            List<Hour> lhours = DataStorage.GetObjectsInFolder<Hour>(hourFolder); List<Hour> shours;
+            if (hoursmsg.Content.Contains(",")) shours = lhours.FindAll(x => hoursmsg.Content.Split(",").Contains(x.title));
+                else shours = lhours.FindAll(h => h.title == hoursmsg.Content);
             if (shours.Equals(null) || shours.Count == 0)
             {
-                await ReplyAsync("No group found, remember to be exact! Try `h!group Class Hour.Add`");
+                await ReplyAsync("No hour found, remember to be exact! Try `h!group Class Hour.Add`");
                 return null;
             }
-            await ReplyAsync(shours.Count + ((shours.Count > 1) ? " hours" : " hour") + " found!");
+            await ReplyAsync(shours.Count + ((shours.Count > 1) ? " hours" : " hour") + $" found! *(first is {shours.First().title})*");
             // find teacher.
             await ReplyAsync("Great! Next up, the teacher of this class. Just say the name of the teacher as it is.");
             var teachermsg = await AwaitMessage(100, "Try `h!group Class Teacher.Add`");
             if (teachermsg.Equals(null)) return null;
-            List<Teacher> teachers = DataStorage.GetObjectsInFolder<Teacher>(hourFolder); Teacher teacher;
-            teacher = teachers.Find(t => t.name == hoursmsg.Content);
-            if (teacher.Equals(null))
+            List<Teacher> teachers = DataStorage.GetObjectsInFolder<Teacher>(teacherFolder); Teacher teacher;
+            teacher = teachers.Find(t => t.name == teachermsg.Content); 
+            if (teacher.Equals(null) || teacher.name != teachermsg.Content)
             {
-                await ReplyAsync($"No teacher found with name **{hoursmsg.Content}**, remember to be exact!" +
+                await ReplyAsync($"No teacher found with name **{teachermsg.Content}**, remember to be exact!" +
                     $" Try `h!group Class Hour.Add`");
                 return null;
             }
@@ -824,13 +837,18 @@ namespace HSBot.Modules
                 await ReplyAsync($"Subject found with name {subject.name}.");
             }
             //
+
             await ReplyAsync("**All set!** I'll automatically generate the channels and roles for this class, " +
                 "and get back to you once I'm done...");
-            // generate roles...
+
+            // Generate roles, return array of roles and hours.
             List<RestRole> roles = new List<RestRole>();
+            ulong[] roleids = new ulong[shours.Count];
+            Hour[] hours = shours.ToArray();
+            int i = 0;
             foreach (Hour h in shours)
             {
-                RestRole role = await Context.Guild.CreateRoleAsync($"{h.title}: {teacher.name}, {classname}");
+                RestRole role = await Context.Guild.CreateRoleAsync($"{h.title}: {teacher.name}, {name}");
                 await role.ModifyAsync(r =>
                 {
                     r.Color = new Color(89, 88, 133);
@@ -840,28 +858,44 @@ namespace HSBot.Modules
                     //r.Position = Context.Guild.GetRole(guildconfig.VisitorRoleID).Position - 1;
                 });
                 roles.Add(role);
+                roleids[i] = role.Id;
+                i++;
             }
 
-            if (subjectmsg.Content == "no")
+            GroupClass Class = new GroupClass(); // Class is created!
+            string newchannelmention = "end me"; // wish i didn't have to do this.
+
+            if (subjectmsg.Content == "no") // Assign values to class. Check if channel is wanted.
             {
                 await ReplyAsync("Would you like to create a channel for this class? \"yes\" or anything else.");
                 var qchannel = await AwaitMessage(100, "Well this is an awkward step to fail at.");
                 if (qchannel.Equals(null)) return null;
-                List<ulong> roleids = new List<ulong>();
                 if (qchannel.Content == "yes")
                 {
-                    var newchannel = Context.Guild.CreateTextChannelAsync($"{teacher.name}, {classname}").Result;
+                    var newchannel = Context.Guild.CreateTextChannelAsync($"{teacher.name}, {name}").Result;
                     await newchannel.AddPermissionOverwriteAsync(Context.Guild.EveryoneRole, EveryonePermissions());
                     foreach (RestRole r in roles) await newchannel.AddPermissionOverwriteAsync(r, ClassPermissions());
-                    // Here class is complete. With new channel.
-                    foreach (RestRole r in roles) roleids.Add(r.Id);
-                    var finalclass = new GroupClass(hours.ToArray(), teacher, roleids.ToArray(), null, newchannel.Id);
-                    return finalclass;
-                }
-                // Here class is complete. Without new channel.
-                foreach (RestRole r in roles) roleids.Add(r.Id);
-                var finalclass2 = new GroupClass(hours.ToArray(), teacher, roleids.ToArray(), null, null);
-                return finalclass2;
+                    newchannelmention = newchannel.Mention;
+                    Class = new GroupClass()
+                    {
+                        hours = hours,
+                        teacher = teacher,
+                        roles = roleids,
+                        subject = null,
+                        channel = newchannel.Id,
+                        name = name,
+                        id = GenerateID(classFolder) // Group values.
+                    }; // Here class is complete. With new channel.
+                } else Class = new GroupClass()
+                {
+                    hours = hours,
+                    teacher = teacher,
+                    roles = roleids,
+                    subject = null,
+                    channel = null,
+                    name = name,
+                    id = GenerateID(classFolder) // Group values.
+                }; // Here class is complete. Without new channel.
             }
             else
             {
@@ -869,12 +903,40 @@ namespace HSBot.Modules
                 subject = subjects.Find(s => s.name == subjectmsg.Content); // Have to relocate subject... inefficient I know.
                 channel = Context.Guild.GetTextChannel(subject.textchannelid);
                 foreach (RestRole r in roles) await channel.AddPermissionOverwriteAsync(r, ClassPermissions());
-                // Here class is complete. With subject.
-                List<ulong> roleids = new List<ulong>();
-                foreach (RestRole r in roles) roleids.Add(r.Id);
-                var finalclass3 = new GroupClass(hours.ToArray(), teacher, roleids.ToArray(), subject, null);
-                return finalclass3;
+                Class = new GroupClass()
+                {
+                    hours = hours,
+                    teacher = teacher,
+                    roles = roleids,
+                    subject = subject,
+                    channel = null,
+                    name = name,
+                    id = GenerateID(classFolder) // Group values.
+                }; // Here class is complete. With subject.
             }
+
+            // Send final embed.
+            var Classes = DataStorage.GetObjectsInFolder<GroupClass>(classFolder);
+            var embed = new EmbedBuilder();
+            embed.WithTitle($"Class with the name \"{Class.name}\" added to {Context.Guild.Name}.")
+                .WithDescription("View them all with Class.Display! :smiley:" +
+                    (Classes.Count < 2 ? "" : $" *We're now up to {Classes.Count} classs*"))
+                .AddField("**Data**", $":notepad_spiral: ReferenceID: `{Class.id}`")
+                .AddField("**Teacher**", $":school: Teacher: `{Class.teacher.name}`");
+            string hourscomment = "";
+            foreach (Hour h in Class.hours) hourscomment = String.Concat(hourscomment, $":clock1: Hour: `{h.title}`\n");
+            embed.AddField("**Hours**", hourscomment, true);
+            string rolescomment = "";
+            foreach (RestRole r in roles) rolescomment = String.Concat(rolescomment, $":link: Role: {r.Mention}\n");
+            embed.AddField("**Roles**", rolescomment, true);
+            if (!Class.subject.Equals(null)) embed.AddField("**Subject**", $":beach_umbrella: Subject: `{Class.subject.Value.name}`");
+            if (!Class.channel.Equals(null)) embed.AddField("**Channel**", $":speech_balloon: Channel: {newchannelmention}");
+            embed.WithColor(new Color(60, 176, 222))
+                .WithFooter(" -Alex https://discord.gg/DVSjvGa", "https://i.imgur.com/HAI5vMj.png");
+            await Context.Channel.SendMessageAsync("", false, embed.Build());
+
+            
+            return Class;
         }
         public async Task<SocketMessage> AwaitMessage(int wait, string comment = "")
         {

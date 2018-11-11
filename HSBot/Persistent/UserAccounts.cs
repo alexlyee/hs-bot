@@ -26,13 +26,18 @@ namespace HSBot.Persistent
         {
             if (DataStorage.LocalFolderExists(UsersFolder, true))
             {
-                foreach (string file in Directory.GetFiles(UsersFolder))
+                string[] files = null;
+                try { files = Directory.GetFiles(UsersFolder); } catch { }
+                if (files != null)
                 {
-                    Utilities.Log("UserAccounts", file);
-                    var newAccount = new UserAccount(GetAccountFromFile(file).ID, new InMemoryStorage());
-                    Accounts.Add(newAccount);
-                }
-                Utilities.Log("UserAccounts", "User accounts initlized.");
+                    foreach (string file in files)
+                    {
+                        Utilities.Log("UserAccounts", file);
+                        var newAccount = new UserAccount(GetAccountFromFile(file).ID, new InMemoryStorage());
+                        Accounts.Add(newAccount);
+                    }
+                    Utilities.Log("UserAccounts", "User accounts initlized.");
+                } else Utilities.Log("UserAccounts", "There are no user accounts currently!", LogSeverity.Warning);
             }
             else
             {
@@ -42,7 +47,7 @@ namespace HSBot.Persistent
 
         public static UserAccount CreateUserAccount(ulong id, bool _override = false)
         {
-            if (GetAccount(id).Equals(null))
+            if (GetAccount(id) == null)
             {
                 switch (_override)
                 {

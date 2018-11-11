@@ -12,7 +12,7 @@ namespace HSBot.Modules.Preconditions
         private bool AdminsAreLimited { get; set; }
         private bool AnnounceCooldownLength { get; set; }
         private readonly ConcurrentDictionary<CooldownInfo, DateTime> _cooldowns = new ConcurrentDictionary<CooldownInfo, DateTime>();
-        public string Group { get; set; }
+        //public string Group { get; set; }
         /// <summary>
         /// Sets the cooldown for a user to use this command
         /// </summary>

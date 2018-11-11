@@ -5,7 +5,6 @@ using System.IO;
 using Discord;
 using System.Reflection;
 using System.Threading.Tasks;
-using NReco.Converting;
 using System.Security.Cryptography;
 
 namespace HSBot.Helpers

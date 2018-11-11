@@ -1,7 +1,7 @@
 {
   "runtimeTarget": {
     "name": ".NETCoreApp,Version=v2.0",
-    "signature": "2682f6b6be7a8a597673a3a2e7f3e204aab42295"
+    "signature": "3af5b41a2e1e89cabffe3705c40460cf754d88a7"
   },
   "compilationOptions": {},
   "targets": {
@@ -10,6 +10,7 @@
         "dependencies": {
           "Discord.Addons.CommandCache": "2.0.0",
           "Discord.Addons.Interactive": "1.0.1",
+          "Discord.Addons.InteractiveBuilder": "1.1.1",
           "Discord.Net": "2.0.0-beta",
           "Discord.Net.Analyzers": "2.0.0-beta",
           "Discord.Net.Commands": "2.0.0-beta",
@@ -19,9 +20,8 @@
           "Discord.Net.Rpc": "1.0.2",
           "Discord.Net.WebSocket": "2.0.0-beta",
           "Discord.Net.Webhook": "2.0.0-beta",
-          "DiscordBotsList.Api.Adapter.Discord.Net": "1.0.0",
-          "HtmlToPdfOrImage": "1.0.2",
-          "NReco": "2.0.3"
+          "DiscordBotsList.Api.Adapter.Discord.Net": "1.1.0",
+          "HtmlToPdfOrImage": "1.0.2"
         },
         "runtime": {
           "HSBot.dll": {}
@@ -43,11 +43,18 @@
         "dependencies": {
           "Discord.Net.Commands": "2.0.0-beta",
           "Discord.Net.WebSocket": "2.0.0-beta"
+        }
+      },
+      "Discord.Addons.InteractiveBuilder/1.1.1": {
+        "dependencies": {
+          "Discord.Net.Commands": "2.0.0-beta",
+          "Discord.Net.WebSocket": "2.0.0-beta",
+          "JetBrains.Annotations": "11.1.0"
         },
         "runtime": {
-          "lib/netstandard1.1/Discord.Addons.Interactive.dll": {
-            "assemblyVersion": "1.0.1.0",
-            "fileVersion": "1.0.1.0"
+          "lib/netstandard2.0/Discord.Addons.Interactive.dll": {
+            "assemblyVersion": "1.1.1.0",
+            "fileVersion": "1.1.1.0"
           }
         }
       },
@@ -86,7 +93,7 @@
       },
       "Discord.Net.Core/2.0.0-beta": {
         "dependencies": {
-          "Newtonsoft.Json": "10.0.3",
+          "Newtonsoft.Json": "11.0.2",
           "System.Collections.Immutable": "1.3.1",
           "System.Interactive.Async": "3.1.1"
         },
@@ -159,26 +166,26 @@
           }
         }
       },
-      "DiscordBotsList.Api/1.1.0": {
+      "DiscordBotsList.Api/1.3.0": {
         "dependencies": {
-          "Miki.Rest": "1.2.2"
+          "Miki.Net.Http": "2.0.0"
         },
         "runtime": {
           "lib/netstandard1.6/DiscordBotsList.Api.dll": {
-            "assemblyVersion": "1.1.0.0",
-            "fileVersion": "1.1.0.0"
+            "assemblyVersion": "1.3.0.0",
+            "fileVersion": "1.3.0.0"
           }
         }
       },
-      "DiscordBotsList.Api.Adapter.Discord.Net/1.0.0": {
+      "DiscordBotsList.Api.Adapter.Discord.Net/1.1.0": {
         "dependencies": {
           "Discord.Net": "2.0.0-beta",
-          "DiscordBotsList.Api": "1.1.0"
+          "DiscordBotsList.Api": "1.3.0"
         },
         "runtime": {
           "lib/netstandard1.6/DiscordBotsList.Api.Adapter.Discord.Net.dll": {
-            "assemblyVersion": "1.0.0.0",
-            "fileVersion": "1.0.0.0"
+            "assemblyVersion": "1.1.0.0",
+            "fileVersion": "1.1.0.0"
           }
         }
       },
@@ -187,6 +194,17 @@
           "lib/HtmlToPdfOrImage.dll": {
             "assemblyVersion": "1.0.0.0",
             "fileVersion": "1.0.0.0"
+          }
+        }
+      },
+      "JetBrains.Annotations/11.1.0": {
+        "dependencies": {
+          "System.Runtime": "4.3.0"
+        },
+        "runtime": {
+          "lib/netstandard1.0/JetBrains.Annotations.dll": {
+            "assemblyVersion": "11.1.0.0",
+            "fileVersion": "11.1.0.0"
           }
         }
       },
@@ -309,26 +327,6 @@
           }
         }
       },
-      "Microsoft.CSharp/4.3.0": {
-        "dependencies": {
-          "System.Collections": "4.3.0",
-          "System.Diagnostics.Debug": "4.3.0",
-          "System.Dynamic.Runtime": "4.3.0",
-          "System.Globalization": "4.3.0",
-          "System.Linq": "4.3.0",
-          "System.Linq.Expressions": "4.3.0",
-          "System.ObjectModel": "4.3.0",
-          "System.Reflection": "4.3.0",
-          "System.Reflection.Extensions": "4.3.0",
-          "System.Reflection.Primitives": "4.3.0",
-          "System.Reflection.TypeExtensions": "4.3.0",
-          "System.Resources.ResourceManager": "4.3.0",
-          "System.Runtime": "4.3.0",
-          "System.Runtime.Extensions": "4.3.0",
-          "System.Runtime.InteropServices": "4.3.0",
-          "System.Threading": "4.3.0"
-        }
-      },
       "Microsoft.Extensions.DependencyInjection/1.1.1": {
         "dependencies": {
           "Microsoft.Extensions.DependencyInjection.Abstractions": "1.1.1"
@@ -358,37 +356,22 @@
           "System.Runtime": "4.3.0"
         }
       },
-      "Miki.Rest/1.2.2": {
+      "Miki.Net.Http/2.0.0": {
         "dependencies": {
-          "Newtonsoft.Json": "10.0.3"
+          "Newtonsoft.Json": "11.0.2"
         },
         "runtime": {
-          "lib/netstandard1.6/Miki.Rest.dll": {
-            "assemblyVersion": "1.2.2.0",
-            "fileVersion": "1.2.2.0"
+          "lib/netstandard1.6/Miki.Net.Http.dll": {
+            "assemblyVersion": "1.5.0.0",
+            "fileVersion": "1.5.0.0"
           }
         }
       },
-      "Newtonsoft.Json/10.0.3": {
-        "dependencies": {
-          "Microsoft.CSharp": "4.3.0",
-          "System.ComponentModel.TypeConverter": "4.3.0",
-          "System.Runtime.Serialization.Formatters": "4.3.0",
-          "System.Runtime.Serialization.Primitives": "4.3.0",
-          "System.Xml.XmlDocument": "4.3.0"
-        },
+      "Newtonsoft.Json/11.0.2": {
         "runtime": {
-          "lib/netstandard1.3/Newtonsoft.Json.dll": {
-            "assemblyVersion": "10.0.0.0",
-            "fileVersion": "10.0.3.21018"
-          }
-        }
-      },
-      "NReco/2.0.3": {
-        "runtime": {
-          "lib/net40/NReco.dll": {
-            "assemblyVersion": "2.0.3.0",
-            "fileVersion": "2.0.3.0"
+          "lib/netstandard2.0/Newtonsoft.Json.dll": {
+            "assemblyVersion": "11.0.0.0",
+            "fileVersion": "11.0.2.21924"
           }
         }
       },
@@ -607,32 +590,6 @@
       "System.ComponentModel/4.3.0": {
         "dependencies": {
           "System.Runtime": "4.3.0"
-        }
-      },
-      "System.ComponentModel.Primitives/4.3.0": {
-        "dependencies": {
-          "System.ComponentModel": "4.3.0",
-          "System.Resources.ResourceManager": "4.3.0",
-          "System.Runtime": "4.3.0"
-        }
-      },
-      "System.ComponentModel.TypeConverter/4.3.0": {
-        "dependencies": {
-          "System.Collections": "4.3.0",
-          "System.Collections.NonGeneric": "4.3.0",
-          "System.Collections.Specialized": "4.3.0",
-          "System.ComponentModel": "4.3.0",
-          "System.ComponentModel.Primitives": "4.3.0",
-          "System.Globalization": "4.3.0",
-          "System.Linq": "4.3.0",
-          "System.Reflection": "4.3.0",
-          "System.Reflection.Extensions": "4.3.0",
-          "System.Reflection.Primitives": "4.3.0",
-          "System.Reflection.TypeExtensions": "4.3.0",
-          "System.Resources.ResourceManager": "4.3.0",
-          "System.Runtime": "4.3.0",
-          "System.Runtime.Extensions": "4.3.0",
-          "System.Threading": "4.3.0"
         }
       },
       "System.Composition/1.0.31": {
@@ -1267,21 +1224,6 @@
           "System.Runtime.Extensions": "4.3.0"
         }
       },
-      "System.Runtime.Serialization.Formatters/4.3.0": {
-        "dependencies": {
-          "System.Collections": "4.3.0",
-          "System.Reflection": "4.3.0",
-          "System.Resources.ResourceManager": "4.3.0",
-          "System.Runtime": "4.3.0",
-          "System.Runtime.Serialization.Primitives": "4.3.0"
-        }
-      },
-      "System.Runtime.Serialization.Primitives/4.3.0": {
-        "dependencies": {
-          "System.Resources.ResourceManager": "4.3.0",
-          "System.Runtime": "4.3.0"
-        }
-      },
       "System.Security.Claims/4.3.0": {
         "dependencies": {
           "System.Collections": "4.3.0",
@@ -1719,6 +1661,13 @@
       "path": "discord.addons.interactive/1.0.1",
       "hashPath": "discord.addons.interactive.1.0.1.nupkg.sha512"
     },
+    "Discord.Addons.InteractiveBuilder/1.1.1": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-1akXI7GtHBuxLux5dlM76Mn0qlUxcFXNvh24GAGVjmDpjAmeJmQv6XTbKZn+6wFbNIZUd+1X6TUHAgQ3NxGkoQ==",
+      "path": "discord.addons.interactivebuilder/1.1.1",
+      "hashPath": "discord.addons.interactivebuilder.1.1.1.nupkg.sha512"
+    },
     "Discord.Net/2.0.0-beta": {
       "type": "package",
       "serviceable": true,
@@ -1782,19 +1731,19 @@
       "path": "discord.net.websocket/2.0.0-beta",
       "hashPath": "discord.net.websocket.2.0.0-beta.nupkg.sha512"
     },
-    "DiscordBotsList.Api/1.1.0": {
+    "DiscordBotsList.Api/1.3.0": {
       "type": "package",
       "serviceable": true,
-      "sha512": "sha512-8KDmuPc4vBB+z459GzeqNZGMA8t7pOQIB65aiCyFjI2iY8CFHs0yqTFS3biVbJgzBhEFmikM3eQEE22Q+pwS1w==",
-      "path": "discordbotslist.api/1.1.0",
-      "hashPath": "discordbotslist.api.1.1.0.nupkg.sha512"
+      "sha512": "sha512-B/X91zn1+1S+tXrV6KH9vMdp8MZWrq4zIq8lNHrBee+O3bEcTPsw0XaIDq//bMaFGGsknp3+Qkvn/R8bvcVCqA==",
+      "path": "discordbotslist.api/1.3.0",
+      "hashPath": "discordbotslist.api.1.3.0.nupkg.sha512"
     },
-    "DiscordBotsList.Api.Adapter.Discord.Net/1.0.0": {
+    "DiscordBotsList.Api.Adapter.Discord.Net/1.1.0": {
       "type": "package",
       "serviceable": true,
-      "sha512": "sha512-8SRjzoyo9pGqexJyNyE4e6o+12maJ7vd8tUJUWls6fredfEEJq/He9N6imnY1rWXyYRHP/B9FpitzX/TMF+W3w==",
-      "path": "discordbotslist.api.adapter.discord.net/1.0.0",
-      "hashPath": "discordbotslist.api.adapter.discord.net.1.0.0.nupkg.sha512"
+      "sha512": "sha512-H1sr3To14IRYDWiZ5v1mQ3MTUBB+rK6xIYl2UZ8FmUN2Uhog9Zkq2Ruq0lvDopdFgWyoFYb/mwKLhu2YgCdNrQ==",
+      "path": "discordbotslist.api.adapter.discord.net/1.1.0",
+      "hashPath": "discordbotslist.api.adapter.discord.net.1.1.0.nupkg.sha512"
     },
     "HtmlToPdfOrImage/1.0.2": {
       "type": "package",
@@ -1802,6 +1751,13 @@
       "sha512": "sha512-bdyAyxTHiSAHfo5jFr6SXG+8sze3mozu8FzQeK53YIRB3faiNQhYVmP0b3EwkmzPLIxH6IsvReElNzVt3/omUQ==",
       "path": "htmltopdforimage/1.0.2",
       "hashPath": "htmltopdforimage.1.0.2.nupkg.sha512"
+    },
+    "JetBrains.Annotations/11.1.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-0xxJi7UMrUA+r+KjS8KIzerWBiAhbgb5cZpvE8rultYO/ZAqrwd2bGJhDeHg/oaEkshvazcOme1D0DNWWDuCDw==",
+      "path": "jetbrains.annotations/11.1.0",
+      "hashPath": "jetbrains.annotations.11.1.0.nupkg.sha512"
     },
     "Microsoft.CodeAnalysis/2.6.0": {
       "type": "package",
@@ -1859,13 +1815,6 @@
       "path": "microsoft.codeanalysis.workspaces.common/2.6.0",
       "hashPath": "microsoft.codeanalysis.workspaces.common.2.6.0.nupkg.sha512"
     },
-    "Microsoft.CSharp/4.3.0": {
-      "type": "package",
-      "serviceable": true,
-      "sha512": "sha512-P+MBhIM0YX+JqROuf7i306ZLJEjQYA9uUyRDE+OqwUI5sh41e2ZbPQV3LfAPh+29cmceE1pUffXsGfR4eMY3KA==",
-      "path": "microsoft.csharp/4.3.0",
-      "hashPath": "microsoft.csharp.4.3.0.nupkg.sha512"
-    },
     "Microsoft.Extensions.DependencyInjection/1.1.1": {
       "type": "package",
       "serviceable": true,
@@ -1894,26 +1843,19 @@
       "path": "microsoft.win32.primitives/4.3.0",
       "hashPath": "microsoft.win32.primitives.4.3.0.nupkg.sha512"
     },
-    "Miki.Rest/1.2.2": {
+    "Miki.Net.Http/2.0.0": {
       "type": "package",
       "serviceable": true,
-      "sha512": "sha512-iMMHZCvkVRyQdDallCs/1h7LNThit+QlFZRffAHpF699Kb1zjwbjRyceMJ6nfyrgxosDXU1TVWh6qpoB2DO6VA==",
-      "path": "miki.rest/1.2.2",
-      "hashPath": "miki.rest.1.2.2.nupkg.sha512"
+      "sha512": "sha512-ePZAkGMp6nyZRhXrlRJpKtFr0yJcph2Nvd7C1z1goByIaGGGKXBuxodgGF6LQtxJPCt+Hw+wGYIZAX6G4xZdXw==",
+      "path": "miki.net.http/2.0.0",
+      "hashPath": "miki.net.http.2.0.0.nupkg.sha512"
     },
-    "Newtonsoft.Json/10.0.3": {
+    "Newtonsoft.Json/11.0.2": {
       "type": "package",
       "serviceable": true,
-      "sha512": "sha512-hSXaFmh7hNCuEoC4XNY5DrRkLDzYHqPx/Ik23R4J86Z7PE/Y6YidhG602dFVdLBRSdG6xp9NabH3dXpcoxWvww==",
-      "path": "newtonsoft.json/10.0.3",
-      "hashPath": "newtonsoft.json.10.0.3.nupkg.sha512"
-    },
-    "NReco/2.0.3": {
-      "type": "package",
-      "serviceable": true,
-      "sha512": "sha512-JNuKMEh/8LlbaZgknKKvhpY3Ws2zT3s25aqA1MpuT5kogGn0GYDEpYjA5rh7YY82SjWdOSL4yD16N6ljvRehMA==",
-      "path": "nreco/2.0.3",
-      "hashPath": "nreco.2.0.3.nupkg.sha512"
+      "sha512": "sha512-IvJe1pj7JHEsP8B8J8DwlMEx8UInrs/x+9oVY+oCD13jpLu4JbJU2WCIsMRn5C4yW9+DgkaO8uiVE5VHKjpmdQ==",
+      "path": "newtonsoft.json/11.0.2",
+      "hashPath": "newtonsoft.json.11.0.2.nupkg.sha512"
     },
     "runtime.debian.8-x64.runtime.native.System.Security.Cryptography.OpenSsl/4.3.0": {
       "type": "package",
@@ -2096,20 +2038,6 @@
       "sha512": "sha512-VyGn1jGRZVfxnh8EdvDCi71v3bMXrsu8aYJOwoV7SNDLVhiEqwP86pPMyRGsDsxhXAm2b3o9OIqeETfN5qfezw==",
       "path": "system.componentmodel/4.3.0",
       "hashPath": "system.componentmodel.4.3.0.nupkg.sha512"
-    },
-    "System.ComponentModel.Primitives/4.3.0": {
-      "type": "package",
-      "serviceable": true,
-      "sha512": "sha512-j8GUkCpM8V4d4vhLIIoBLGey2Z5bCkMVNjEZseyAlm4n5arcsJOeI3zkUP+zvZgzsbLTYh4lYeP/ZD/gdIAPrw==",
-      "path": "system.componentmodel.primitives/4.3.0",
-      "hashPath": "system.componentmodel.primitives.4.3.0.nupkg.sha512"
-    },
-    "System.ComponentModel.TypeConverter/4.3.0": {
-      "type": "package",
-      "serviceable": true,
-      "sha512": "sha512-16pQ6P+EdhcXzPiEK4kbA953Fu0MNG2ovxTZU81/qsCd1zPRsKc3uif5NgvllCY598k6bI0KUyKW8fanlfaDQg==",
-      "path": "system.componentmodel.typeconverter/4.3.0",
-      "hashPath": "system.componentmodel.typeconverter.4.3.0.nupkg.sha512"
     },
     "System.Composition/1.0.31": {
       "type": "package",
@@ -2453,20 +2381,6 @@
       "sha512": "sha512-yMH+MfdzHjy17l2KESnPiF2dwq7T+xLnSJar7slyimAkUh/gTrS9/UQOtv7xarskJ2/XDSNvfLGOBQPjL7PaHQ==",
       "path": "system.runtime.numerics/4.3.0",
       "hashPath": "system.runtime.numerics.4.3.0.nupkg.sha512"
-    },
-    "System.Runtime.Serialization.Formatters/4.3.0": {
-      "type": "package",
-      "serviceable": true,
-      "sha512": "sha512-KT591AkTNFOTbhZlaeMVvfax3RqhH1EJlcwF50Wm7sfnBLuHiOeZRRKrr1ns3NESkM20KPZ5Ol/ueMq5vg4QoQ==",
-      "path": "system.runtime.serialization.formatters/4.3.0",
-      "hashPath": "system.runtime.serialization.formatters.4.3.0.nupkg.sha512"
-    },
-    "System.Runtime.Serialization.Primitives/4.3.0": {
-      "type": "package",
-      "serviceable": true,
-      "sha512": "sha512-Wz+0KOukJGAlXjtKr+5Xpuxf8+c8739RI1C+A2BoQZT+wMCCoMDDdO8/4IRHfaVINqL78GO8dW8G2lW/e45Mcw==",
-      "path": "system.runtime.serialization.primitives/4.3.0",
-      "hashPath": "system.runtime.serialization.primitives.4.3.0.nupkg.sha512"
     },
     "System.Security.Claims/4.3.0": {
       "type": "package",
