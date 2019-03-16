@@ -15,10 +15,10 @@ namespace HSBot.Modules.References
     {
         public Hour[] hours;
         public Teacher teacher;
-        public ulong[] roles;
+        public ulong[] roles; // Not to be edited directly by users.
 
-        public Subject? subject;
-        public ulong? channel;
+        public Subject? subject; // Can be none.
+        public ulong[] channels; // Can be none.
     }
     class GroupOverseen : GroupType
     {

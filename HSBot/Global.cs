@@ -11,6 +11,7 @@ namespace HSBot
     {
         internal static DiscordSocketClient Client { get; set; }
         internal static Random R { get; set; } = new Random();
+        internal static ulong MessageIdToTrack { get; set; }
 
         // Global Helper methods
         static Global()

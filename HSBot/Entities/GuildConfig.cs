@@ -10,6 +10,7 @@ namespace HSBot.Entities
         public ulong Id { get; set; }
         public ulong Popularity { get; set; }
         public ulong ActivityChannelID { get; set; }
+        public ulong BotChannelID { get; set; }
 
         public List<ulong> TokenIDs { get; set; }
 
@@ -30,8 +31,8 @@ namespace HSBot.Entities
         public ulong GroupManagerRoleID { get; set; }
         public ulong VoiceManagerRoleID { get; set; }
 
-        public uint ClassChannelPosition { get; set; }
-        public uint ClassVoiceChannelPosition { get; set; }
+        public ulong GroupChannelsCategory { get; set; }
+        public ulong GroupClassesCategory { get; set; }
 
         public string TimeCreated { get; set; }
     }

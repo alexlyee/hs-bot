@@ -18,6 +18,8 @@ using HSBot.Modules.References;
 using System.Net;
 using Newtonsoft.Json;
 using HSBot.Entities;
+using System.Drawing;
+using System.ComponentModel;
 
 namespace HSBot.Modules
 {
@@ -33,7 +35,7 @@ namespace HSBot.Modules
         }
 
         [Command("schoolsettings")]
-        public async Task settings([Remainder]string message)
+        public async Task Settings([Remainder]string message)
         {
             var embed = new EmbedBuilder();
             var firstWord = message.IndexOf(" ") > -1
@@ -55,7 +57,25 @@ namespace HSBot.Modules
                         try
                         {
                             PropertyInfo tochange = GuildsData.FindOrCreateGuildConfig(Context.Guild).GetType().GetProperty(vars[0]);
-                            tochange.SetValue(vars[1], tochange.GetValue(config, null), null);
+                            if (tochange.PropertyType.IsEquivalentTo(typeof(string)))
+                                tochange.SetValue(vars[1], tochange.GetValue(config, null), null);
+                            else if (tochange.PropertyType.IsEquivalentTo(typeof(ulong)))
+                            {
+                                ulong converted;
+                                try
+                                {
+                                    converted = (UInt64)Parse<ulong>(vars[1]);
+                                }
+                                catch
+                                {
+                                    await SendErrorEmbed("**Syntax error**", $"Failure to convert {vars[1]} to a long number.");
+                                    break;
+                                }
+                                tochange.SetValue(converted, tochange.GetValue(config, null), null);
+                            }
+                        
+
+
                             await SendClassicEmbed("**Config.json**", $"Set {vars[0]} to {vars[1]}.");
                         }
                         catch (Exception ex)
@@ -93,7 +113,7 @@ namespace HSBot.Modules
                 {
                     int count = 0;
                     embed.WithTitle("**Captured Roles with name " + message + "**")
-                        .WithColor(new Color(60, 176, 222));
+                        .WithColor(new Discord.Color(60, 176, 222));
                     foreach (SocketRole role in roles)
                     {
                         embed.AddField(role.Name, role.Id.ToString());
@@ -102,7 +122,7 @@ namespace HSBot.Modules
                             await Context.Channel.SendMessageAsync("", embed: embed.Build());
                             embed = new EmbedBuilder();
                             embed.WithTitle("Captured Roles with name " + message)
-                                .WithColor(new Color(60, 176, 222));
+                                .WithColor(new Discord.Color(60, 176, 222));
                         }
                         count++;
                     }
@@ -114,7 +134,7 @@ namespace HSBot.Modules
             catch
             {
                 embed.WithTitle("Couldn't find " + message + ", try to be exact!")
-                    .WithColor(new Color(255, 0, 0));
+                    .WithColor(new Discord.Color(255, 0, 0));
                 await Context.Channel.SendMessageAsync("", embed: embed.Build());
                 return;
             }
@@ -126,7 +146,7 @@ namespace HSBot.Modules
             var embed = new EmbedBuilder();
             int count = 0;
             embed.WithTitle("**Captured Roles in " + Context.Guild.Name + "**")
-                .WithColor(new Color(60, 176, 222));
+                .WithColor(new Discord.Color(60, 176, 222));
             foreach (SocketRole role in Context.Guild.Roles)
             {
                 embed.AddField(role.Name, role.Id.ToString());
@@ -135,7 +155,7 @@ namespace HSBot.Modules
                     await Context.Channel.SendMessageAsync("", embed: embed.Build());
                     embed = new EmbedBuilder();
                     embed.WithTitle("Captured Roles in " + Context.Guild.Name)
-                        .WithColor(new Color(60, 176, 222));
+                        .WithColor(new Discord.Color(60, 176, 222));
                 }
                 count++;
             }
@@ -225,8 +245,8 @@ namespace HSBot.Modules
         [Command("echo")]
         public async Task Echo([Remainder]string message)
         {
-            string r = Utilities.GetFormattedAlert("WELCOME_&NAME", Context.User.Username);
-            await SendClassicEmbed("Sent by " + Context.User.Mention, r);
+            // string r = Utilities.GetFormattedAlert("WELCOME_&NAME", Context.User.Username);
+            await SendClassicEmbed("Sent by " + Context.User.Username, message);
         }
 
     }
@@ -245,7 +265,7 @@ namespace HSBot.Modules
             var embed = new EmbedBuilder();
             embed.WithTitle($"**{title}**")
                 .WithDescription($"*{desc}*")
-                .WithColor(new Color(60, 176, 222))
+                .WithColor(new Discord.Color(60, 176, 222))
                 .WithFooter(" -Alex https://discord.gg/DVSjvGa", "https://i.imgur.com/HAI5vMj.png")
                 .WithCurrentTimestamp();
             PropertyInfo[] properties = typeof(T).GetProperties();
@@ -259,7 +279,7 @@ namespace HSBot.Modules
             {
                 Title = title,
                 Description = desc,
-                Color = new Color(33, 160, 52),
+                Color = new Discord.Color(33, 160, 52),
                 Footer = new EmbedFooterBuilder()
                     .WithText(" -Alex https://discord.gg/DVSjvGa")
                     .WithIconUrl("https://i.imgur.com/HAI5vMj.png"),
@@ -274,7 +294,7 @@ namespace HSBot.Modules
             {
                 Title = title,
                 Description = desc,
-                Color = new Color(219, 57, 75),
+                Color = new Discord.Color(219, 57, 75),
                 Footer = new EmbedFooterBuilder()
                     .WithText(" -Alex https://discord.gg/DVSjvGa")
                     .WithIconUrl("https://i.imgur.com/HAI5vMj.png"),
@@ -296,7 +316,7 @@ namespace HSBot.Modules
             {
                 Title = title,
                 Description = desc,
-                Color = new Color(60, 176, 222),
+                Color = new Discord.Color(60, 176, 222),
                 Footer = new EmbedFooterBuilder()
                     .WithText(" -Alex https://discord.gg/DVSjvGa")
                     .WithIconUrl("https://i.imgur.com/HAI5vMj.png"),
@@ -317,7 +337,7 @@ namespace HSBot.Modules
             {
                 Utilities.Log(MethodBase.GetCurrentMethod(), "Failure checking roles.", ex, LogSeverity.Warning);
             }
-            //Utilities.Log(MethodBase.GetCurrentMethod(), "F",LogSeverity.Warning);
+            //Utilities.Log(MethodBase.GetCurrentMethod(), "F", LogSeverity.Warning);
             return false;
         }
         public bool UserHasRole(ulong roleId)
@@ -342,5 +362,12 @@ namespace HSBot.Modules
 
             return result.ToList();
         }
+        public static T Parse<T>(string value)
+        {
+            // or ConvertFromInvariantString for serialization.
+            return (T)TypeDescriptor.GetConverter(typeof(T)).ConvertFromString(value);
+        }
+        public object GetListOfT(Type T) => Activator.CreateInstance(typeof(List<>).MakeGenericType(T));
     }
+
 }

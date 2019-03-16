@@ -13,6 +13,8 @@ using HSBot.Persistent;
 using System.Diagnostics;
 using System.IO;
 using Discord.Addons.Interactive;
+using System.Collections.Generic;
+using System.Linq;
 /* Namespace of discord command tools.
 https://www.nuget.org/packages/Discord.Net.Commands/ */
 /* Namespace of discord web tools.
@@ -53,11 +55,10 @@ namespace HSBot
             });
             _interactive = new InteractiveService(_client);
             _services = new ServiceCollection() // Microsoft.Extensions.DependencyInjection
-                            .AddSingleton(_client) // Singleton means to a static like class. <-- NOT REALLY
-                            .AddSingleton(_commands) //<-- what is _commands?
+                            .AddSingleton(_client)
+                            .AddSingleton(_commands)
                             .AddSingleton<CommandHandler>()
                             .AddSingleton(_interactive);
-            //.BuildServiceProvider(); removed this
 
             _provider = _services.BuildServiceProvider();
             await _provider.GetRequiredService<CommandHandler>().InitializeAsync();
@@ -73,9 +74,92 @@ namespace HSBot
 
             await _client.LoginAsync(TokenType.Bot, Config.BotConfig.Token);
             await _client.StartAsync();
-            await _client.SetGameAsync(Config.BotConfig.Playing, "https://www.twitch.tv/alexlyee", ActivityType.Streaming);
             await Utilities.Log(MethodBase.GetCurrentMethod(), "Program running! :)");
+            ConsoleInput();
             await Task.Delay(-1);
+        }
+
+        private async Task ConsoleInput()
+        {
+            var input = string.Empty;
+            while (input.Trim().ToLower() != "block")
+            {
+                input = Console.ReadLine();
+                if (input.Trim().ToLower() == "message")
+                    ConsoleSendMessage();
+            }
+        }
+
+        private async void ConsoleSendMessage()
+        {
+            Console.WriteLine("Select the guild:");
+            var guild = GetSelectedGuild(_client.Guilds);
+            var textChannel = GetSelectedTextChannel(guild.TextChannels);
+            var msg = string.Empty;
+            while (msg.Trim() == string.Empty)
+            {
+                Console.WriteLine("Your message:");
+                msg = Console.ReadLine();
+            }
+
+            await textChannel.SendMessageAsync(msg);
+        }
+
+        private SocketTextChannel GetSelectedTextChannel(IEnumerable<SocketTextChannel> channels)
+        {
+            var textChannels = channels.ToList();
+            var maxIndex = textChannels.Count - 1;
+            for (var i = 0; i <= maxIndex; i++)
+            {
+                Console.WriteLine($"{i} - {textChannels[i].Name}");
+            }
+
+            var selectedIndex = -1;
+            while (selectedIndex < 0 || selectedIndex > maxIndex)
+            {
+                var success = int.TryParse(Console.ReadLine().Trim(), out selectedIndex);
+                if (!success)
+                {
+                    Console.WriteLine("That was an invalid index, try again.");
+                    selectedIndex = -1;
+                }
+            }
+
+            return textChannels[selectedIndex];
+        }
+
+        private SocketGuild GetSelectedGuild(IEnumerable<SocketGuild> guilds)
+        {
+            var socketGuilds = guilds.ToList();
+            var maxIndex = socketGuilds.Count - 1;
+            for (var i = 0; i <= maxIndex; i++)
+            {
+                Console.WriteLine($"{i} - {socketGuilds[i].Name}");
+            }
+
+            var selectedIndex = -1;
+            while (selectedIndex < 0 || selectedIndex > maxIndex)
+            {
+                var success = int.TryParse(Console.ReadLine().Trim(), out selectedIndex);
+                if (!success)
+                {
+                    Console.WriteLine("That was an invalid index, try again.");
+                    selectedIndex = -1;
+                }
+            }
+
+            return socketGuilds[selectedIndex];
+        }
+
+        private async Task OnReactionAdded(Cacheable<IUserMessage, ulong> cache, ISocketMessageChannel channel, SocketReaction reaction)
+        {
+            if (reaction.MessageId == Global.MessageIdToTrack)
+            {
+                if (reaction.Emote.Name == "👌")
+                {
+                    await channel.SendMessageAsync(reaction.User.Value.Username + " says OK.");
+                }
+            }
         }
 
         protected static void Shutdown(string Caller, string Reason, Exception ex = null)
