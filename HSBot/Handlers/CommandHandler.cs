@@ -13,30 +13,35 @@ namespace HSBot.Handlers
 {
     internal class CommandHandler
     {
-        private volatile DiscordSocketClient _client;
-        private volatile CommandService _cmdService;
-        //private volatile SocketCommandContext context;
-        private readonly IServiceProvider _serviceProvider;
+        private DiscordSocketClient _client;
+        private CommandService _service;
 
-        public async Task InitializeAsync()
+        public async Task InitializeAsync(DiscordSocketClient client)
         {
-            await _cmdService.AddModulesAsync(Assembly.GetEntryAssembly());
+            _client = client;
+            _service = new CommandService();
+            await _service.AddModulesAsync(Assembly.GetEntryAssembly(), null);
             _client.MessageReceived += HandleCommandAsync;
             _client.UserJoined += _client_UserJoined;
             _client.UserLeft += _client_UserLeft;
-            Global.Client = _client;
-            await Utilities.Log(MethodBase.GetCurrentMethod(), "CommandHandler initialized.", LogSeverity.Verbose);
+            Global.Client = client;
+            await Utilities.Log(MethodBase.GetCurrentMethod(), "CommandHandler Initialized.");
         }
 
-        public CommandHandler(DiscordSocketClient client, CommandService cmdService, IServiceProvider serviceProvider)
+        /*
+        private async Task HandleTagsAsync(SocketMessage s)
         {
-            _client = client;
-            _cmdService = cmdService;
-            _serviceProvider = serviceProvider;
-            Utilities.Log(MethodBase.GetCurrentMethod(), "CommandHandler constructed.", LogSeverity.Verbose);
+
+
+            var msg = s as SocketUserMessage;
+            var context = new SocketCommandContext(_client, msg);
+            int argPos = 0;
+            if (msg.HasMentionPrefix(_client.CurrentUser, ref argPos))
+            {
+
+            }
         }
-
-
+        */
         private static async Task _client_UserJoined(SocketGuildUser user)
         {
             var dmChannel = await user.GetOrCreateDMChannelAsync();
@@ -45,22 +50,20 @@ namespace HSBot.Handlers
 
         private async Task _client_UserLeft(SocketGuildUser user)
         {
-            if (user.Guild.Name == "IA Central Discord")
+            if (user.Guild.Name == "Discord-BOT-Tutorial")
             {
                 if (_client.GetChannel(GuildsData.FindGuildConfig(user.Guild.Id).LogChannelID) is SocketTextChannel discordBotTutorialGeneral)
                     await discordBotTutorialGeneral.SendMessageAsync(
                         $"{user.Username} ({user.Id}) left **{user.Guild.Name}**!");
-                await Utilities.Log(MethodBase.GetCurrentMethod(), $"{user.Nickname} left IAC.", LogSeverity.Verbose);
             }
         }
 
         public async Task HandleCommandAsync(SocketMessage s)
         {
             if (!(s is SocketUserMessage msg)) return;
-            var Context = new SocketCommandContext(_client, msg);
-            var C = new Context(_client, msg, _serviceProvider);
+            var context = new SocketCommandContext(_client, msg);
             int argPos = 0;
-            if (msg.HasStringPrefix(GuildsData.FindOrCreateGuildConfig(Context.Guild).Prefix, ref argPos)
+            if (msg.HasStringPrefix(GuildsData.FindOrCreateGuildConfig(context.Guild).Prefix, ref argPos)
                 || msg.HasMentionPrefix(_client.CurrentUser, ref argPos))
             {
                 await Utilities.Log(MethodBase.GetCurrentMethod(), "Command detected.", Discord.LogSeverity.Verbose);
@@ -75,20 +78,18 @@ namespace HSBot.Handlers
                         .WithDescription("Welcome!!")
                         .WithColor(new Color(Config.BotConfig.BotThemeColorR, Config.BotConfig.BotThemeColorG, Config.BotConfig.BotThemeColorB)); // Should reduce it to a color class.
                     await context.Channel.SendMessageAsync("", false, embed);
-                }
+                }DF
                 */
-
-                var result = await _cmdService.ExecuteAsync(Context, argPos, _serviceProvider);
+                var result = await _service.ExecuteAsync(context, argPos, null);
                 if (!result.IsSuccess && result.Error != CommandError.UnknownCommand)
                 {
-                    await Context.Channel.SendMessageAsync(result.ErrorReason);
-                    
+                    await context.Channel.SendMessageAsync(result.ErrorReason);
                 }
                 else
                 {
                     // ------------------ create statistics machine. Class DatabaseHandler
                     // ------------------ create 
-                    Context.Guild.GetTextChannel(GuildsData.FindGuildConfig(Context.Guild.Id).LogChannelID);
+                    context.Guild.GetTextChannel(GuildsData.FindGuildConfig(context.Guild.Id).LogChannelID);
                 }
             }
         }

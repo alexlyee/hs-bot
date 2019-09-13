@@ -27,9 +27,7 @@ namespace HSBot
     internal class Program
     {
         private volatile IServiceCollection _services;
-        private volatile IServiceProvider _provider;
         private volatile DiscordSocketClient _client;
-        private volatile InteractiveService _interactive;
 
         protected internal static bool Online = true;
         private CommandService _commands;
@@ -43,6 +41,14 @@ namespace HSBot
             Console.SetWindowSize(200, 50);
             await Utilities.Log(MethodBase.GetCurrentMethod(), $"Application started. V{_version}.");
             Console.Title = Config.BotConfig.ConsoleTitle;
+            try
+            {
+                var token = Environment.GetEnvironmentVariable("discord-hsbot-token");
+            }
+            catch
+            {
+                await Utilities.Log(MethodBase.GetCurrentMethod(), "Env. token not found.", LogSeverity.Verbose);
+            }
 
             _client = new DiscordSocketClient(new DiscordSocketConfig
             {
@@ -53,17 +59,16 @@ namespace HSBot
             {
                 LogLevel = LogSeverity.Debug
             });
-            _interactive = new InteractiveService(_client);
             _services = new ServiceCollection() // Microsoft.Extensions.DependencyInjection
                             .AddSingleton(_client)
                             .AddSingleton(_commands)
-                            .AddSingleton<CommandHandler>()
-                            .AddSingleton(_interactive);
+                            .AddSingleton<CommandHandler>();
+                            //.AddSingleton<InteractiveService>()
+            Global.Client = _client;
+            var commandhandler = new CommandHandler();
+            await Utilities.Log(MethodBase.GetCurrentMethod(), "Static or singleton objects initialized.", LogSeverity.Verbose);
 
-            _provider = _services.BuildServiceProvider();
-            await _provider.GetRequiredService<CommandHandler>().InitializeAsync();
-
-            await Utilities.Log(MethodBase.GetCurrentMethod(), "Services started.");
+            await commandhandler.InitializeAsync(_client);
 
             _client.JoinedGuild += JoinedGuildHandler.Announce;
             _client.Log += ClientHandler.Log;
@@ -75,7 +80,7 @@ namespace HSBot
             await _client.LoginAsync(TokenType.Bot, Config.BotConfig.Token);
             await _client.StartAsync();
             await Utilities.Log(MethodBase.GetCurrentMethod(), "Program running! :)");
-            ConsoleInput();
+            await ConsoleInput();
             await Task.Delay(-1);
         }
 
@@ -86,11 +91,11 @@ namespace HSBot
             {
                 input = Console.ReadLine();
                 if (input.Trim().ToLower() == "message")
-                    ConsoleSendMessage();
+                    await ConsoleSendMessage();
             }
         }
 
-        private async void ConsoleSendMessage()
+        private async Task ConsoleSendMessage()
         {
             Console.WriteLine("Select the guild:");
             var guild = GetSelectedGuild(_client.Guilds);

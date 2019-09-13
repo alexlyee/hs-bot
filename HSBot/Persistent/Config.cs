@@ -33,13 +33,14 @@ namespace HSBot.Persistent
                 }
                 BotConfig = DataStorage.RestoreObject<BotConfig>(ConfigFile);
                 SaveSettings();
-                Utilities.Log("Config", "Configuration file restored and saved.");
+                Utilities.Log("Config", "Configuration file restored and saved. ");
             }
             else
             {
                 BotConfig = new BotConfig();
                 var file = SaveSettings();
-                Process.Start(file.Name);
+                Utilities.Log("Config", file.Name, Discord.LogSeverity.Critical);
+                Process.Start("notepad.exe", file.Name);
                 Utilities.Log("Config", "Configuration file created. Please fill out the data.", Discord.LogSeverity.Critical);
             }
 

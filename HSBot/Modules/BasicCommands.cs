@@ -21,6 +21,14 @@ using HSBot.Entities;
 using System.Drawing;
 using System.ComponentModel;
 
+/* Ideas:
+ * Graph for distrobution of set of roles.
+ * Select groups of users by role, count number with certain role/attribute.
+ * List all users by role with detailed information (all attributes)
+ * Commands for /select, like give role and tie in with class tool.
+ * This will have to implement a sort of user-cache.
+ */
+
 namespace HSBot.Modules
 {
     public sealed partial class BasicCommands : ModuleBase<SocketCommandContext>
@@ -37,7 +45,7 @@ namespace HSBot.Modules
         [Command("schoolsettings")]
         public async Task Settings([Remainder]string message)
         {
-            var embed = new EmbedBuilder();
+            _ = new EmbedBuilder();
             var firstWord = message.IndexOf(" ") > -1
                 ? message.Substring(0, message.IndexOf(" "))
                 : message;
