@@ -76,7 +76,7 @@ namespace HSBot.Handlers
                         .WithDescription("Welcome!!")
                         .WithColor(new Color(Config.BotConfig.BotThemeColorR, Config.BotConfig.BotThemeColorG, Config.BotConfig.BotThemeColorB)); // Should reduce it to a color class.
                     await context.Channel.SendMessageAsync("", false, embed);
-                }
+                }DF
                 */
                 var result = await _service.ExecuteAsync(context, argPos);
                 if(!result.IsSuccess && result.Error != CommandError.UnknownCommand)

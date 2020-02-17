@@ -35,7 +35,7 @@ namespace HSBot
         {
             Console.SetWindowSize(200, 50);
             await Utilities.Log(MethodBase.GetCurrentMethod(), $"Application started. V{_version}.");
-            Console.Title = Config.BotConfig.ConsoleTitle;
+            //Console.Title = Config.BotConfig.ConsoleTitle;
 
             _client = new DiscordSocketClient(new DiscordSocketConfig
             {
@@ -63,7 +63,14 @@ namespace HSBot
 
             await Utilities.Log(MethodBase.GetCurrentMethod(), "Event handlers formed. Now logging in...", LogSeverity.Verbose);
 
-            await _client.LoginAsync(TokenType.Bot, Config.BotConfig.Token);
+            try
+            {
+                await _client.LoginAsync(TokenType.Bot, Config.BotConfig.Token);
+            } catch ( Discord.Net.HttpException ex )
+            {
+                await Utilities.Log(MethodBase.GetCurrentMethod(), "Failed to login to discord servers. Check your config?", ex);
+            }
+        
             await _client.StartAsync();
             await Utilities.Log(MethodBase.GetCurrentMethod(), "Program running!");
             await Task.Delay(-1);

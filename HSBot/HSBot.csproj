@@ -11,4 +11,9 @@
     <PackageReference Include="NReco" Version="2.0.3" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Modules\RoleTypes\" />
+    <Folder Include="Persistent\Roles\" />
+  </ItemGroup>
+
 </Project>

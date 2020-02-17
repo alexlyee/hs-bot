@@ -13,40 +13,40 @@ namespace HSBot.Entities
 
         public enum ManagmentIDs : ulong
         {
-            Directors,
-            Managers,
-            Contrivers
+            Directors = 0,
+            Managers = 0,
+            Contrivers = 0
         };
         public List<ulong> TokenIDs { get; set; }
         public enum AgentIDs : ulong
         {
-            Judges,
-            Administrators,
-            Moderators
+            Judges = 0,
+            Administrators = 0,
+            Moderators = 0
         };
         public enum StatusIDs : ulong
         {
-            Graduated,
-            Students,
-            Visitors
+            Graduated = 0,
+            Students = 0,
+            Visitors = 0
         };
         public enum LabelIds : ulong
         {
-            RoleManager,
-            HostingManager,
-            ChannelManager,
-            CodeManager,
-            WebhookManager,
-            EmojiManager,
-            NicknameManager,
-            GroupManager,
-            EmissaryManager,
-            BotManager,
-            VoiceManager,
-            EventManager,
-            ShowcaseManager,
-            SchemeCoordinator,
-            AgentEmployer
+            RoleManager = 0,
+            HostingManager = 0,
+            ChannelManager = 0,
+            CodeManager = 0,
+            WebhookManager = 0,
+            EmojiManager = 0,
+            NicknameManager = 0,
+            GroupManager = 0,
+            EmissaryManager = 0,
+            BotManager = 0,
+            VoiceManager = 0,
+            EventManager = 0,
+            ShowcaseManager = 0,
+            SchemeCoordinator = 0,
+            AgentEmployer = 0
         };
         public double TimeCreated { get; set; }
         /// <summary>
