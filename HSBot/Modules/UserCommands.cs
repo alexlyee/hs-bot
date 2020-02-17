@@ -11,11 +11,36 @@ using HSBot.Persistent;
 using System.IO;
 using System.Web;
 using HSBot.Helpers;
+using System.Reflection;
 
 namespace HSBot.Modules
 {
-    public sealed class UserCommands : ModuleBase<SocketCommandContext>
+    public partial class UserRoleCommands : ModuleBase<SocketCommandContext>
     {
+        /* This will never work because the context will not update
+        [Command("TestRole")]
+        public async Task TestRole(string rolename)
+        {
+            var role = Task.Run(async () => { return await Context.Guild.CreateRoleAsync(rolename); }).Result;
+            var socketRoles = Context.Guild.Roles;
+            SocketRole srole = RolesFromName(role.Name).FirstOrDefault();
+            
+            foreach (SocketRole r in socketRoles)
+            {
+                Utilities.Log(MethodBase.GetCurrentMethod(), $"{r.Name} : {r.Id} looking for {role.Id}", LogSeverity.Verbose);
+                if (r.Id == role.Id)
+                {
+                    srole = r;
+                    Utilities.Log(MethodBase.GetCurrentMethod(), $"Found it!", LogSeverity.Verbose);
+                    return;
+                }
+                
+            }
+            
+            await SendClassicEmbed($"RestRole: {role.Id}\nSocketRole: {srole.Id}", "hi");
+            await role.DeleteAsync();
+        }
+        */
 
         [Command("Stats")]
         public async Task Stats([Remainder]string arg = "")
@@ -42,100 +67,177 @@ namespace HSBot.Modules
         }
 
 
-                /* Depricated.
-                 * 
-        [Command("profile")]
-        public async Task Profile()
-        {
-            var html = String.Format("<body>Hello world: {0}</body>", DateTime.Now);
-            var htmlToImageConv = new NReco.ImageGenerator.HtmlToImageConverter();
-            var jpegBytes = htmlToImageConv.GenerateImage(html, NReco.ImageGenerator.ImageFormat.Jpeg);
-            await Context.Channel.SendFileAsync(new MemoryStream(jpegBytes), "test.jpg");
-        }
+        /* Depricated.
+         * 
+[Command("profile")]
+public async Task Profile()
+{
+    var html = String.Format("<body>Hello world: {0}</body>", DateTime.Now);
+    var htmlToImageConv = new NReco.ImageGenerator.HtmlToImageConverter();
+    var jpegBytes = htmlToImageConv.GenerateImage(html, NReco.ImageGenerator.ImageFormat.Jpeg);
+    await Context.Channel.SendFileAsync(new MemoryStream(jpegBytes), "test.jpg");
+}
 
-        [Command("poll")]
-        public async Task Poll([Remainder]String message)
+[Command("poll")]
+public async Task Poll([Remainder]String message)
+{
+    var emoji1 = new Emoji("✅");
+    var emoji2 = new Emoji("❌");
+    var emoji3 = new Emoji("🤔");
+    await Context.Channel.SendMessageAsync(message);
+    await Context.Message.AddReactionAsync(emoji1);
+    await Context.Message.AddReactionAsync(emoji2);
+    await Context.Message.AddReactionAsync(emoji3);
+}
+[Command("say")]
+public async Task Say([Remainder] string message)
+{
+    await ReplyAsync(message);
+}
+[Command("o"), RequireOwner]
+public async Task O()
+{
+    EmbedBuilder builder = new EmbedBuilder();
+    string message = "Sent! Right?";
+    var dmChannel = await Context.User.GetOrCreateDMChannelAsync();
+    await dmChannel.SendMessageAsync("Hello! I am the High School bot, and this is a test!");
+    builder.WithTitle("Owner Quick Command")
+        .WithDescription("For quickly testing stuff.")
+        .WithColor(Color.Blue)
+        .AddField("Part 1", message);
+    await ReplyAsync("", false, builder.Build());
+}
+[Command("myroles")]
+public async Task MyRoles()
+{
+    SocketGuildUser suser = (SocketGuildUser)Context.User;
+    var dmChannel = await Context.User.GetOrCreateDMChannelAsync();
+    foreach (var role in suser.Roles)
+    {
+        EmbedBuilder rolebuilder = new EmbedBuilder();
+        rolebuilder.WithTitle(role.Name)
+        .WithDescription(role.Id.ToString())
+        .WithColor(role.Color)
+        .AddField("Position", role.Position)
+        .AddField("Permissions", role.Permissions);
+        await dmChannel.SendMessageAsync("", false, rolebuilder.Build());
+        await Task.Delay(3000);
+        rolebuilder = null;
+    }
+}
+[Command("t"), RequireUserPermission(GuildPermission.ReadMessages)]
+public async Task T([Remainder] string roleSelection)
+{
+    SocketGuildUser suser = (SocketGuildUser)Context.User;
+
+
+    EmbedBuilder builder = new EmbedBuilder();
+
+    var dmChannel = await Context.User.GetOrCreateDMChannelAsync();
+    await dmChannel.SendMessageAsync("Hello! I am the High School bot, and this is a test!");
+    bool role = UserHasRole(suser, RoleIDFromName(suser, roleSelection));
+
+    builder.WithTitle("Test Quick Command")
+        .WithDescription("You can search for a role, and it will respond true or false if you have it or not.")
+        .WithColor(Color.Blue)
+        .AddField("Role ID", RoleIDFromName(suser, roleSelection))
+        .AddField("Role", role);
+
+    await ReplyAsync("", false, builder.Build());
+}
+
+*/
+
+
+
+}
+
+    // Methods
+    public sealed partial class UserRoleCommands : ModuleBase<SocketCommandContext>
+    {
+        /// <summary>
+        /// Sends each property of given object in embed.
+        /// </summary>
+        /// <param name="obj"></param>
+        /// <param name=""></param>
+        /// <returns></returns>
+        public async Task SendClassEmbed<T>(string title, string desc, object obj)
         {
-            var emoji1 = new Emoji("✅");
-            var emoji2 = new Emoji("❌");
-            var emoji3 = new Emoji("🤔");
-            await Context.Channel.SendMessageAsync(message);
-            await Context.Message.AddReactionAsync(emoji1);
-            await Context.Message.AddReactionAsync(emoji2);
-            await Context.Message.AddReactionAsync(emoji3);
+            var embed = new EmbedBuilder();
+            embed.WithTitle($"**{title}**")
+                .WithDescription($"*{desc}*")
+                .WithColor(new Color(60, 176, 222))
+                .WithFooter(" -Alex https://discord.gg/DVSjvGa", "https://i.imgur.com/HAI5vMj.png")
+                .WithCurrentTimestamp();
+            PropertyInfo[] properties = typeof(T).GetProperties();
+            foreach (PropertyInfo property in properties)
+                embed.AddField($"**{property.Name}**", $"*{property.GetValue(obj)}*", true);
+            await Context.Channel.SendMessageAsync("", false, embed.Build());
         }
-        [Command("say")]
-        public async Task Say([Remainder] string message)
+        public async Task SendSuccessEmbed(string title, string desc)
         {
-            await ReplyAsync(message);
-        }
-        [Command("o"), RequireOwner]
-        public async Task O()
-        {
-            EmbedBuilder builder = new EmbedBuilder();
-            string message = "Sent! Right?";
-            var dmChannel = await Context.User.GetOrCreateDMChannelAsync();
-            await dmChannel.SendMessageAsync("Hello! I am the High School bot, and this is a test!");
-            builder.WithTitle("Owner Quick Command")
-                .WithDescription("For quickly testing stuff.")
-                .WithColor(Color.Blue)
-                .AddField("Part 1", message);
-            await ReplyAsync("", false, builder.Build());
-        }
-        [Command("myroles")]
-        public async Task MyRoles()
-        {
-            SocketGuildUser suser = (SocketGuildUser)Context.User;
-            var dmChannel = await Context.User.GetOrCreateDMChannelAsync();
-            foreach (var role in suser.Roles)
+            var embed = new EmbedBuilder
             {
-                EmbedBuilder rolebuilder = new EmbedBuilder();
-                rolebuilder.WithTitle(role.Name)
-                .WithDescription(role.Id.ToString())
-                .WithColor(role.Color)
-                .AddField("Position", role.Position)
-                .AddField("Permissions", role.Permissions);
-                await dmChannel.SendMessageAsync("", false, rolebuilder.Build());
-                await Task.Delay(3000);
-                rolebuilder = null;
-            }
+                Title = title,
+                Description = desc,
+                Color = new Color(33, 160, 52),
+                Footer = new EmbedFooterBuilder()
+                    .WithText(" -Alex https://discord.gg/DVSjvGa")
+                    .WithIconUrl("https://i.imgur.com/HAI5vMj.png"),
+                Timestamp = DateTime.UtcNow,
+            }.Build();
+            await Context.Channel.SendMessageAsync("", false, embed);
         }
-        [Command("t"), RequireUserPermission(GuildPermission.ReadMessages)]
-        public async Task T([Remainder] string roleSelection)
+        public async Task SendErrorEmbed(string title, string desc, Exception ex = null)
         {
-            SocketGuildUser suser = (SocketGuildUser)Context.User;
-
-
-            EmbedBuilder builder = new EmbedBuilder();
-
-            var dmChannel = await Context.User.GetOrCreateDMChannelAsync();
-            await dmChannel.SendMessageAsync("Hello! I am the High School bot, and this is a test!");
-            bool role = UserHasRole(suser, RoleIDFromName(suser, roleSelection));
-
-            builder.WithTitle("Test Quick Command")
-                .WithDescription("You can search for a role, and it will respond true or false if you have it or not.")
-                .WithColor(Color.Blue)
-                .AddField("Role ID", RoleIDFromName(suser, roleSelection))
-                .AddField("Role", role);
-
-            await ReplyAsync("", false, builder.Build());
+            if (ex == null) ex = new Exception();
+            var embed = new EmbedBuilder
+            {
+                Title = title,
+                Description = desc,
+                Color = new Color(219, 57, 75),
+                Footer = new EmbedFooterBuilder()
+                    .WithText(" -Alex https://discord.gg/DVSjvGa")
+                    .WithIconUrl("https://i.imgur.com/HAI5vMj.png"),
+                Timestamp = DateTime.UtcNow,
+                Fields = new List<EmbedFieldBuilder>
+                {
+                    new EmbedFieldBuilder()
+                        .WithName("`Error content:` ")
+                        .WithValue($"*{ex.ToString()}*")
+                        .WithIsInline(true)
+                    // Repeat with comma for another field here.
+                }
+            }.Build();
+            await Context.Channel.SendMessageAsync("", false, embed);
         }
-
-    */
-
+        public async Task SendClassicEmbed(string title, string desc)
+        {
+            var embed = new EmbedBuilder
+            {
+                Title = title,
+                Description = desc,
+                Color = new Color(60, 176, 222),
+                Footer = new EmbedFooterBuilder()
+                    .WithText(" -Alex https://discord.gg/DVSjvGa")
+                    .WithIconUrl("https://i.imgur.com/HAI5vMj.png"),
+                Timestamp = DateTime.UtcNow,
+            }.Build();
+            await Context.Channel.SendMessageAsync("", false, embed);
+        }
         private bool UserHasRole(SocketGuildUser user, ulong roleId)
         {
             return user.Roles.Contains(user.Guild.GetRole(roleId));
         }
-        private ulong RoleIdFromName(SocketGuildUser user, string targetRoleName)
+        private List<SocketRole> RolesFromName(string targetRoleName)
         {
-            var result = from r in user.Guild.Roles
+            var result = from r in Context.Guild.Roles
                          where r.Name == targetRoleName
-                         select r.Id;
+                         select r;
 
-            return result.FirstOrDefault();
+            return result.ToList();
         }
-        
+
 
     }
 }

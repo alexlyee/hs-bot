@@ -16,7 +16,7 @@ namespace HSBot.Core
         private static async void OnTimerTicked(object args, ElapsedEventArgs e)
         {
             await Utilities.Log("Timer Event", "Tick! " + Global.Client.ConnectionState, LogSeverity.Debug);
-            await Global.Client.SetGameAsync(Config.BotConfig.Playing);
+            await Global.Client.SetGameAsync(Config.BotConfig.Playing, "https://www.twitch.tv/alexlyee", ActivityType.Streaming);
             await Global.Client.SetStatusAsync(Config.BotConfig.Status);
             foreach (GuildConfig c in GuildsData.GetConfigs())
             {

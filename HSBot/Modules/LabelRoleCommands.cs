@@ -15,13 +15,6 @@ namespace HSBot.Modules
 {
     public sealed class LabelRoleCommands : ModuleBase<SocketCommandContext>
     {
-        /// <summary>
-        /// These will be added case by case...
-        /// </summary>
-        private enum RoleIDs : ulong
-        {
-
-        };
 
 
 

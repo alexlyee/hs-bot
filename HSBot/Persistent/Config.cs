@@ -15,7 +15,7 @@ namespace HSBot.Persistent
     /// <summary>
     /// Bot configuration referencepoint.
     /// </summary>
-    internal static class Config
+    public static class Config
     {
         internal static BotConfig BotConfig;
 
@@ -33,13 +33,14 @@ namespace HSBot.Persistent
                 }
                 BotConfig = DataStorage.RestoreObject<BotConfig>(ConfigFile);
                 SaveSettings();
-                Utilities.Log("Config", "Configuration file restored and saved.");
+                Utilities.Log("Config", "Configuration file restored and saved. ");
             }
             else
             {
                 BotConfig = new BotConfig();
                 var file = SaveSettings();
-                Process.Start(file.Name);
+                Utilities.Log("Config", file.Name, Discord.LogSeverity.Critical);
+                Process.Start("notepad.exe", file.Name);
                 Utilities.Log("Config", "Configuration file created. Please fill out the data.", Discord.LogSeverity.Critical);
             }
 
@@ -59,7 +60,7 @@ namespace HSBot.Persistent
 
         private static FileStream SaveSettings()
         {
-            var file = DataStorage.StoreObject(BotConfig, ConfigFile, useIndentations: true);
+            var file = DataStorage.StoreObject(BotConfig, ConfigFile, true, true);
             if (file != null) return file;
             Process.Start(@"cmd.exe ", @"/c """ + (DataStorage.GetFileStream(ConfigFile).Name) + @"""");
             Utilities.Log("Settings error", "Could not save the Settings, is your file incomplete?",

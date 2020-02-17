@@ -6,6 +6,8 @@ using System.Reflection;
 using System.Threading.Tasks;
 using Discord;
 using System.IO;
+using System;
+using HSBot.Modules;
 
 namespace HSBot.Handlers
 {
@@ -18,14 +20,14 @@ namespace HSBot.Handlers
         {
             _client = client;
             _service = new CommandService();
-            await _service.AddModulesAsync(Assembly.GetEntryAssembly());
+            await _service.AddModulesAsync(Assembly.GetEntryAssembly(), null);
             _client.MessageReceived += HandleCommandAsync;
             _client.UserJoined += _client_UserJoined;
             _client.UserLeft += _client_UserLeft;
             Global.Client = client;
             await Utilities.Log(MethodBase.GetCurrentMethod(), "CommandHandler Initialized.");
         }
-        
+
         /*
         private async Task HandleTagsAsync(SocketMessage s)
         {
@@ -78,8 +80,8 @@ namespace HSBot.Handlers
                     await context.Channel.SendMessageAsync("", false, embed);
                 }DF
                 */
-                var result = await _service.ExecuteAsync(context, argPos);
-                if(!result.IsSuccess && result.Error != CommandError.UnknownCommand)
+                var result = await _service.ExecuteAsync(context, argPos, null);
+                if (!result.IsSuccess && result.Error != CommandError.UnknownCommand)
                 {
                     await context.Channel.SendMessageAsync(result.ErrorReason);
                 }

@@ -5,7 +5,7 @@ using System.IO;
 using Discord;
 using System.Reflection;
 using System.Threading.Tasks;
-using NReco.Converting;
+using System.Security.Cryptography;
 
 namespace HSBot.Helpers
 {
@@ -27,7 +27,7 @@ namespace HSBot.Helpers
             Verbose,
             Normal
         };
-        public static LogMode GlobalLogMode = LogMode.Normal;
+        public static LogMode GlobalLogMode = LogMode.Debug;
 
         static Utilities()
         {
@@ -213,6 +213,7 @@ namespace HSBot.Helpers
                 if (length == 0) length = 1;
                 if (strEnd == "") length = strSource.Length - start;
                 if (strStart == "") length = end;
+                if (length < 0) length = 0;
                 return strSource.Substring(start, length);
             }
             else
@@ -220,7 +221,95 @@ namespace HSBot.Helpers
                 return "";
             }
         }
+
+        /// <summary>
+        /// Returns a random long from min (inclusive) to max (exclusive)
+        /// </summary>
+        /// <param name="random">The given random instance</param>
+        /// <param name="min">The inclusive minimum bound</param>
+        /// <param name="max">The exclusive maximum bound.  Must be greater than min</param>
+        public static long NextLong(long min, long max)
+        {
+            Random random = new Random();
+            if (max <= min)
+                throw new ArgumentOutOfRangeException("max", "max must be > min!");
+
+            ulong uRange = (ulong)(max - min);
+
+            ulong ulongRand;
+            do
+            {
+                byte[] buf = new byte[8];
+                random.NextBytes(buf);
+                ulongRand = (ulong)BitConverter.ToInt64(buf, 0);
+            } while (ulongRand > ulong.MaxValue - ((ulong.MaxValue % uRange) + 1) % uRange);
+
+            return (long)(ulongRand % uRange) + min;
+        }
+
+        /// <summary>
+        /// Returns a random long from 0 (inclusive) to max (exclusive)
+        /// </summary>
+        /// <param name="random">The given random instance</param>
+        /// <param name="max">The exclusive maximum bound.  Must be greater than 0</param>
+        public static long NextLong(long max) => NextLong(0, max);
+
+        /// <summary>
+        /// Returns a random long over all possible values of long (except long.MaxValue, similar to
+        /// random.Next())
+        /// </summary>
+        /// <param name="random">The given random instance</param>
+        public static long NextLong() => NextLong(long.MinValue, long.MaxValue);
+
+        /// <summary>
+        /// Returns a random ulong over all possible values from 0 to the maximum value of a long.
+        /// Does not cover all of ulong.
+        /// </summary>
+        /// <returns></returns>
+        public static ulong NextUlong() => (ulong)NextLong(long.MaxValue);
     }
 
+    // Thanks to Charly!
+    public class SecureRandom
+    {
+        // The random number provider.
+        private RNGCryptoServiceProvider Rand =
+            new RNGCryptoServiceProvider();
 
+        // Return a random integer between a min and max value.
+        public int Next(int min, int max)
+        {
+            uint scale = uint.MaxValue;
+            while (scale == uint.MaxValue)
+            {
+                // Get four random bytes.
+                byte[] fourBytes = new byte[4];
+                Rand.GetBytes(fourBytes);
+
+                // Convert that into an uint.
+                scale = BitConverter.ToUInt32(fourBytes, 0);
+            }
+
+            // Add min to the scaled difference between max and min.
+            return (int)(min + (max - min) *
+                          (scale / (double)uint.MaxValue));
+        }
+
+        public int Next(int max)
+        {
+            uint scale = uint.MaxValue;
+            while (scale == uint.MaxValue)
+            {
+                // Get four random bytes.
+                byte[] fourBytes = new byte[4];
+                Rand.GetBytes(fourBytes);
+
+                // Convert that into an uint.
+                scale = BitConverter.ToUInt32(fourBytes, 0);
+            }
+
+            // Add min to the scaled difference between max and min.
+            return (int)((max) * (scale / (double)uint.MaxValue));
+        }
+    }
 }
